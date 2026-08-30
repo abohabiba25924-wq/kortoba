@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>منصة قرطبة لمتابعة الحفظ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F4F1E8;
+    --panel:#FFFFFF;
+    --ink:#16241D;
+    --ink-soft:#5B6B62;
+    --green:#0F3D28;
+    --green-deep:#082A1C;
+    --green-mid:#1C5940;
+    --gold:#B9832A;
+    --gold-bright:#D89518;
+    --line:rgba(15,61,40,0.12);
+    --success:#1F7A52;
+    --success-bg:#E6F2EC;
+    --warn:#B9832A;
+    --warn-bg:#FBF2E1;
+    --danger:#B23B2E;
+    --danger-bg:#FBEAE7;
+    --radius:16px;
+    --shadow:0 16px 34px -18px rgba(8,42,28,0.35);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Cairo',sans-serif;line-height:1.7;}
+  a{color:inherit;text-decoration:none;}
+  ul{margin:0;padding:0;list-style:none;}
+  button,input,select,textarea{font-family:'Cairo',sans-serif;}
+  img{max-width:100%;display:block;}
+  .hidden{display:none !important;}
+
+  /* ---------------- LOGIN ---------------- */
+  #loginScreen{
+    min-height:100vh;display:flex;align-items:center;justify-content:center;
+    background:
+      radial-gradient(900px 500px at 85% -10%, rgba(185,131,42,0.14), transparent 60%),
+      radial-gradient(800px 500px at 10% 110%, rgba(15,61,40,0.12), transparent 60%),
+      var(--bg);
+    padding:24px;
+  }
+  .login-card{
+    width:100%;max-width:420px;background:var(--panel);border-radius:24px;
+    box-shadow:var(--shadow);padding:40px 36px;border:1px solid var(--line);
+  }
+  .login-logo{width:64px;height:64px;object-fit:contain;margin:0 auto 14px;}
+  .login-card h1{
+    font-family:'Amiri',serif;text-align:center;font-size:22px;color:var(--green-deep);margin:0 0 4px;
+  }
+  .login-card .sub{text-align:center;color:var(--ink-soft);font-size:13.5px;margin-bottom:28px;}
+  .field{display:flex;flex-direction:column;gap:7px;margin-bottom:16px;}
+  .field label{font-size:13px;font-weight:700;color:var(--green-deep);}
+  .field input,.field select{
+    border:1.5px solid var(--line);border-radius:11px;padding:12px 14px;font-size:14.5px;
+    background:var(--bg);color:var(--ink);outline:none;transition:border-color .2s ease, box-shadow .2s ease;
+  }
+  .field input:focus,.field select:focus{border-color:var(--green);box-shadow:0 0 0 4px rgba(15,61,40,0.1);}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    padding:13px 20px;border-radius:12px;font-weight:700;font-size:14.5px;border:none;cursor:pointer;
+    transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+  }
+  .btn-primary{background:var(--green);color:#fff;width:100%;box-shadow:0 12px 26px -12px rgba(15,61,40,0.55);}
+  .btn-primary:hover{background:var(--green-mid);transform:translateY(-1px);}
+  .login-divider{display:flex;align-items:center;gap:12px;margin:26px 0 18px;color:var(--ink-soft);font-size:12.5px;}
+  .login-divider::before,.login-divider::after{content:"";flex:1;height:1px;background:var(--line);}
+  .demo-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .demo-btn{
+    border:1.5px dashed var(--line);background:var(--bg);border-radius:11px;padding:10px;
+    font-size:13px;font-weight:700;color:var(--ink-soft);cursor:pointer;transition:all .2s ease;
+    display:flex;align-items:center;justify-content:center;gap:6px;
+  }
+  .demo-btn:hover{border-color:var(--gold);color:var(--green-deep);background:#fff;}
+  .login-note{margin-top:20px;font-size:11.5px;color:var(--ink-soft);text-align:center;}
+
+  /* ---------------- APP SHELL ---------------- */
+  #app{display:none;min-height:100vh;}
+  #app.active{display:flex;}
+  .sidebar{
+    width:250px;flex:none;background:var(--green-deep);color:rgba(244,241,232,0.85);
+    display:flex;flex-direction:column;padding:24px 18px;position:sticky;top:0;height:100vh;overflow-y:auto;
+  }
+  .sidebar-brand{display:flex;align-items:center;gap:10px;padding:0 6px 24px;border-bottom:1px solid rgba(244,241,232,0.12);margin-bottom:20px;}
+  .sidebar-brand img{width:36px;height:36px;object-fit:contain;}
+  .sidebar-brand strong{display:block;color:#fff;font-family:'Amiri',serif;font-size:16.5px;}
+  .sidebar-brand span{display:block;font-size:11px;color:var(--gold-bright);}
+  .side-role{
+    font-size:11.5px;font-weight:700;letter-spacing:0.5px;color:rgba(244,241,232,0.5);
+    text-transform:uppercase;margin:6px 10px 10px;
+  }
+  .side-nav{display:flex;flex-direction:column;gap:4px;flex:1;}
+  .side-link{
+    display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:11px;
+    font-size:14.5px;font-weight:600;color:rgba(244,241,232,0.75);cursor:pointer;transition:all .18s ease;
+  }
+  .side-link svg{width:18px;height:18px;flex:none;stroke:currentColor;}
+  .side-link:hover{background:rgba(244,241,232,0.06);color:#fff;}
+  .side-link.active{background:var(--gold);color:var(--green-deep);}
+  .sidebar-user{
+    display:flex;align-items:center;gap:10px;padding:14px 10px;border-top:1px solid rgba(244,241,232,0.12);margin-top:12px;
+  }
+  .sidebar-user .avatar{
+    width:36px;height:36px;border-radius:50%;background:linear-gradient(145deg,var(--gold),var(--gold-bright));
+    display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--green-deep);font-size:13.5px;flex:none;
+  }
+  .sidebar-user .who{flex:1;min-width:0;}
+  .sidebar-user .who strong{display:block;font-size:13.5px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .sidebar-user .who span{font-size:11.5px;color:rgba(244,241,232,0.55);}
+  .logout-btn{background:none;border:none;color:rgba(244,241,232,0.55);cursor:pointer;padding:6px;flex:none;}
+  .logout-btn:hover{color:var(--gold-bright);}
+  .logout-btn svg{width:18px;height:18px;stroke:currentColor;}
+
+  .main{flex:1;min-width:0;}
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:20px 32px;background:var(--panel);border-bottom:1px solid var(--line);
+    position:sticky;top:0;z-index:5;
+  }
+  .topbar h2{font-family:'Amiri',serif;font-size:22px;color:var(--green-deep);}
+  .topbar .date-pill{
+    font-size:13px;font-weight:600;color:var(--ink-soft);background:var(--bg);
+    padding:8px 16px;border-radius:100px;border:1px solid var(--line);
+  }
+  .content{padding:32px;max-width:1280px;}
+
+  .page{display:none;}
+  .page.active{display:block;}
+
+  /* stat cards */
+  .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:32px;}
+  .stat-card{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px;
+    display:flex;flex-direction:column;gap:10px;
+  }
+  .stat-card .icon{
+    width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(145deg,var(--green),var(--green-mid));
+  }
+  .stat-card .icon svg{width:20px;height:20px;stroke:#fff;}
+  .stat-card .num{font-family:'Amiri',serif;font-size:28px;color:var(--green-deep);font-weight:700;}
+  .stat-card .lbl{font-size:13px;color:var(--ink-soft);font-weight:600;}
+
+  /* panel / table */
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:26px;margin-bottom:24px;}
+  .panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+  .panel-head h3{font-family:'Amiri',serif;font-size:18px;color:var(--green-deep);}
+  table{width:100%;border-collapse:collapse;font-size:14px;}
+  thead th{
+    text-align:right;font-size:12.5px;color:var(--ink-soft);font-weight:700;padding:0 12px 12px;
+    border-bottom:1px solid var(--line);text-transform:uppercase;letter-spacing:0.3px;
+  }
+  tbody td{padding:14px 12px;border-bottom:1px solid var(--line);color:var(--ink);}
+  tbody tr:last-child td{border-bottom:none;}
+  .cell-name{display:flex;align-items:center;gap:10px;font-weight:600;}
+  .cell-name .avatar-sm{
+    width:32px;height:32px;border-radius:50%;background:var(--bg);border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--green-deep);
+  }
+  .badge{
+    display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:100px;font-size:12.5px;font-weight:700;
+  }
+  .badge-success{background:var(--success-bg);color:var(--success);}
+  .badge-warn{background:var(--warn-bg);color:var(--warn);}
+  .badge-danger{background:var(--danger-bg);color:var(--danger);}
+  .row-actions{display:flex;gap:8px;}
+  .icon-btn{
+    width:32px;height:32px;border-radius:9px;border:1px solid var(--line);background:var(--bg);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s ease;
+  }
+  .icon-btn:hover{border-color:var(--green);background:#fff;}
+  .icon-btn svg{width:16px;height:16px;stroke:var(--green-deep);}
+
+  .note-banner{
+    display:flex;align-items:center;gap:10px;background:var(--warn-bg);color:#8A611E;
+    border:1px solid rgba(185,131,42,0.3);padding:12px 18px;border-radius:12px;font-size:13px;font-weight:600;margin-bottom:24px;
+  }
+
+  /* progress ring */
+  .ring-wrap{display:flex;align-items:center;gap:24px;}
+  .ring{position:relative;width:130px;height:130px;flex:none;}
+  .ring svg{transform:rotate(-90deg);width:100%;height:100%;}
+  .ring .ring-label{
+    position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  }
+  .ring .ring-label b{font-family:'Amiri',serif;font-size:24px;color:var(--green-deep);}
+  .ring .ring-label span{font-size:11.5px;color:var(--ink-soft);}
+
+  /* two-col layout */
+  .cols-2{display:grid;grid-template-columns:1.3fr 1fr;gap:24px;align-items:start;}
+
+  /* ward card (student) */
+  .ward-card{
+    background:linear-gradient(135deg,var(--green-deep),var(--green));
+    color:#fff;border-radius:20px;padding:30px;position:relative;overflow:hidden;
+  }
+  .ward-card::before{content:"";position:absolute;inset:0;background:radial-gradient(300px 200px at 100% 0%, rgba(216,149,24,0.25), transparent 60%);}
+  .ward-card .tag{position:relative;font-size:12.5px;font-weight:700;color:var(--gold-bright);margin-bottom:10px;display:block;}
+  .ward-card h3{position:relative;font-family:'Amiri',serif;font-size:26px;margin:0 0 6px;}
+  .ward-card p{position:relative;color:rgba(244,241,232,0.8);font-size:14px;margin:0 0 18px;}
+  .ward-meta{position:relative;display:flex;gap:22px;flex-wrap:wrap;}
+  .ward-meta div{font-size:13px;color:rgba(244,241,232,0.65);}
+  .ward-meta b{display:block;color:#fff;font-size:15px;font-family:'Amiri',serif;}
+
+  .session-item{
+    display:flex;align-items:center;gap:14px;padding:14px;border:1px solid var(--line);border-radius:14px;margin-bottom:10px;
+  }
+  .session-item:last-child{margin-bottom:0;}
+  .session-date{
+    width:52px;height:52px;border-radius:12px;background:var(--bg);flex:none;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+  }
+  .session-date b{font-size:17px;color:var(--green-deep);font-family:'Amiri',serif;}
+  .session-date span{font-size:10.5px;color:var(--ink-soft);}
+  .session-info{flex:1;min-width:0;}
+  .session-info strong{display:block;font-size:14.5px;}
+  .session-info span{font-size:12.5px;color:var(--ink-soft);}
+  .session-join{
+    display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:100px;
+    background:var(--success);color:#fff;font-size:13px;font-weight:700;flex:none;
+  }
+  .session-join.disabled{background:var(--bg);color:var(--ink-soft);border:1px solid var(--line);}
+
+  /* modal */
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(8,42,28,0.45);display:none;align-items:center;justify-content:center;
+    z-index:100;padding:20px;
+  }
+  .modal-overlay.active{display:flex;}
+  .modal{background:#fff;border-radius:20px;padding:30px;width:100%;max-width:460px;max-height:90vh;overflow-y:auto;}
+  .modal h3{font-family:'Amiri',serif;color:var(--green-deep);margin:0 0 18px;font-size:19px;}
+  .modal-actions{display:flex;gap:10px;margin-top:20px;}
+  .btn-ghost{background:var(--bg);color:var(--ink-soft);flex:1;border:1px solid var(--line);}
+  .btn-ghost:hover{background:#eee;}
+
+  @media (max-width:960px){
+    .sidebar{position:fixed;right:0;top:0;z-index:40;transform:translateX(100%);transition:transform .25s ease;}
+    .sidebar.open{transform:translateX(0);}
+    .stat-grid{grid-template-columns:repeat(2,1fr);}
+    .cols-2{grid-template-columns:1fr;}
+    .content{padding:20px;}
+    .topbar{padding:16px 20px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<div id="loginScreen">
+  <div class="login-card">
+    <img class="login-logo" src="https://res.cloudinary.com/dvfx83gns/image/upload/v1787795512/%D9%82%D8%B1%D8%B7%D8%A8%D8%A9_gbn7xe.png" alt="قرطبة">
+    <h1>منصة قرطبة لمتابعة الحفظ</h1>
+    <p class="sub">سجّل دخولك لمتابعة الورد والتقدم والحصص</p>
+
+    <form id="loginForm">
+      <div class="field">
+        <label>البريد الإلكتروني</label>
+        <input type="email" id="loginEmail" placeholder="example@kortoba.com" required>
+      </div>
+      <div class="field">
+        <label>كلمة المرور</label>
+        <input type="password" id="loginPassword" placeholder="••••••••" required>
+      </div>
+      <button type="submit" class="btn btn-primary">دخول</button>
+    </form>
+
+    <div class="login-divider">أو جرّب دخول تجريبي سريع</div>
+    <div class="demo-grid">
+      <button class="demo-btn" data-role="admin">👑 أدمن</button>
+      <button class="demo-btn" data-role="moderator">🛡 مودريتور</button>
+      <button class="demo-btn" data-role="teacher">📖 معلم</button>
+      <button class="demo-btn" data-role="student">🎓 طالب</button>
+    </div>
+    <p class="login-note">النظام دلوقتي شغال ببيانات وهمية للتجربة — هيتم ربطه بقاعدة بيانات حقيقية (Supabase) في الخطوة الجاية.</p>
+  </div>
+</div>
+
+<!-- ============ APP SHELL ============ -->
+<div id="app">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <img src="https://res.cloudinary.com/dvfx83gns/image/upload/v1787795512/%D9%82%D8%B1%D8%B7%D8%A8%D8%A9_gbn7xe.png" alt="قرطبة">
+      <div><strong>قرطبة</strong><span>منصة المتابعة</span></div>
+    </div>
+    <div class="side-role" id="sideRoleLabel">لوحة التحكم</div>
+    <nav class="side-nav" id="sideNav"></nav>
+    <div class="sidebar-user">
+      <div class="avatar" id="userAvatar">؟</div>
+      <div class="who"><strong id="userName">—</strong><span id="userRoleText">—</span></div>
+      <button class="logout-btn" id="logoutBtn" title="تسجيل الخروج">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <h2 id="pageTitle">نظرة عامة</h2>
+      <span class="date-pill" id="todayDate"></span>
+    </div>
+    <div class="content" id="content"><!-- pages injected here --></div>
+  </div>
+</div>
+
+<!-- ============ MODAL: teacher logs evaluation ============ -->
+<div class="modal-overlay" id="evalModal">
+  <div class="modal">
+    <h3>تسجيل تسميع</h3>
+    <div class="field">
+      <label>الطالب</label>
+      <select id="evalStudent"></select>
+    </div>
+    <div class="field">
+      <label>الورد (من - إلى)</label>
+      <input type="text" id="evalWard" placeholder="مثال: سورة البقرة من آية ١ إلى ٢٠">
+    </div>
+    <div class="field">
+      <label>التقييم</label>
+      <select id="evalRating">
+        <option value="ممتاز">ممتاز</option>
+        <option value="جيد">جيد</option>
+        <option value="يحتاج مراجعة">يحتاج مراجعة</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>ملاحظات</label>
+      <textarea id="evalNotes" rows="3" placeholder="ملاحظات المعلم..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="evalCancel">إلغاء</button>
+      <button class="btn btn-primary" id="evalSave" style="flex:1;">حفظ التقييم</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =====================================================================
+   MOCK DATA LAYER
+   شكل البيانات هنا مبني عشان يبقى قريب من جداول Supabase اللي هنعملها بعدين:
+   users(id, name, role, email) / teachers(user_id, student_ids)
+   students(user_id, teacher_id, program, progress_juz, current_ward, last_evaluation)
+   sessions(id, student_id, teacher_id, datetime, platform, link, status)
+   evaluations(id, student_id, teacher_id, date, ward, rating, notes)
+   ===================================================================== */
+
+const DB = {
+  teachers: [
+    { id:'t1', name:'الشيخ أحمد فتحي', students:3, rating:'ممتاز', status:'نشط' },
+    { id:'t2', name:'الشيخة سارة عبد الله', students:2, rating:'جيد', status:'نشط' },
+  ],
+  moderators: [
+    { id:'m1', name:'أ. هبة السيد', area:'متابعة جودة التسميع' },
+  ],
+  students: [
+    { id:'s1', name:'يوسف أحمد', teacher:'الشيخ أحمد فتحي', program:'أطفال', progress:6, lastRating:'ممتاز' },
+    { id:'s2', name:'مريم خالد', teacher:'الشيخة سارة عبد الله', program:'كبار', progress:14, lastRating:'جيد' },
+    { id:'s3', name:'عبد الرحمن سعيد', teacher:'الشيخ أحمد فتحي', program:'أطفال', progress:3, lastRating:'يحتاج مراجعة' },
+    { id:'s4', name:'نور محمد', teacher:'الشيخ أحمد فتحي', program:'أطفال', progress:9, lastRating:'ممتاز' },
+    { id:'s5', name:'خالد إبراهيم', teacher:'الشيخة سارة عبد الله', program:'كبار', progress:20, lastRating:'ممتاز' },
+  ],
+  sessions: [
+    { student:'يوسف أحمد', date:'٢٨ أغسطس', time:'٥:٠٠ م', platform:'Zoom', link:'https://zoom.us/j/demo', status:'upcoming' },
+    { student:'مريم خالد', date:'٢٨ أغسطس', time:'٧:٣٠ م', platform:'Google Meet', link:'https://meet.google.com/demo', status:'upcoming' },
+    { student:'عبد الرحمن سعيد', date:'٢٦ أغسطس', time:'٦:٠٠ م', platform:'Zoom', link:'#', status:'done' },
+  ],
+  evaluations: [
+    { student:'يوسف أحمد', date:'٢٦ أغسطس', ward:'سورة الفاتحة كاملة', rating:'ممتاز', notes:'حفظ متقن وتلاوة سليمة.' },
+    { student:'يوسف أحمد', date:'١٩ أغسطس', ward:'أواخر سورة الناس والفلق', rating:'جيد', notes:'يحتاج تثبيت أكتر على المخارج.' },
+  ],
+  complaints: [
+    { from:'ولي أمر طالب', about:'تأخر معاد حصة', status:'تم الحل' },
+    { from:'طالب', about:'طلب تغيير موعد الحصة الأسبوعية', status:'قيد المتابعة' },
+  ]
+};
+
+const USERS = {
+  admin:     { name:'محمد جمال', role:'admin', roleLabel:'أدمن', initial:'م' },
+  moderator: { name:'هبة السيد', role:'moderator', roleLabel:'مودريتور', initial:'ه' },
+  teacher:   { name:'الشيخ أحمد فتحي', role:'teacher', roleLabel:'معلم', initial:'أ' },
+  student:   { name:'يوسف أحمد', role:'student', roleLabel:'طالب', initial:'ي' },
+};
+
+const NAV = {
+  admin: [
+    { id:'overview', label:'نظرة عامة', icon:'grid' },
+    { id:'teachers', label:'المعلمين', icon:'book' },
+    { id:'students', label:'الطلاب', icon:'users' },
+    { id:'moderators', label:'المودريتورز', icon:'shield' },
+    { id:'reports', label:'التقارير', icon:'chart' },
+  ],
+  moderator: [
+    { id:'overview', label:'نظرة عامة', icon:'grid' },
+    { id:'mod-teachers', label:'متابعة المعلمين', icon:'book' },
+    { id:'mod-students', label:'الطلاب', icon:'users' },
+    { id:'complaints', label:'الشكاوى والملاحظات', icon:'flag' },
+  ],
+  teacher: [
+    { id:'t-overview', label:'الرئيسية', icon:'grid' },
+    { id:'t-students', label:'طلابي', icon:'users' },
+    { id:'t-sessions', label:'جدول الحصص', icon:'calendar' },
+    { id:'t-eval', label:'تسجيل تسميع', icon:'edit' },
+  ],
+  student: [
+    { id:'s-overview', label:'الرئيسية', icon:'grid' },
+    { id:'s-progress', label:'تقدّمي', icon:'chart' },
+    { id:'s-sessions', label:'حصصي', icon:'calendar' },
+  ],
+};
+
+const ICONS = {
+  grid:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+  book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/>',
+  users:'<path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+  shield:'<path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z"/>',
+  chart:'<path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/>',
+  flag:'<path d="M4 21V4a1 1 0 0 1 1-1h11l-2 5 2 5H6"/>',
+  calendar:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+  edit:'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
+};
+
+let currentRole = null;
+
+/* ---------------- LOGIN HANDLERS ---------------- */
+document.querySelectorAll('.demo-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=> loginAs(btn.dataset.role));
+});
+document.getElementById('loginForm').addEventListener('submit', (e)=>{
+  e.preventDefault();
+  // بيانات وهمية: أي إيميل/باسورد هيدخل كطالب تجريبي مبدئيًا
+  loginAs('student');
+});
+
+function loginAs(role){
+  currentRole = role;
+  const u = USERS[role];
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('app').classList.add('active');
+  document.getElementById('userName').textContent = u.name;
+  document.getElementById('userRoleText').textContent = u.roleLabel;
+  document.getElementById('userAvatar').textContent = u.initial;
+  document.getElementById('sideRoleLabel').textContent = 'لوحة ' + u.roleLabel;
+  buildSidebar(role);
+  const firstPage = NAV[role][0].id;
+  renderPage(role, firstPage);
+  document.getElementById('todayDate').textContent = new Date().toLocaleDateString('ar-EG', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+}
+
+document.getElementById('logoutBtn').addEventListener('click', ()=>{
+  document.getElementById('app').classList.remove('active');
+  document.getElementById('loginScreen').style.display = 'flex';
+  currentRole = null;
+});
+
+/* ---------------- SIDEBAR ---------------- */
+function buildSidebar(role){
+  const nav = document.getElementById('sideNav');
+  nav.innerHTML = '';
+  NAV[role].forEach((item,i)=>{
+    const a = document.createElement('div');
+    a.className = 'side-link' + (i===0 ? ' active' : '');
+    a.dataset.page = item.id;
+    a.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[item.icon]}</svg><span>${item.label}</span>`;
+    a.addEventListener('click', ()=>{
+      document.querySelectorAll('.side-link').forEach(l=>l.classList.remove('active'));
+      a.classList.add('active');
+      renderPage(role, item.id);
+      document.getElementById('pageTitle').textContent = item.label;
+    });
+    nav.appendChild(a);
+  });
+  document.getElementById('pageTitle').textContent = NAV[role][0].label;
+}
+
+/* ---------------- PAGE RENDERING ---------------- */
+function renderPage(role, pageId){
+  const c = document.getElementById('content');
+  c.innerHTML = PAGES[pageId] ? PAGES[pageId]() : '<p>الصفحة قيد الإنشاء.</p>';
+  if(pageId === 't-eval') setupEvalPage();
+  if(pageId === 't-students') setupTeacherStudentButtons();
+}
+
+function ratingBadge(r){
+  if(r === 'ممتاز') return `<span class="badge badge-success">ممتاز</span>`;
+  if(r === 'جيد') return `<span class="badge badge-warn">جيد</span>`;
+  return `<span class="badge badge-danger">يحتاج مراجعة</span>`;
+}
+function initial(name){ return name.trim().charAt(0); }
+
+const PAGES = {
+  /* ---------- ADMIN ---------- */
+  overview: ()=>{
+    if(currentRole === 'moderator') return moderatorOverview();
+    return `
+    <div class="stat-grid">
+      ${statCard('users', DB.students.length, 'إجمالي الطلاب')}
+      ${statCard('book', DB.teachers.length, 'إجمالي المعلمين')}
+      ${statCard('shield', DB.moderators.length, 'المودريتورز')}
+      ${statCard('calendar', DB.sessions.filter(s=>s.status==='upcoming').length, 'حصص قادمة')}
+    </div>
+    <div class="cols-2">
+      <div class="panel">
+        <div class="panel-head"><h3>أحدث الطلاب</h3></div>
+        <table>
+          <thead><tr><th>الاسم</th><th>المعلم</th><th>البرنامج</th><th>آخر تقييم</th></tr></thead>
+          <tbody>
+            ${DB.students.slice(0,4).map(s=>`
+              <tr>
+                <td class="cell-name"><span class="avatar-sm">${initial(s.name)}</span>${s.name}</td>
+                <td>${s.teacher}</td>
+                <td>${s.program}</td>
+                <td>${ratingBadge(s.lastRating)}</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h3>المعلمون</h3></div>
+        <table>
+          <thead><tr><th>الاسم</th><th>الطلاب</th></tr></thead>
+          <tbody>
+            ${DB.teachers.map(t=>`
+              <tr><td class="cell-name"><span class="avatar-sm">${initial(t.name)}</span>${t.name}</td><td>${t.students}</td></tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+  },
+
+  teachers: ()=>`
+    <div class="panel">
+      <div class="panel-head"><h3>إدارة المعلمين</h3><button class="btn btn-primary" style="padding:10px 18px;">+ إضافة معلم</button></div>
+      <table>
+        <thead><tr><th>المعلم</th><th>عدد الطلاب</th><th>التقييم العام</th><th>الحالة</th><th></th></tr></thead>
+        <tbody>
+          ${DB.teachers.map(t=>`
+            <tr>
+              <td class="cell-name"><span class="avatar-sm">${initial(t.name)}</span>${t.name}</td>
+              <td>${t.students}</td>
+              <td>${ratingBadge(t.rating)}</td>
+              <td><span class="badge badge-success">${t.status}</span></td>
+              <td class="row-actions"><span class="icon-btn" title="تعديل">${eyeIcon()}</span></td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`,
+
+  students: ()=>`
+    <div class="panel">
+      <div class="panel-head"><h3>إدارة الطلاب</h3><button class="btn btn-primary" style="padding:10px 18px;">+ إضافة طالب</button></div>
+      <table>
+        <thead><tr><th>الطالب</th><th>المعلم</th><th>البرنامج</th><th>التقدّم (أجزاء)</th><th>آخر تقييم</th></tr></thead>
+        <tbody>
+          ${DB.students.map(s=>`
+            <tr>
+              <td class="cell-name"><span class="avatar-sm">${initial(s.name)}</span>${s.name}</td>
+              <td>${s.teacher}</td>
+              <td>${s.program}</td>
+              <td>${s.progress} / 30</td>
+              <td>${ratingBadge(s.lastRating)}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`,
+
+  moderators: ()=>`
+    <div class="note-banner">${warnIcon()} صلاحيات المودريتور التفصيلية لسه قيد التحديد — هنظبطها بعد ما نراجع سير العمل بالكامل.</div>
+    <div class="panel">
+      <div class="panel-head"><h3>المودريتورز</h3><button class="btn btn-primary" style="padding:10px 18px;">+ إضافة مودريتور</button></div>
+      <table>
+        <thead><tr><th>الاسم</th><th>مجال المتابعة</th></tr></thead>
+        <tbody>
+          ${DB.moderators.map(m=>`
+            <tr><td class="cell-name"><span class="avatar-sm">${initial(m.name)}</span>${m.name}</td><td>${m.area}</td></tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>`,
+
+  reports: ()=>`
+    <div class="panel">
+      <div class="panel-head"><h3>تقرير أداء عام</h3></div>
+      <p style="color:var(--ink-soft);font-size:14px;">هنا هيتحط تقرير شامل (رسوم بيانية لمعدل الحفظ، نسب الحضور، تقييمات المعلمين) لما يتم الربط بقاعدة البيانات الحقيقية.</p>
+    </div>`,
+
+  /* ---------- MODERATOR ---------- */
+  'mod-teachers': ()=>`
+    <div class="note-banner">${warnIcon()} دور المودريتور هنا للمتابعة والمراجعة فقط، من غير صلاحيات إدارية كاملة (هنحددها بدقة لاحقًا).</div>
+    <div class="panel">
+      <div class="panel-head"><h3>متابعة المعلمين</h3></div>
+      <table>
+        <thead><tr><th>المعلم</th><th>عدد الطلاب</th><th>التقييم العام</th></tr></thead>
+        <tbody>
+          ${DB.teachers.map(t=>`
+            <tr><td class="cell-name"><span class="avatar-sm">${initial(t.name)}</span>${t.name}</td><td>${t.students}</td><td>${ratingBadge(t.rating)}</td></tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>`,
+
+  'mod-students': ()=> PAGES.students(),
+
+  complaints: ()=>`
+    <div class="panel">
+      <div class="panel-head"><h3>الشكاوى والملاحظات</h3></div>
+      <table>
+        <thead><tr><th>مقدّم الطلب</th><th>الموضوع</th><th>الحالة</th></tr></thead>
+        <tbody>
+          ${DB.complaints.map(c=>`
+            <tr><td>${c.from}</td><td>${c.about}</td><td>${c.status==='تم الحل' ? '<span class="badge badge-success">تم الحل</span>' : '<span class="badge badge-warn">قيد المتابعة</span>'}</td></tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>`,
+
+  /* ---------- TEACHER ---------- */
+  't-overview': ()=>`
+    <div class="stat-grid">
+      ${statCard('users', DB.students.filter(s=>s.teacher===USERS.teacher.name).length, 'طلابي')}
+      ${statCard('calendar', DB.sessions.filter(s=>s.status==='upcoming').length, 'حصص قادمة')}
+      ${statCard('edit', DB.evaluations.length, 'تسميعات هذا الأسبوع')}
+      ${statCard('chart', 'جيد', 'متوسط الأداء')}
+    </div>
+    <div class="panel">
+      <div class="panel-head"><h3>حصص اليوم والغد</h3></div>
+      ${DB.sessions.map(sessionItem).join('')}
+    </div>`,
+
+  't-students': ()=>`
+    <div class="panel">
+      <div class="panel-head"><h3>طلابي</h3></div>
+      <table>
+        <thead><tr><th>الطالب</th><th>البرنامج</th><th>التقدّم</th><th>آخر تقييم</th><th></th></tr></thead>
+        <tbody>
+          ${DB.students.filter(s=>s.teacher===USERS.teacher.name).map(s=>`
+            <tr>
+              <td class="cell-name"><span class="avatar-sm">${initial(s.name)}</span>${s.name}</td>
+              <td>${s.program}</td>
+              <td>${s.progress} / 30 جزء</td>
+              <td>${ratingBadge(s.lastRating)}</td>
+              <td><button class="btn btn-primary quick-eval" data-student="${s.name}" style="padding:8px 14px;font-size:13px;">تسجيل تسميع</button></td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`,
+
+  't-sessions': ()=>`
+    <div class="panel">
+      <div class="panel-head"><h3>جدول الحصص</h3><button class="btn btn-primary" style="padding:10px 18px;">+ إضافة حصة</button></div>
+      ${DB.sessions.map(sessionItem).join('')}
+    </div>`,
+
+  't-eval': ()=>`
+    <div class="panel">
+      <div class="panel-head"><h3>سجل التسميعات الأخير</h3></div>
+      <table>
+        <thead><tr><th>الطالب</th><th>التاريخ</th><th>الورد</th><th>التقييم</th></tr></thead>
+        <tbody>
+          ${DB.evaluations.map(e=>`
+            <tr><td>${e.student}</td><td>${e.date}</td><td>${e.ward}</td><td>${ratingBadge(e.rating)}</td></tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+    <button class="btn btn-primary" id="openEvalModal" style="padding:13px 26px;">+ تسجيل تسميع جديد</button>
+  `,
+
+  /* ---------- STUDENT ---------- */
+  's-overview': ()=>`
+    <div class="cols-2">
+      <div class="ward-card">
+        <span class="tag">الورد الحالي</span>
+        <h3>سورة البقرة — من آية ١ إلى ٢٠</h3>
+        <p>آخر تقييم من المعلم: ${ratingBadge('ممتاز')}</p>
+        <div class="ward-meta">
+          <div><b>الشيخ أحمد فتحي</b>المعلم</div>
+          <div><b>أسبوعي</b>نوع الورد</div>
+          <div><b>٢٦ أغسطس</b>آخر تسميع</div>
+        </div>
+      </div>
+      <div class="panel" style="margin:0;">
+        <div class="panel-head"><h3>ملاحظات المعلم الأخيرة</h3></div>
+        <p style="color:var(--ink-soft);font-size:14px;">"حفظ متقن وتلاوة سليمة، استمر على نفس المستوى واهتم بمراجعة الجزء الأخير بشكل دوري."</p>
+      </div>
+    </div>
+    <div class="panel" style="margin-top:24px;">
+      <div class="panel-head"><h3>حصصك القادمة</h3></div>
+      ${DB.sessions.filter(s=>s.student===USERS.student.name || s.student==='يوسف أحمد').map(sessionItem).join('')}
+    </div>`,
+
+  's-progress': ()=>`
+    <div class="panel">
+      <div class="panel-head"><h3>تقدّمك في الحفظ</h3></div>
+      <div class="ring-wrap">
+        ${progressRing(6,30)}
+        <div>
+          <p style="margin:0 0 6px;font-size:15px;font-weight:700;color:var(--green-deep);">حفظت ٦ من ٣٠ جزء</p>
+          <p style="margin:0;font-size:13.5px;color:var(--ink-soft);">استمر، متبقّي ٢٤ جزء لختم القرآن الكريم كاملًا.</p>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><h3>سجل التقييمات</h3></div>
+      <table>
+        <thead><tr><th>التاريخ</th><th>الورد</th><th>التقييم</th></tr></thead>
+        <tbody>
+          ${DB.evaluations.map(e=>`
+            <tr><td>${e.date}</td><td>${e.ward}</td><td>${ratingBadge(e.rating)}</td></tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>`,
+
+  's-sessions': ()=>`
+    <div class="panel">
+      <div class="panel-head"><h3>كل حصصي</h3></div>
+      ${DB.sessions.map(sessionItem).join('')}
+    </div>`,
+};
+
+function moderatorOverview(){
+  return `
+    <div class="note-banner">${warnIcon()} صلاحيات المودريتور التفصيلية لسه قيد التحديد.</div>
+    <div class="stat-grid">
+      ${statCard('users', DB.students.length, 'إجمالي الطلاب')}
+      ${statCard('book', DB.teachers.length, 'إجمالي المعلمين')}
+      ${statCard('flag', DB.complaints.filter(c=>c.status!=='تم الحل').length, 'شكاوى مفتوحة')}
+      ${statCard('calendar', DB.sessions.filter(s=>s.status==='upcoming').length, 'حصص قادمة')}
+    </div>
+    <div class="panel">
+      <div class="panel-head"><h3>آخر الشكاوى</h3></div>
+      <table>
+        <thead><tr><th>مقدّم الطلب</th><th>الموضوع</th><th>الحالة</th></tr></thead>
+        <tbody>
+          ${DB.complaints.map(c=>`
+            <tr><td>${c.from}</td><td>${c.about}</td><td>${c.status==='تم الحل' ? '<span class="badge badge-success">تم الحل</span>' : '<span class="badge badge-warn">قيد المتابعة</span>'}</td></tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+function statCard(icon, num, label){
+  return `<div class="stat-card">
+    <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[icon]}</svg></div>
+    <div class="num">${num}</div>
+    <div class="lbl">${label}</div>
+  </div>`;
+}
+
+function sessionItem(s){
+  const isDone = s.status === 'done';
+  return `<div class="session-item">
+    <div class="session-date"><b>${s.date.split(' ')[0]}</b><span>${s.date.split(' ')[1]||''}</span></div>
+    <div class="session-info">
+      <strong>${s.student}</strong>
+      <span>${s.time} · ${s.platform}</span>
+    </div>
+    <a href="${s.link}" target="_blank" class="session-join ${isDone ? 'disabled' : ''}">${isDone ? 'انتهت' : 'انضمام'}</a>
+  </div>`;
+}
+
+function progressRing(value, max){
+  const pct = Math.round((value/max)*100);
+  const r = 54, c = 2*Math.PI*r;
+  const offset = c - (pct/100)*c;
+  return `<div class="ring">
+    <svg viewBox="0 0 130 130">
+      <circle cx="65" cy="65" r="${r}" fill="none" stroke="var(--line)" stroke-width="12"/>
+      <circle cx="65" cy="65" r="${r}" fill="none" stroke="var(--gold)" stroke-width="12" stroke-linecap="round"
+        stroke-dasharray="${c}" stroke-dashoffset="${offset}"/>
+    </svg>
+    <div class="ring-label"><b>${pct}%</b><span>من الختمة</span></div>
+  </div>`;
+}
+
+function eyeIcon(){ return `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;stroke:var(--green-deep);"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>`; }
+function warnIcon(){ return `<svg viewBox="0 0 24 24" fill="none" stroke="#8A611E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;flex:none;"><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/></svg>`; }
+
+/* ---------------- EVALUATION MODAL ---------------- */
+function setupEvalPage(){
+  document.getElementById('openEvalModal').addEventListener('click', openEvalModal);
+}
+function setupTeacherStudentButtons(){
+  document.querySelectorAll('.quick-eval').forEach(btn=>{
+    btn.addEventListener('click', ()=> openEvalModal(btn.dataset.student));
+  });
+}
+function openEvalModal(preselect){
+  const sel = document.getElementById('evalStudent');
+  sel.innerHTML = DB.students.filter(s=>s.teacher===USERS.teacher.name).map(s=>`<option ${s.name===preselect?'selected':''}>${s.name}</option>`).join('');
+  document.getElementById('evalWard').value = '';
+  document.getElementById('evalNotes').value = '';
+  document.getElementById('evalModal').classList.add('active');
+}
+document.getElementById('evalCancel').addEventListener('click', ()=> document.getElementById('evalModal').classList.remove('active'));
+document.getElementById('evalSave').addEventListener('click', ()=>{
+  const student = document.getElementById('evalStudent').value;
+  const ward = document.getElementById('evalWard').value || 'ورد غير محدد';
+  const rating = document.getElementById('evalRating').value;
+  const notes = document.getElementById('evalNotes').value;
+  DB.evaluations.unshift({ student, date:'اليوم', ward, rating, notes });
+  const s = DB.students.find(s=>s.name===student);
+  if(s) s.lastRating = rating;
+  document.getElementById('evalModal').classList.remove('active');
+  renderPage('teacher', 't-eval');
+});
+</script>
+</body>
+</html>
