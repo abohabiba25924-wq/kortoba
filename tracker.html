@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root{
     --bg:#F4F1E8;
@@ -235,8 +236,64 @@
   .modal{background:#fff;border-radius:20px;padding:30px;width:100%;max-width:460px;max-height:90vh;overflow-y:auto;}
   .modal h3{font-family:'Amiri',serif;color:var(--green-deep);margin:0 0 18px;font-size:19px;}
   .modal-actions{display:flex;gap:10px;margin-top:20px;}
-  .btn-ghost{background:var(--bg);color:var(--ink-soft);flex:1;border:1px solid var(--line);}
-  .btn-ghost:hover{background:#eee;}
+  /* attendance actions */
+  .att-actions{display:flex;gap:6px;align-items:center;}
+  .att-btn{
+    border:1px solid var(--line);background:var(--bg);padding:5px 10px;border-radius:8px;
+    font-size:12px;font-weight:700;cursor:pointer;transition:all .15s ease;
+  }
+  .att-btn:hover{background:#fff;}
+  .att-btn.active-present{background:var(--success-bg);color:var(--success);border-color:var(--success);}
+  .att-btn.active-absent{background:var(--danger-bg);color:var(--danger);border-color:var(--danger);}
+  .att-btn.active-excused{background:var(--warn-bg);color:var(--warn);border-color:var(--warn);}
+
+  /* toast notifications */
+  .toast-container{
+    position:fixed;bottom:24px;left:24px;z-index:999;display:flex;flex-direction:column;gap:10px;
+    pointer-events:none;
+  }
+  .toast{
+    background:var(--green-deep);color:#fff;padding:12px 20px;border-radius:12px;font-size:13.5px;
+    font-weight:600;box-shadow:var(--shadow);display:flex;align-items:center;gap:10px;
+    animation:slideUp .3s ease, fadeOut .3s ease 2.7s forwards;pointer-events:auto;
+    border:1px solid rgba(216,149,24,0.3);
+  }
+  @keyframes slideUp{from{opacity:0;transform:translateY(15px);}to{opacity:1;transform:translateY(0);}}
+  @keyframes fadeOut{to{opacity:0;transform:translateY(-10px);}}
+
+  /* Certificate Generator */
+  .cert-modal{max-width:680px !important;}
+  .cert-paper{
+    background:#FFFCF5;border:10px double var(--gold);padding:36px;border-radius:16px;
+    text-align:center;position:relative;box-shadow:0 10px 28px rgba(0,0,0,0.1);
+  }
+  .cert-header{margin-bottom:20px;}
+  .cert-logo{width:54px;height:54px;margin:0 auto 10px;}
+  .cert-title{font-family:'Amiri',serif;font-size:30px;color:var(--green-deep);margin:0 0 4px;font-weight:700;}
+  .cert-subtitle{font-size:14px;color:var(--gold);font-weight:700;}
+  .cert-body{margin:24px 0;font-size:16px;line-height:2;color:var(--ink);}
+  .cert-student{font-family:'Amiri',serif;font-size:28px;color:var(--green-deep);font-weight:700;display:block;margin:6px 0;}
+  .cert-achievement{color:var(--gold-bright);font-weight:700;font-size:18px;}
+  .cert-footer{display:flex;justify-content:space-between;align-items:center;margin-top:36px;padding-top:20px;border-top:1px dashed var(--gold);}
+  .cert-sign{text-align:center;}
+  .cert-sign span{display:block;font-size:12px;color:var(--ink-soft);}
+  .cert-sign strong{display:block;font-size:14px;color:var(--green-deep);margin-top:4px;}
+  .cert-stamp{
+    width:70px;height:70px;border-radius:50%;border:2px dashed var(--gold);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    font-size:10.5px;color:var(--gold);font-weight:700;line-height:1.2;
+    transform:rotate(-12deg);
+  }
+
+  @media print{
+    body *{visibility:hidden;}
+    #certModal, #certModal .modal-overlay, #certModal .modal, .cert-paper, .cert-paper *{
+      visibility:visible !important;
+    }
+    #certModal{position:absolute;left:0;top:0;width:100%;background:#fff !important;}
+    .modal-actions, .topbar, .sidebar{display:none !important;}
+    .cert-paper{box-shadow:none;border:6px double #B9832A;margin:0 auto;width:90%;}
+  }
 
   @media (max-width:960px){
     .sidebar{position:fixed;right:0;top:0;z-index:40;transform:translateX(100%);transition:transform .25s ease;}
@@ -276,7 +333,13 @@
       <button class="demo-btn" data-role="teacher">📖 معلم</button>
       <button class="demo-btn" data-role="student">🎓 طالب</button>
     </div>
-    <p class="login-note">النظام دلوقتي شغال ببيانات وهمية للتجربة — هيتم ربطه بقاعدة بيانات حقيقية (Supabase) في الخطوة الجاية.</p>
+    <div style="text-align:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--line);">
+      <a href="index.html" style="font-size:13px;color:var(--green);font-weight:700;display:inline-flex;align-items:center;gap:6px;transition:color .2s ease;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m15 18-6-6 6-6"/></svg>
+        العودة للموقع الرئيسي للأكاديمية
+      </a>
+    </div>
+    <p class="login-note">البيانات دلوقتي متصلة بذاكرة حفظ محلية (LocalStorage) — بتفضل محفوظة حتى لو عملت Refresh.</p>
   </div>
 </div>
 
@@ -289,6 +352,12 @@
     </div>
     <div class="side-role" id="sideRoleLabel">لوحة التحكم</div>
     <nav class="side-nav" id="sideNav"></nav>
+    <div style="padding:8px 6px;margin-top:auto;">
+      <a href="index.html" class="side-link" style="color:var(--gold-bright);background:rgba(216,149,24,0.12);margin-bottom:8px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>الموقع الرئيسي</span>
+      </a>
+    </div>
     <div class="sidebar-user">
       <div class="avatar" id="userAvatar">؟</div>
       <div class="who"><strong id="userName">—</strong><span id="userRoleText">—</span></div>
@@ -338,23 +407,160 @@
   </div>
 </div>
 
+<!-- ============ MODAL: Add Student ============ -->
+<div class="modal-overlay" id="studentModal">
+  <div class="modal">
+    <h3>إضافة طالب جديد</h3>
+    <div class="field">
+      <label>اسم الطالب</label>
+      <input type="text" id="newStudentName" placeholder="الاسم بالكامل" required>
+    </div>
+    <div class="field">
+      <label>المعلم المسؤول</label>
+      <select id="newStudentTeacher"></select>
+    </div>
+    <div class="field">
+      <label>البرنامج</label>
+      <select id="newStudentProgram">
+        <option value="أطفال">برنامج الأطفال</option>
+        <option value="كبار">برنامج الكبار</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>المحفوظ الحالي (عدد الأجزاء من ٣٠)</label>
+      <input type="number" id="newStudentProgress" min="0" max="30" value="0">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="studentCancel">إلغاء</button>
+      <button class="btn btn-primary" id="studentSave" style="flex:1;">حفظ الطالب</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: Add Teacher ============ -->
+<div class="modal-overlay" id="teacherModal">
+  <div class="modal">
+    <h3>إضافة معلم جديد</h3>
+    <div class="field">
+      <label>اسم المعلم / الشيخ</label>
+      <input type="text" id="newTeacherName" placeholder="مثال: الشيخ عبد الرحمن منصور" required>
+    </div>
+    <div class="field">
+      <label>التخصص والإجازة</label>
+      <input type="text" id="newTeacherArea" placeholder="مثال: مجاز بالقراءات العشر الصغرى">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="teacherCancel">إلغاء</button>
+      <button class="btn btn-primary" id="teacherSave" style="flex:1;">حفظ المعلم</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: Add Session ============ -->
+<div class="modal-overlay" id="sessionModal">
+  <div class="modal">
+    <h3>جدولة حصة جديدة</h3>
+    <div class="field">
+      <label>الطالب</label>
+      <select id="newSessionStudent"></select>
+    </div>
+    <div class="field">
+      <label>التاريخ</label>
+      <input type="text" id="newSessionDate" placeholder="مثال: الأربعاء، ٣٠ أغسطس">
+    </div>
+    <div class="field">
+      <label>الوقت</label>
+      <input type="text" id="newSessionTime" placeholder="مثال: ٦:٠٠ م">
+    </div>
+    <div class="field">
+      <label>المنصة</label>
+      <select id="newSessionPlatform">
+        <option value="Zoom">Zoom</option>
+        <option value="Google Meet">Google Meet</option>
+        <option value="Microsoft Teams">Microsoft Teams</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>رابط الحصة (Meeting Link)</label>
+      <input type="url" id="newSessionLink" placeholder="https://zoom.us/j/..." value="https://meet.google.com/new">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="sessionCancel">إلغاء</button>
+      <button class="btn btn-primary" id="sessionSave" style="flex:1;">جدولة الحصة</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: Certificate of Achievement ============ -->
+<div class="modal-overlay" id="certModal">
+  <div class="modal cert-modal">
+    <div class="cert-paper">
+      <div class="cert-header">
+        <img src="https://res.cloudinary.com/dvfx83gns/image/upload/v1787795512/%D9%82%D8%B1%D8%B7%D8%A8%D8%A9_gbn7xe.png" class="cert-logo" alt="قرطبة">
+        <div class="cert-title">شَهَادَةُ تَقْدِيرٍ وَإِنْجَازٍ</div>
+        <div class="cert-subtitle">أَكَادِيمِيَّةُ قُرْطُبَةَ لِتَعْلِيمِ الْقُرْآنِ الْكَرِيمِ</div>
+      </div>
+      <div class="cert-body">
+        تَشْهَدُ إِدَارَةُ الأَكَادِيمِيَّةِ بِأَنَّ الطَّالِبَ / الطَّالِبَةَ:
+        <strong class="cert-student" id="certStudentName">يوسف أحمد</strong>
+        قَدْ أَتَمَّ بَفَضْلِ اللهِ وَتَوْفِيقِهِ حِفْظَ وَإِتْقَانَ:
+        <span class="cert-achievement" id="certAchievement">الجزء الثلاثين (جزء عمّ) كاملاً</span>
+        بِتَقْدِيرِ: <b style="color:var(--success);">مُمْتَاز</b> وَأَظْهَرَ حِرْصًا وَتَفَوُّقًا فِي مَخَارِجِ الْحُرُوفِ وَأَحْكَامِ التَّجْوِيدِ.
+      </div>
+      <div class="cert-footer">
+        <div class="cert-sign">
+          <span>المعلم المشرف</span>
+          <strong id="certTeacherName">الشيخ أحمد فتحي</strong>
+        </div>
+        <div class="cert-stamp">
+          <span>أكاديمية</span>
+          <span>قرطبة</span>
+          <span>معتمد ★</span>
+        </div>
+        <div class="cert-sign">
+          <span>التاريخ</span>
+          <strong id="certDate">—</strong>
+        </div>
+      </div>
+    </div>
+    <div class="modal-actions" style="margin-top:20px;">
+      <button class="btn btn-ghost" id="certClose">إغلاق</button>
+      <button class="btn btn-primary" onclick="window.print()" style="flex:1;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        طباعة / تنزيل الشهادة
+      </button>
+    </div>
+  </div>
+</div>
+
 <script>
 /* =====================================================================
-   MOCK DATA LAYER
-   شكل البيانات هنا مبني عشان يبقى قريب من جداول Supabase اللي هنعملها بعدين:
-   users(id, name, role, email) / teachers(user_id, student_ids)
-   students(user_id, teacher_id, program, progress_juz, current_ward, last_evaluation)
-   sessions(id, student_id, teacher_id, datetime, platform, link, status)
-   evaluations(id, student_id, teacher_id, date, ward, rating, notes)
+   SUPABASE CLOUD CONFIGURATION
    ===================================================================== */
+const SUPABASE_CONFIG = {
+  url: localStorage.getItem('supabase_url') || '',
+  anonKey: localStorage.getItem('supabase_anon_key') || '',
+};
 
-const DB = {
+let supabaseClient = null;
+if (window.supabase && SUPABASE_CONFIG.url && SUPABASE_CONFIG.anonKey) {
+  try {
+    supabaseClient = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
+  } catch (err) {
+    console.warn('Supabase initialization warning:', err);
+  }
+}
+
+/* =====================================================================
+   DATA PERSISTENCE LAYER (LocalStorage + Cloud Sync)
+   ===================================================================== */
+const DEFAULT_DB = {
   teachers: [
-    { id:'t1', name:'الشيخ أحمد فتحي', students:3, rating:'ممتاز', status:'نشط' },
-    { id:'t2', name:'الشيخة سارة عبد الله', students:2, rating:'جيد', status:'نشط' },
+    { id:'t1', name:'الشيخ أحمد فتحي', area:'مجاز بالقراءات العشر الصغرى', students:3, rating:'ممتاز', status:'نشط' },
+    { id:'t2', name:'الشيخة سارة عبد الله', area:'مجازة برواية حفص وشعبة', students:2, rating:'جيد', status:'نشط' },
   ],
   moderators: [
-    { id:'m1', name:'أ. هبة السيد', area:'متابعة جودة التسميع' },
+    { id:'m1', name:'أ. هبة السيد', area:'متابعة جودة التسميع والحصص' },
   ],
   students: [
     { id:'s1', name:'يوسف أحمد', teacher:'الشيخ أحمد فتحي', program:'أطفال', progress:6, lastRating:'ممتاز' },
@@ -364,19 +570,60 @@ const DB = {
     { id:'s5', name:'خالد إبراهيم', teacher:'الشيخة سارة عبد الله', program:'كبار', progress:20, lastRating:'ممتاز' },
   ],
   sessions: [
-    { student:'يوسف أحمد', date:'٢٨ أغسطس', time:'٥:٠٠ م', platform:'Zoom', link:'https://zoom.us/j/demo', status:'upcoming' },
-    { student:'مريم خالد', date:'٢٨ أغسطس', time:'٧:٣٠ م', platform:'Google Meet', link:'https://meet.google.com/demo', status:'upcoming' },
-    { student:'عبد الرحمن سعيد', date:'٢٦ أغسطس', time:'٦:٠٠ م', platform:'Zoom', link:'#', status:'done' },
+    { id:1, student:'يوسف أحمد', date:'اليوم', time:'٥:٠٠ م', platform:'Zoom', link:'https://zoom.us/j/demo', status:'upcoming', attendance:'' },
+    { id:2, student:'مريم خالد', date:'غداً', time:'٧:٣٠ م', platform:'Google Meet', link:'https://meet.google.com/demo', status:'upcoming', attendance:'' },
+    { id:3, student:'عبد الرحمن سعيد', date:'أمس', time:'٦:٠٠ م', platform:'Zoom', link:'#', status:'done', attendance:'present' },
   ],
   evaluations: [
     { student:'يوسف أحمد', date:'٢٦ أغسطس', ward:'سورة الفاتحة كاملة', rating:'ممتاز', notes:'حفظ متقن وتلاوة سليمة.' },
     { student:'يوسف أحمد', date:'١٩ أغسطس', ward:'أواخر سورة الناس والفلق', rating:'جيد', notes:'يحتاج تثبيت أكتر على المخارج.' },
+    { student:'مريم خالد', date:'٢٥ أغسطس', ward:'سورة مريم من آية ١ إلى ٣٠', rating:'جيد', notes:'مستوى طيب وأداء هادئ.' },
   ],
   complaints: [
     { from:'ولي أمر طالب', about:'تأخر معاد حصة', status:'تم الحل' },
     { from:'طالب', about:'طلب تغيير موعد الحصة الأسبوعية', status:'قيد المتابعة' },
   ]
 };
+
+function loadDB(){
+  const raw = localStorage.getItem('kortoba_db');
+  if(raw){
+    try{ return JSON.parse(raw); }catch(e){}
+  }
+  localStorage.setItem('kortoba_db', JSON.stringify(DEFAULT_DB));
+  return JSON.parse(JSON.stringify(DEFAULT_DB));
+}
+
+function saveDB(){
+  localStorage.setItem('kortoba_db', JSON.stringify(DB));
+}
+
+function resetDemoData(){
+  if(confirm('هل أنت متأكد من استعادة البيانات التجريبية الافتراضية؟')){
+    DB = JSON.parse(JSON.stringify(DEFAULT_DB));
+    saveDB();
+    showToast('تمت استعادة البيانات الافتراضية بنجاح');
+    renderPage(currentRole, currentPage);
+  }
+}
+
+let DB = loadDB();
+
+/* ---------------- TOAST NOTIFICATION ---------------- */
+function showToast(msg, type='success'){
+  let tc = document.getElementById('toastContainer');
+  if(!tc){
+    tc = document.createElement('div');
+    tc.className = 'toast-container';
+    tc.id = 'toastContainer';
+    document.body.appendChild(tc);
+  }
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D89518" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>${msg}</span>`;
+  tc.appendChild(t);
+  setTimeout(()=>{ if(t.parentNode) t.parentNode.removeChild(t); }, 3000);
+}
 
 const USERS = {
   admin:     { name:'محمد جمال', role:'admin', roleLabel:'أدمن', initial:'م' },
@@ -424,15 +671,49 @@ const ICONS = {
 };
 
 let currentRole = null;
+let currentPage = null;
 
 /* ---------------- LOGIN HANDLERS ---------------- */
 document.querySelectorAll('.demo-btn').forEach(btn=>{
   btn.addEventListener('click', ()=> loginAs(btn.dataset.role));
 });
-document.getElementById('loginForm').addEventListener('submit', (e)=>{
+document.getElementById('loginForm').addEventListener('submit', async (e)=>{
   e.preventDefault();
-  // بيانات وهمية: أي إيميل/باسورد هيدخل كطالب تجريبي مبدئيًا
-  loginAs('student');
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+
+  if (supabaseClient) {
+    showToast('جاري التحقق من الحساب سحابياً...');
+    try {
+      const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+      if (error) {
+        alert('خطأ في تسجيل الدخول: ' + error.message);
+        return;
+      }
+      const { data: profile } = await supabaseClient.from('profiles').select('*').eq('id', data.user.id).single();
+      const role = profile ? profile.role : 'student';
+      if (profile && profile.name) {
+        USERS[role].name = profile.name;
+      }
+      loginAs(role);
+      showToast('تم تسجيل الدخول بنجاح!');
+      return;
+    } catch (err) {
+      console.warn('Cloud login error, falling back to local:', err);
+    }
+  }
+
+  // Fallback if cloud is not yet configured
+  if (email.toLowerCase().includes('admin') || email.toLowerCase().includes('kortobaacademy')) {
+    loginAs('admin');
+  } else if (email.toLowerCase().includes('teacher') || email.toLowerCase().includes('sheikh')) {
+    loginAs('teacher');
+  } else if (email.toLowerCase().includes('mod')) {
+    loginAs('moderator');
+  } else {
+    loginAs('student');
+  }
+  showToast('مرحباً بك في منصة قرطبة');
 });
 
 function loginAs(role){
@@ -454,6 +735,7 @@ document.getElementById('logoutBtn').addEventListener('click', ()=>{
   document.getElementById('app').classList.remove('active');
   document.getElementById('loginScreen').style.display = 'flex';
   currentRole = null;
+  currentPage = null;
 });
 
 /* ---------------- SIDEBAR ---------------- */
@@ -478,6 +760,7 @@ function buildSidebar(role){
 
 /* ---------------- PAGE RENDERING ---------------- */
 function renderPage(role, pageId){
+  currentPage = pageId;
   const c = document.getElementById('content');
   c.innerHTML = PAGES[pageId] ? PAGES[pageId]() : '<p>الصفحة قيد الإنشاء.</p>';
   if(pageId === 't-eval') setupEvalPage();
@@ -489,13 +772,17 @@ function ratingBadge(r){
   if(r === 'جيد') return `<span class="badge badge-warn">جيد</span>`;
   return `<span class="badge badge-danger">يحتاج مراجعة</span>`;
 }
-function initial(name){ return name.trim().charAt(0); }
+function initial(name){ return (name||'؟').trim().charAt(0); }
 
 const PAGES = {
   /* ---------- ADMIN ---------- */
   overview: ()=>{
     if(currentRole === 'moderator') return moderatorOverview();
     return `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <span style="font-size:14px;color:var(--ink-soft);">ملخص الأداء العام لمنظومة الأكاديمية</span>
+      <button class="btn btn-ghost" onclick="resetDemoData()" style="padding:8px 16px;font-size:12.5px;">🔄 استعادة البيانات الافتراضية</button>
+    </div>
     <div class="stat-grid">
       ${statCard('users', DB.students.length, 'إجمالي الطلاب')}
       ${statCard('book', DB.teachers.length, 'إجمالي المعلمين')}
@@ -504,11 +791,11 @@ const PAGES = {
     </div>
     <div class="cols-2">
       <div class="panel">
-        <div class="panel-head"><h3>أحدث الطلاب</h3></div>
+        <div class="panel-head"><h3>أحدث الطلاب</h3><button class="btn btn-ghost" onclick="openAddStudentModal()" style="padding:6px 14px;font-size:12px;">+ طالب</button></div>
         <table>
           <thead><tr><th>الاسم</th><th>المعلم</th><th>البرنامج</th><th>آخر تقييم</th></tr></thead>
           <tbody>
-            ${DB.students.slice(0,4).map(s=>`
+            ${DB.students.slice(0,5).map(s=>`
               <tr>
                 <td class="cell-name"><span class="avatar-sm">${initial(s.name)}</span>${s.name}</td>
                 <td>${s.teacher}</td>
@@ -519,12 +806,12 @@ const PAGES = {
         </table>
       </div>
       <div class="panel">
-        <div class="panel-head"><h3>المعلمون</h3></div>
+        <div class="panel-head"><h3>المعلمون النشطون</h3><button class="btn btn-ghost" onclick="openAddTeacherModal()" style="padding:6px 14px;font-size:12px;">+ معلم</button></div>
         <table>
-          <thead><tr><th>الاسم</th><th>الطلاب</th></tr></thead>
+          <thead><tr><th>الاسم</th><th>الطلاب</th><th>التقييم</th></tr></thead>
           <tbody>
             ${DB.teachers.map(t=>`
-              <tr><td class="cell-name"><span class="avatar-sm">${initial(t.name)}</span>${t.name}</td><td>${t.students}</td></tr>
+              <tr><td class="cell-name"><span class="avatar-sm">${initial(t.name)}</span>${t.name}</td><td>${t.students}</td><td>${ratingBadge(t.rating)}</td></tr>
             `).join('')}
           </tbody>
         </table>
@@ -534,17 +821,20 @@ const PAGES = {
 
   teachers: ()=>`
     <div class="panel">
-      <div class="panel-head"><h3>إدارة المعلمين</h3><button class="btn btn-primary" style="padding:10px 18px;">+ إضافة معلم</button></div>
+      <div class="panel-head">
+        <h3>إدارة المعلمين</h3>
+        <button class="btn btn-primary" onclick="openAddTeacherModal()" style="padding:10px 18px;">+ إضافة معلم</button>
+      </div>
       <table>
-        <thead><tr><th>المعلم</th><th>عدد الطلاب</th><th>التقييم العام</th><th>الحالة</th><th></th></tr></thead>
+        <thead><tr><th>المعلم</th><th>التخصص / الإجازة</th><th>عدد الطلاب</th><th>التقييم العام</th><th>الحالة</th></tr></thead>
         <tbody>
           ${DB.teachers.map(t=>`
             <tr>
               <td class="cell-name"><span class="avatar-sm">${initial(t.name)}</span>${t.name}</td>
-              <td>${t.students}</td>
+              <td style="color:var(--ink-soft);font-size:13px;">${t.area || 'معلم قرآن وتجويد'}</td>
+              <td><b>${t.students}</b> طلاب</td>
               <td>${ratingBadge(t.rating)}</td>
-              <td><span class="badge badge-success">${t.status}</span></td>
-              <td class="row-actions"><span class="icon-btn" title="تعديل">${eyeIcon()}</span></td>
+              <td><span class="badge badge-success">${t.status||'نشط'}</span></td>
             </tr>`).join('')}
         </tbody>
       </table>
@@ -552,26 +842,34 @@ const PAGES = {
 
   students: ()=>`
     <div class="panel">
-      <div class="panel-head"><h3>إدارة الطلاب</h3><button class="btn btn-primary" style="padding:10px 18px;">+ إضافة طالب</button></div>
+      <div class="panel-head">
+        <h3>إدارة الطلاب</h3>
+        <button class="btn btn-primary" onclick="openAddStudentModal()" style="padding:10px 18px;">+ إضافة طالب</button>
+      </div>
       <table>
-        <thead><tr><th>الطالب</th><th>المعلم</th><th>البرنامج</th><th>التقدّم (أجزاء)</th><th>آخر تقييم</th></tr></thead>
+        <thead><tr><th>الطالب</th><th>المعلم</th><th>البرنامج</th><th>التقدّم (أجزاء)</th><th>آخر تقييم</th><th>الشهادة</th></tr></thead>
         <tbody>
           ${DB.students.map(s=>`
             <tr>
               <td class="cell-name"><span class="avatar-sm">${initial(s.name)}</span>${s.name}</td>
               <td>${s.teacher}</td>
               <td>${s.program}</td>
-              <td>${s.progress} / 30</td>
+              <td><b>${s.progress}</b> / 30</td>
               <td>${ratingBadge(s.lastRating)}</td>
+              <td>
+                <button class="btn btn-ghost" onclick="openCertModal('${s.name}')" style="padding:6px 12px;font-size:12px;border-radius:8px;" title="إصدار شهادة تقدير">
+                  📜 شهادة
+                </button>
+              </td>
             </tr>`).join('')}
         </tbody>
       </table>
     </div>`,
 
   moderators: ()=>`
-    <div class="note-banner">${warnIcon()} صلاحيات المودريتور التفصيلية لسه قيد التحديد — هنظبطها بعد ما نراجع سير العمل بالكامل.</div>
+    <div class="note-banner">${warnIcon()} دور المودريتور يشمل متابعة جودة التسميع والتزام المعلمين والطلاب بالمواعيد.</div>
     <div class="panel">
-      <div class="panel-head"><h3>المودريتورز</h3><button class="btn btn-primary" style="padding:10px 18px;">+ إضافة مودريتور</button></div>
+      <div class="panel-head"><h3>المودريتورز</h3></div>
       <table>
         <thead><tr><th>الاسم</th><th>مجال المتابعة</th></tr></thead>
         <tbody>
@@ -583,21 +881,39 @@ const PAGES = {
     </div>`,
 
   reports: ()=>`
+    <div class="stat-grid">
+      ${statCard('chart', DB.evaluations.length, 'إجمالي التسميعات')}
+      ${statCard('users', DB.students.filter(s=>s.lastRating==='ممتاز').length, 'طلاب متميزون')}
+      ${statCard('calendar', DB.sessions.filter(s=>s.attendance==='present').length, 'حصص مكتملة')}
+      ${statCard('book', DB.teachers.length, 'طاقم التدريس')}
+    </div>
     <div class="panel">
-      <div class="panel-head"><h3>تقرير أداء عام</h3></div>
-      <p style="color:var(--ink-soft);font-size:14px;">هنا هيتحط تقرير شامل (رسوم بيانية لمعدل الحفظ، نسب الحضور، تقييمات المعلمين) لما يتم الربط بقاعدة البيانات الحقيقية.</p>
+      <div class="panel-head"><h3>تقرير جودة الأداء والتقييمات</h3></div>
+      <table>
+        <thead><tr><th>الطالب</th><th>التاريخ</th><th>الورد المقروء</th><th>التقييم</th><th>ملاحظات المعلم</th></tr></thead>
+        <tbody>
+          ${DB.evaluations.map(e=>`
+            <tr>
+              <td class="cell-name"><span class="avatar-sm">${initial(e.student)}</span>${e.student}</td>
+              <td>${e.date}</td>
+              <td>${e.ward}</td>
+              <td>${ratingBadge(e.rating)}</td>
+              <td style="color:var(--ink-soft);font-size:13px;">${e.notes}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
     </div>`,
 
   /* ---------- MODERATOR ---------- */
   'mod-teachers': ()=>`
-    <div class="note-banner">${warnIcon()} دور المودريتور هنا للمتابعة والمراجعة فقط، من غير صلاحيات إدارية كاملة (هنحددها بدقة لاحقًا).</div>
     <div class="panel">
-      <div class="panel-head"><h3>متابعة المعلمين</h3></div>
+      <div class="panel-head"><h3>متابعة أداء المعلمين</h3></div>
       <table>
-        <thead><tr><th>المعلم</th><th>عدد الطلاب</th><th>التقييم العام</th></tr></thead>
+        <thead><tr><th>المعلم</th><th>التخصص</th><th>عدد الطلاب</th><th>التقييم العام</th></tr></thead>
         <tbody>
           ${DB.teachers.map(t=>`
-            <tr><td class="cell-name"><span class="avatar-sm">${initial(t.name)}</span>${t.name}</td><td>${t.students}</td><td>${ratingBadge(t.rating)}</td></tr>
+            <tr><td class="cell-name"><span class="avatar-sm">${initial(t.name)}</span>${t.name}</td><td>${t.area||'معلم قرآن'}</td><td>${t.students}</td><td>${ratingBadge(t.rating)}</td></tr>
           `).join('')}
         </tbody>
       </table>
@@ -619,98 +935,133 @@ const PAGES = {
     </div>`,
 
   /* ---------- TEACHER ---------- */
-  't-overview': ()=>`
+  't-overview': ()=>{
+    const myStudents = DB.students.filter(s=>s.teacher===USERS.teacher.name);
+    return `
     <div class="stat-grid">
-      ${statCard('users', DB.students.filter(s=>s.teacher===USERS.teacher.name).length, 'طلابي')}
+      ${statCard('users', myStudents.length, 'طلابي')}
       ${statCard('calendar', DB.sessions.filter(s=>s.status==='upcoming').length, 'حصص قادمة')}
-      ${statCard('edit', DB.evaluations.length, 'تسميعات هذا الأسبوع')}
-      ${statCard('chart', 'جيد', 'متوسط الأداء')}
+      ${statCard('edit', DB.evaluations.length, 'تسميعات مسجلة')}
+      ${statCard('chart', 'ممتاز', 'متوسط الأداء')}
     </div>
     <div class="panel">
-      <div class="panel-head"><h3>حصص اليوم والغد</h3></div>
-      ${DB.sessions.map(sessionItem).join('')}
-    </div>`,
+      <div class="panel-head">
+        <h3>حصص اليوم والمواعيد القادمة (مع نظام التحضير السريع)</h3>
+        <button class="btn btn-primary" onclick="openAddSessionModal()" style="padding:8px 16px;font-size:13px;">+ جدولة حصة</button>
+      </div>
+      ${DB.sessions.map((s, idx)=> sessionItem(s, idx)).join('')}
+    </div>`;
+  },
 
-  't-students': ()=>`
+  't-students': ()=>{
+    const myStudents = DB.students.filter(s=>s.teacher===USERS.teacher.name);
+    return `
     <div class="panel">
-      <div class="panel-head"><h3>طلابي</h3></div>
+      <div class="panel-head"><h3>طلابي المقيدون</h3></div>
       <table>
-        <thead><tr><th>الطالب</th><th>البرنامج</th><th>التقدّم</th><th>آخر تقييم</th><th></th></tr></thead>
+        <thead><tr><th>الطالب</th><th>البرنامج</th><th>التقدّم</th><th>آخر تقييم</th><th>إجراءات</th></tr></thead>
         <tbody>
-          ${DB.students.filter(s=>s.teacher===USERS.teacher.name).map(s=>`
+          ${myStudents.map(s=>`
             <tr>
               <td class="cell-name"><span class="avatar-sm">${initial(s.name)}</span>${s.name}</td>
               <td>${s.program}</td>
-              <td>${s.progress} / 30 جزء</td>
+              <td><b>${s.progress}</b> / 30 جزء</td>
               <td>${ratingBadge(s.lastRating)}</td>
-              <td><button class="btn btn-primary quick-eval" data-student="${s.name}" style="padding:8px 14px;font-size:13px;">تسجيل تسميع</button></td>
+              <td>
+                <div style="display:flex;gap:8px;">
+                  <button class="btn btn-primary quick-eval" data-student="${s.name}" style="padding:8px 12px;font-size:12.5px;">تسجيل تسميع</button>
+                  <button class="btn btn-ghost" onclick="openCertModal('${s.name}')" style="padding:8px 12px;font-size:12.5px;" title="إصدار شهادة">📜 شهادة</button>
+                </div>
+              </td>
             </tr>`).join('')}
         </tbody>
       </table>
-    </div>`,
+    </div>`;
+  },
 
   't-sessions': ()=>`
     <div class="panel">
-      <div class="panel-head"><h3>جدول الحصص</h3><button class="btn btn-primary" style="padding:10px 18px;">+ إضافة حصة</button></div>
-      ${DB.sessions.map(sessionItem).join('')}
+      <div class="panel-head">
+        <h3>جدول الحصص الأسبوعي والتحضير</h3>
+        <button class="btn btn-primary" onclick="openAddSessionModal()" style="padding:10px 18px;">+ إضافة حصة جديدة</button>
+      </div>
+      ${DB.sessions.map((s, idx)=> sessionItem(s, idx)).join('')}
     </div>`,
 
   't-eval': ()=>`
     <div class="panel">
-      <div class="panel-head"><h3>سجل التسميعات الأخير</h3></div>
+      <div class="panel-head">
+        <h3>سجل التسميعات الأخير</h3>
+        <button class="btn btn-primary" id="openEvalModal" style="padding:10px 18px;">+ تسجيل تسميع جديد</button>
+      </div>
       <table>
-        <thead><tr><th>الطالب</th><th>التاريخ</th><th>الورد</th><th>التقييم</th></tr></thead>
+        <thead><tr><th>الطالب</th><th>التاريخ</th><th>الورد المقروء</th><th>التقييم</th><th>ملاحظات المعلم</th></tr></thead>
         <tbody>
           ${DB.evaluations.map(e=>`
-            <tr><td>${e.student}</td><td>${e.date}</td><td>${e.ward}</td><td>${ratingBadge(e.rating)}</td></tr>
+            <tr>
+              <td class="cell-name"><span class="avatar-sm">${initial(e.student)}</span>${e.student}</td>
+              <td>${e.date}</td>
+              <td>${e.ward}</td>
+              <td>${ratingBadge(e.rating)}</td>
+              <td style="color:var(--ink-soft);font-size:13px;">${e.notes}</td>
+            </tr>
           `).join('')}
         </tbody>
       </table>
-    </div>
-    <button class="btn btn-primary" id="openEvalModal" style="padding:13px 26px;">+ تسجيل تسميع جديد</button>
-  `,
+    </div>`,
 
   /* ---------- STUDENT ---------- */
-  's-overview': ()=>`
+  's-overview': ()=>{
+    const lastEval = DB.evaluations.find(e=>e.student==='يوسف أحمد') || { ward:'سورة البقرة — من آية ١ إلى ٢٠', rating:'ممتاز', notes:'حفظ متقن وتلاوة سليمة' };
+    return `
     <div class="cols-2">
       <div class="ward-card">
-        <span class="tag">الورد الحالي</span>
-        <h3>سورة البقرة — من آية ١ إلى ٢٠</h3>
-        <p>آخر تقييم من المعلم: ${ratingBadge('ممتاز')}</p>
+        <span class="tag">الورد الحالي المطلوب</span>
+        <h3>${lastEval.ward}</h3>
+        <p>آخر تقييم من الشيخ: ${ratingBadge(lastEval.rating)}</p>
         <div class="ward-meta">
           <div><b>الشيخ أحمد فتحي</b>المعلم</div>
           <div><b>أسبوعي</b>نوع الورد</div>
-          <div><b>٢٦ أغسطس</b>آخر تسميع</div>
+          <div><b>${lastEval.date}</b>آخر تسميع</div>
         </div>
       </div>
       <div class="panel" style="margin:0;">
-        <div class="panel-head"><h3>ملاحظات المعلم الأخيرة</h3></div>
-        <p style="color:var(--ink-soft);font-size:14px;">"حفظ متقن وتلاوة سليمة، استمر على نفس المستوى واهتم بمراجعة الجزء الأخير بشكل دوري."</p>
+        <div class="panel-head"><h3>ملاحظات المعلم وتوجيهاته</h3></div>
+        <p style="color:var(--ink-soft);font-size:14.5px;line-height:1.8;">"${lastEval.notes || 'حفظ متقن، استمر على نفس التميز واحرص على تثبيت الماضي.'}"</p>
+        <div style="margin-top:20px;">
+          <button class="btn btn-primary" onclick="openCertModal('يوسف أحمد')" style="padding:10px 18px;font-size:13px;">
+            📜 عرض شهادة إتمام الورد
+          </button>
+        </div>
       </div>
     </div>
     <div class="panel" style="margin-top:24px;">
       <div class="panel-head"><h3>حصصك القادمة</h3></div>
-      ${DB.sessions.filter(s=>s.student===USERS.student.name || s.student==='يوسف أحمد').map(sessionItem).join('')}
-    </div>`,
+      ${DB.sessions.filter(s=>s.student===USERS.student.name || s.student==='يوسف أحمد').map((s, idx)=> sessionItem(s, idx)).join('')}
+    </div>`;
+  },
 
   's-progress': ()=>`
     <div class="panel">
-      <div class="panel-head"><h3>تقدّمك في الحفظ</h3></div>
+      <div class="panel-head"><h3>تقدّمك في ختم كتاب الله</h3></div>
       <div class="ring-wrap">
         ${progressRing(6,30)}
         <div>
-          <p style="margin:0 0 6px;font-size:15px;font-weight:700;color:var(--green-deep);">حفظت ٦ من ٣٠ جزء</p>
-          <p style="margin:0;font-size:13.5px;color:var(--ink-soft);">استمر، متبقّي ٢٤ جزء لختم القرآن الكريم كاملًا.</p>
+          <p style="margin:0 0 6px;font-size:16px;font-weight:700;color:var(--green-deep);">أتممت حفظ ٦ من ٣٠ جزء (جزء عم وتبارك وقد سمع...)</p>
+          <p style="margin:0 0 14px;font-size:13.5px;color:var(--ink-soft);">هانت! متبقّي ٢٤ جزء للوصول إلى الختمة المباركة ونيل السند.</p>
+          <button class="btn btn-primary" onclick="openCertModal('يوسف أحمد')" style="padding:9px 18px;font-size:13px;">
+            📜 استخراج شهادة إنجاز جزء
+          </button>
         </div>
       </div>
     </div>
     <div class="panel">
-      <div class="panel-head"><h3>سجل التقييمات</h3></div>
+      <div class="panel-head"><h3>سجل التقييمات السابقة</h3></div>
       <table>
-        <thead><tr><th>التاريخ</th><th>الورد</th><th>التقييم</th></tr></thead>
+        <thead><tr><th>التاريخ</th><th>الورد المقروء</th><th>التقييم</th><th>ملاحظات المعلم</th></tr></thead>
         <tbody>
-          ${DB.evaluations.map(e=>`
-            <tr><td>${e.date}</td><td>${e.ward}</td><td>${ratingBadge(e.rating)}</td></tr>
+          ${DB.evaluations.filter(e=>e.student==='يوسف أحمد').map(e=>`
+            <tr><td>${e.date}</td><td>${e.ward}</td><td>${ratingBadge(e.rating)}</td><td style="color:var(--ink-soft);font-size:13px;">${e.notes}</td></tr>
           `).join('')}
         </tbody>
       </table>
@@ -718,14 +1069,14 @@ const PAGES = {
 
   's-sessions': ()=>`
     <div class="panel">
-      <div class="panel-head"><h3>كل حصصي</h3></div>
-      ${DB.sessions.map(sessionItem).join('')}
+      <div class="panel-head"><h3>جدول حصصي ورابط البث</h3></div>
+      ${DB.sessions.map((s, idx)=> sessionItem(s, idx)).join('')}
     </div>`,
 };
 
 function moderatorOverview(){
   return `
-    <div class="note-banner">${warnIcon()} صلاحيات المودريتور التفصيلية لسه قيد التحديد.</div>
+    <div class="note-banner">${warnIcon()} لوحة المتابعة لمراقبة الحصص والشكاوى والتأكد من سير العملية التعليمية.</div>
     <div class="stat-grid">
       ${statCard('users', DB.students.length, 'إجمالي الطلاب')}
       ${statCard('book', DB.teachers.length, 'إجمالي المعلمين')}
@@ -733,7 +1084,7 @@ function moderatorOverview(){
       ${statCard('calendar', DB.sessions.filter(s=>s.status==='upcoming').length, 'حصص قادمة')}
     </div>
     <div class="panel">
-      <div class="panel-head"><h3>آخر الشكاوى</h3></div>
+      <div class="panel-head"><h3>آخر الشكاوى والملاحظات</h3></div>
       <table>
         <thead><tr><th>مقدّم الطلب</th><th>الموضوع</th><th>الحالة</th></tr></thead>
         <tbody>
@@ -753,16 +1104,45 @@ function statCard(icon, num, label){
   </div>`;
 }
 
-function sessionItem(s){
+function sessionItem(s, idx){
   const isDone = s.status === 'done';
+  const att = s.attendance || '';
+  
+  let attHtml = '';
+  if (currentRole === 'teacher' || currentRole === 'admin') {
+    attHtml = `
+      <div class="att-actions">
+        <button class="att-btn ${att==='present'?'active-present':''}" onclick="setAttendance(${idx}, 'present')" title="تسجيل حضور">حاضر</button>
+        <button class="att-btn ${att==='absent'?'active-absent':''}" onclick="setAttendance(${idx}, 'absent')" title="تسجيل غياب">غائب</button>
+        <button class="att-btn ${att==='excused'?'active-excused':''}" onclick="setAttendance(${idx}, 'excused')" title="تسجيل اعتذار">معتذر</button>
+      </div>
+    `;
+  } else if (att) {
+    const badgeMap = { present:'حاضر', absent:'غائب', excused:'معتذر' };
+    const classMap = { present:'badge-success', absent:'badge-danger', excused:'badge-warn' };
+    attHtml = `<span class="badge ${classMap[att]}">${badgeMap[att]}</span>`;
+  }
+
   return `<div class="session-item">
     <div class="session-date"><b>${s.date.split(' ')[0]}</b><span>${s.date.split(' ')[1]||''}</span></div>
     <div class="session-info">
       <strong>${s.student}</strong>
       <span>${s.time} · ${s.platform}</span>
     </div>
-    <a href="${s.link}" target="_blank" class="session-join ${isDone ? 'disabled' : ''}">${isDone ? 'انتهت' : 'انضمام'}</a>
+    ${attHtml}
+    <a href="${s.link}" target="_blank" class="session-join ${isDone ? 'disabled' : ''}">${isDone ? 'تمت' : 'انضمام'}</a>
   </div>`;
+}
+
+function setAttendance(idx, status){
+  if(DB.sessions[idx]){
+    DB.sessions[idx].attendance = status;
+    DB.sessions[idx].status = 'done';
+    saveDB();
+    const map = { present:'حاضر ✅', absent:'غائب ❌', excused:'معتذر ⚠️' };
+    showToast(`تم تسجيل الطالب: ${map[status]}`);
+    renderPage(currentRole, currentPage);
+  }
 }
 
 function progressRing(value, max){
@@ -784,7 +1164,8 @@ function warnIcon(){ return `<svg viewBox="0 0 24 24" fill="none" stroke="#8A611
 
 /* ---------------- EVALUATION MODAL ---------------- */
 function setupEvalPage(){
-  document.getElementById('openEvalModal').addEventListener('click', openEvalModal);
+  const btn = document.getElementById('openEvalModal');
+  if(btn) btn.addEventListener('click', ()=> openEvalModal());
 }
 function setupTeacherStudentButtons(){
   document.querySelectorAll('.quick-eval').forEach(btn=>{
@@ -793,7 +1174,7 @@ function setupTeacherStudentButtons(){
 }
 function openEvalModal(preselect){
   const sel = document.getElementById('evalStudent');
-  sel.innerHTML = DB.students.filter(s=>s.teacher===USERS.teacher.name).map(s=>`<option ${s.name===preselect?'selected':''}>${s.name}</option>`).join('');
+  sel.innerHTML = DB.students.map(s=>`<option ${s.name===preselect?'selected':''}>${s.name}</option>`).join('');
   document.getElementById('evalWard').value = '';
   document.getElementById('evalNotes').value = '';
   document.getElementById('evalModal').classList.add('active');
@@ -801,15 +1182,120 @@ function openEvalModal(preselect){
 document.getElementById('evalCancel').addEventListener('click', ()=> document.getElementById('evalModal').classList.remove('active'));
 document.getElementById('evalSave').addEventListener('click', ()=>{
   const student = document.getElementById('evalStudent').value;
-  const ward = document.getElementById('evalWard').value || 'ورد غير محدد';
+  const ward = document.getElementById('evalWard').value.trim() || 'ورد غير محدد';
   const rating = document.getElementById('evalRating').value;
-  const notes = document.getElementById('evalNotes').value;
+  const notes = document.getElementById('evalNotes').value.trim() || 'لا توجد ملاحظات إضافية.';
   DB.evaluations.unshift({ student, date:'اليوم', ward, rating, notes });
   const s = DB.students.find(s=>s.name===student);
   if(s) s.lastRating = rating;
+  saveDB();
   document.getElementById('evalModal').classList.remove('active');
-  renderPage('teacher', 't-eval');
+  showToast('تم حفظ التقييم بنجاح!');
+  renderPage(currentRole, currentPage);
+});
+
+/* ---------------- STUDENT MODAL ---------------- */
+function openAddStudentModal(){
+  const sel = document.getElementById('newStudentTeacher');
+  sel.innerHTML = DB.teachers.map(t=>`<option value="${t.name}">${t.name}</option>`).join('');
+  document.getElementById('newStudentName').value = '';
+  document.getElementById('newStudentProgress').value = 0;
+  document.getElementById('studentModal').classList.add('active');
+}
+document.getElementById('studentCancel').addEventListener('click', ()=> document.getElementById('studentModal').classList.remove('active'));
+document.getElementById('studentSave').addEventListener('click', ()=>{
+  const name = document.getElementById('newStudentName').value.trim();
+  const teacher = document.getElementById('newStudentTeacher').value;
+  const program = document.getElementById('newStudentProgram').value;
+  const progress = parseInt(document.getElementById('newStudentProgress').value) || 0;
+  if(!name){ alert('يرجى كتابة اسم الطالب'); return; }
+
+  DB.students.unshift({
+    id: 's' + (DB.students.length + 1),
+    name, teacher, program, progress, lastRating:'ممتاز'
+  });
+  const t = DB.teachers.find(tch => tch.name === teacher);
+  if(t) t.students = (t.students || 0) + 1;
+
+  saveDB();
+  document.getElementById('studentModal').classList.remove('active');
+  showToast(`تمت إضافة الطالب ${name} بنجاح!`);
+  renderPage(currentRole, currentPage);
+});
+
+/* ---------------- TEACHER MODAL ---------------- */
+function openAddTeacherModal(){
+  document.getElementById('newTeacherName').value = '';
+  document.getElementById('newTeacherArea').value = '';
+  document.getElementById('teacherModal').classList.add('active');
+}
+document.getElementById('teacherCancel').addEventListener('click', ()=> document.getElementById('teacherModal').classList.remove('active'));
+document.getElementById('teacherSave').addEventListener('click', ()=>{
+  const name = document.getElementById('newTeacherName').value.trim();
+  const area = document.getElementById('newTeacherArea').value.trim() || 'معلم قرآن وتجويد';
+  if(!name){ alert('يرجى كتابة اسم المعلم'); return; }
+
+  DB.teachers.unshift({
+    id: 't' + (DB.teachers.length + 1),
+    name, area, students:0, rating:'ممتاز', status:'نشط'
+  });
+  saveDB();
+  document.getElementById('teacherModal').classList.remove('active');
+  showToast(`تمت إضافة المعلم ${name} بنجاح!`);
+  renderPage(currentRole, currentPage);
+});
+
+/* ---------------- SESSION MODAL ---------------- */
+function openAddSessionModal(){
+  const sel = document.getElementById('newSessionStudent');
+  sel.innerHTML = DB.students.map(s=>`<option value="${s.name}">${s.name}</option>`).join('');
+  document.getElementById('newSessionDate').value = 'اليوم';
+  document.getElementById('newSessionTime').value = '٦:٠٠ م';
+  document.getElementById('sessionModal').classList.add('active');
+}
+document.getElementById('sessionCancel').addEventListener('click', ()=> document.getElementById('sessionModal').classList.remove('active'));
+document.getElementById('sessionSave').addEventListener('click', ()=>{
+  const student = document.getElementById('newSessionStudent').value;
+  const date = document.getElementById('newSessionDate').value.trim() || 'اليوم';
+  const time = document.getElementById('newSessionTime').value.trim() || '٦:٠٠ م';
+  const platform = document.getElementById('newSessionPlatform').value;
+  const link = document.getElementById('newSessionLink').value.trim() || 'https://meet.google.com/new';
+
+  DB.sessions.unshift({
+    id: DB.sessions.length + 1,
+    student, date, time, platform, link, status:'upcoming', attendance:''
+  });
+  saveDB();
+  document.getElementById('sessionModal').classList.remove('active');
+  showToast(`تمت جدولة حصة للطالب ${student} بنجاح!`);
+  renderPage(currentRole, currentPage);
+});
+
+/* ---------------- CERTIFICATE MODAL ---------------- */
+function openCertModal(studentName){
+  const s = DB.students.find(std => std.name === studentName) || { name: studentName, teacher: 'الشيخ أحمد فتحي', progress: 30 };
+  document.getElementById('certStudentName').textContent = s.name;
+  document.getElementById('certTeacherName').textContent = s.teacher || 'إدارة الأكاديمية';
+  
+  if (s.progress && s.progress > 0) {
+    document.getElementById('certAchievement').textContent = `حفظ وتثبيت (${s.progress}) أجزاء من القرآن الكريم`;
+  } else {
+    document.getElementById('certAchievement').textContent = 'الجزء الثلاثين (جزء عمّ) كاملاً مع إتقان التجويد';
+  }
+  
+  document.getElementById('certDate').textContent = new Date().toLocaleDateString('ar-EG', { year:'numeric', month:'long', day:'numeric' });
+  document.getElementById('certModal').classList.add('active');
+}
+document.getElementById('certClose').addEventListener('click', ()=> document.getElementById('certModal').classList.remove('active'));
+
+// Close modal when clicking on overlay background
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', (e) => {
+    if(e.target === overlay){ overlay.classList.remove('active'); }
+  });
 });
 </script>
+
+<div class="toast-container" id="toastContainer"></div>
 </body>
 </html>
