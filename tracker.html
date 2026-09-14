@@ -538,8 +538,8 @@
    SUPABASE CLOUD CONFIGURATION
    ===================================================================== */
 const SUPABASE_CONFIG = {
-  url: localStorage.getItem('supabase_url') || '',
-  anonKey: localStorage.getItem('supabase_anon_key') || '',
+  url: 'https://xeyugpainbfaslcbuwzl.supabase.co',
+  anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhleXVncGFpbmJmYXNsY2J1d3psIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkzODQ4MTMsImV4cCI6MjEwNDk2MDgxM30.WjhZshys5qeboL9IH9x-Z0-aO_n-y6MoTOLK_e2_yVk',
 };
 
 let supabaseClient = null;
@@ -548,6 +548,41 @@ if (window.supabase && SUPABASE_CONFIG.url && SUPABASE_CONFIG.anonKey) {
     supabaseClient = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
   } catch (err) {
     console.warn('Supabase initialization warning:', err);
+  }
+}
+
+async function syncFromCloud(){
+  if (!supabaseClient) return;
+  try {
+    const [tRes, sRes, sessRes, evalRes] = await Promise.all([
+      supabaseClient.from('teachers').select('*'),
+      supabaseClient.from('students').select('*'),
+      supabaseClient.from('sessions').select('*').order('created_at', { ascending: false }),
+      supabaseClient.from('evaluations').select('*').order('created_at', { ascending: false })
+    ]);
+    let changed = false;
+    if (tRes.data && tRes.data.length > 0) {
+      DB.teachers = tRes.data.map(t => ({ id: t.id, name: t.name, area: t.area, students: t.students_count || 0, rating: t.rating || 'ممتاز', status: t.status || 'نشط' }));
+      changed = true;
+    }
+    if (sRes.data && sRes.data.length > 0) {
+      DB.students = sRes.data.map(s => ({ id: s.id, name: s.name, teacher: s.teacher_name, program: s.program, progress: s.progress, lastRating: s.last_rating }));
+      changed = true;
+    }
+    if (sessRes.data && sessRes.data.length > 0) {
+      DB.sessions = sessRes.data.map(s => ({ id: s.id, student: s.student_name, date: s.date_text, time: s.time_text, platform: s.platform, link: s.link, status: s.status, attendance: s.attendance || '' }));
+      changed = true;
+    }
+    if (evalRes.data && evalRes.data.length > 0) {
+      DB.evaluations = evalRes.data.map(e => ({ student: e.student_name, date: e.date_text, ward: e.ward, rating: e.rating, notes: e.notes }));
+      changed = true;
+    }
+    if (changed) {
+      saveDB();
+      if (currentRole && currentPage) renderPage(currentRole, currentPage);
+    }
+  } catch(e) {
+    console.warn('Cloud sync note:', e);
   }
 }
 
@@ -729,6 +764,7 @@ function loginAs(role){
   const firstPage = NAV[role][0].id;
   renderPage(role, firstPage);
   document.getElementById('todayDate').textContent = new Date().toLocaleDateString('ar-EG', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+  syncFromCloud();
 }
 
 document.getElementById('logoutBtn').addEventListener('click', ()=>{
@@ -1189,6 +1225,9 @@ document.getElementById('evalSave').addEventListener('click', ()=>{
   const s = DB.students.find(s=>s.name===student);
   if(s) s.lastRating = rating;
   saveDB();
+  if (supabaseClient) {
+    supabaseClient.from('evaluations').insert([{ student_name: student, date_text: 'اليوم', ward, rating, notes }]).then(()=>{ syncFromCloud(); }).catch(console.warn);
+  }
   document.getElementById('evalModal').classList.remove('active');
   showToast('تم حفظ التقييم بنجاح!');
   renderPage(currentRole, currentPage);
@@ -1218,6 +1257,9 @@ document.getElementById('studentSave').addEventListener('click', ()=>{
   if(t) t.students = (t.students || 0) + 1;
 
   saveDB();
+  if (supabaseClient) {
+    supabaseClient.from('students').insert([{ name, teacher_name: teacher, program, progress, last_rating: 'ممتاز' }]).then(()=>{ syncFromCloud(); }).catch(console.warn);
+  }
   document.getElementById('studentModal').classList.remove('active');
   showToast(`تمت إضافة الطالب ${name} بنجاح!`);
   renderPage(currentRole, currentPage);
@@ -1240,6 +1282,9 @@ document.getElementById('teacherSave').addEventListener('click', ()=>{
     name, area, students:0, rating:'ممتاز', status:'نشط'
   });
   saveDB();
+  if (supabaseClient) {
+    supabaseClient.from('teachers').insert([{ name, area, students_count: 0, rating: 'ممتاز', status: 'نشط' }]).then(()=>{ syncFromCloud(); }).catch(console.warn);
+  }
   document.getElementById('teacherModal').classList.remove('active');
   showToast(`تمت إضافة المعلم ${name} بنجاح!`);
   renderPage(currentRole, currentPage);
@@ -1266,6 +1311,9 @@ document.getElementById('sessionSave').addEventListener('click', ()=>{
     student, date, time, platform, link, status:'upcoming', attendance:''
   });
   saveDB();
+  if (supabaseClient) {
+    supabaseClient.from('sessions').insert([{ student_name: student, date_text: date, time_text: time, platform, link, status: 'upcoming', attendance: '' }]).then(()=>{ syncFromCloud(); }).catch(console.warn);
+  }
   document.getElementById('sessionModal').classList.remove('active');
   showToast(`تمت جدولة حصة للطالب ${student} بنجاح!`);
   renderPage(currentRole, currentPage);
