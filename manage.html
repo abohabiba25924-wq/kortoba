@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة إدارة المحتوى | أكاديمية قرطبة لتعليم القرآن الكريم</title>
+  <link rel="icon" type="image/png" href="https://res.cloudinary.com/dvfx83gns/image/upload/v1787795512/%D9%82%D8%B1%D8%B7%D8%A8%D8%A9_gbn7xe.png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Cairo:wght@400;600;700;800&family=Aref+Ruqaa:wght@700&display=swap" rel="stylesheet">
+  
+  <!-- Supabase JS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --green-deep: #0c3826;
+      --green: #124e38;
+      --green-mid: #1c6c49;
+      --green-light: #e8f3ee;
+      --gold-dark: #966718;
+      --gold: #c8912a;
+      --gold-bright: #d89518;
+      --gold-soft: #fbf0dc;
+      --cream: #fbf6ec;
+      --paper: #ffffff;
+      --ink: #1a2420;
+      --ink-soft: #4a5d53;
+      --line: #e3d9c6;
+      --shadow-sm: 0 4px 12px rgba(18,78,56,0.06);
+      --shadow-md: 0 10px 28px -6px rgba(18,78,56,0.12);
+      --shadow-lg: 0 20px 40px -10px rgba(18,78,56,0.18);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: #f7f3eb;
+      color: var(--ink);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* Auth Screen */
+    .auth-overlay {
+      position: fixed; inset: 0; z-index: 999;
+      background: linear-gradient(135deg, var(--green-deep) 0%, #061e14 100%);
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .auth-card {
+      background: var(--paper);
+      width: 100%; max-width: 440px;
+      border-radius: var(--radius-lg);
+      padding: 36px 30px;
+      box-shadow: var(--shadow-lg);
+      text-align: center;
+      position: relative;
+      border: 2px solid var(--gold-soft);
+    }
+    .auth-card img { width: 70px; height: 70px; margin-bottom: 16px; }
+    .auth-card h2 { font-family: 'Amiri', serif; font-size: 26px; color: var(--green-deep); margin-bottom: 6px; }
+    .auth-card p { font-size: 13.5px; color: var(--ink-soft); margin-bottom: 24px; }
+    .auth-input {
+      width: 100%; padding: 13px 16px; border: 1.5px solid var(--line);
+      border-radius: var(--radius-md); font-family: inherit; font-size: 15px;
+      margin-bottom: 16px; outline: none; transition: border-color .2s;
+      text-align: center;
+    }
+    .auth-input:focus { border-color: var(--green); }
+    .auth-btn {
+      width: 100%; padding: 13px; background: var(--green); color: #fff;
+      border: none; border-radius: var(--radius-md); font-family: inherit;
+      font-size: 16px; font-weight: 700; cursor: pointer; transition: background .2s, transform .2s;
+    }
+    .auth-btn:hover { background: var(--green-mid); transform: translateY(-1px); }
+    .auth-back {
+      display: inline-block; margin-top: 18px; font-size: 13px;
+      color: var(--green-mid); text-decoration: none; font-weight: 600;
+    }
+
+    /* App Header */
+    .top-header {
+      background: var(--green-deep);
+      color: #fff;
+      padding: 14px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      border-bottom: 2px solid var(--gold);
+    }
+    .brand-wrap { display: flex; align-items: center; gap: 14px; }
+    .brand-wrap img { width: 42px; height: 42px; }
+    .brand-titles h1 { font-family: 'Amiri', serif; font-size: 20px; color: var(--gold-bright); line-height: 1.2; }
+    .brand-titles span { font-size: 12px; color: #b7d6c7; letter-spacing: 0.5px; }
+
+    .header-actions { display: flex; align-items: center; gap: 10px; }
+    .btn-action {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 9px 18px; border-radius: 100px; font-family: inherit;
+      font-size: 13.5px; font-weight: 700; cursor: pointer; text-decoration: none;
+      transition: all .2s ease; border: none;
+    }
+    .btn-save { background: var(--gold-bright); color: var(--green-deep); box-shadow: 0 4px 14px rgba(216,149,24,0.4); }
+    .btn-save:hover { background: #e5a425; transform: translateY(-2px); }
+    .btn-preview { background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.25); }
+    .btn-preview:hover { background: rgba(255,255,255,0.2); }
+    .btn-logout { background: transparent; color: #ff9e9e; font-size: 13px; padding: 8px 12px; }
+    .btn-logout:hover { color: #ff6b6b; }
+
+    /* Layout */
+    .dashboard-container {
+      max-width: 1220px; margin: 28px auto 60px;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 26px;
+      align-items: start;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar-tabs {
+      background: var(--paper);
+      border-radius: var(--radius-lg);
+      padding: 12px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--line);
+      position: sticky; top: 88px;
+    }
+    .tab-btn {
+      width: 100%; display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px; border: none; background: transparent;
+      border-radius: var(--radius-md); font-family: inherit; font-size: 14.5px;
+      font-weight: 700; color: var(--ink-soft); cursor: pointer;
+      text-align: right; transition: all .2s ease;
+      margin-bottom: 4px;
+    }
+    .tab-btn svg { width: 18px; height: 18px; stroke: currentColor; flex-shrink: 0; }
+    .tab-btn:hover { background: var(--green-light); color: var(--green-deep); }
+    .tab-btn.active {
+      background: var(--green); color: #fff;
+      box-shadow: 0 6px 16px -4px rgba(18,78,56,0.4);
+    }
+    .tab-btn.active svg { stroke: var(--gold-bright); }
+
+    .cloud-badge {
+      margin-top: 14px; padding: 12px;
+      border-radius: var(--radius-md);
+      background: #f0f7f3; border: 1px dashed #b7d6c7;
+      font-size: 12px; text-align: center; color: var(--green-deep);
+    }
+    .cloud-badge span { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10b981; margin-left: 6px; }
+
+    /* Content Area */
+    .content-area {
+      background: var(--paper);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--line);
+      min-height: 600px;
+    }
+    .panel { display: none; }
+    .panel.active { display: block; animation: fadeIn .25s ease; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .panel-head {
+      margin-bottom: 26px; padding-bottom: 16px;
+      border-bottom: 1.5px solid var(--line);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .panel-head h2 { font-family: 'Amiri', serif; font-size: 24px; color: var(--green-deep); }
+    .panel-head p { font-size: 13.5px; color: var(--ink-soft); margin-top: 2px; }
+
+    /* Form Elements */
+    .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .form-grid.single { grid-template-columns: 1fr; }
+    .form-grid.triple { grid-template-columns: repeat(3, 1fr); }
+    .full-width { grid-column: 1 / -1; }
+
+    .form-group { margin-bottom: 20px; }
+    .form-group label {
+      display: block; font-size: 13.5px; font-weight: 700;
+      color: var(--green-deep); margin-bottom: 8px;
+    }
+    .form-group .hint { font-size: 12px; color: var(--ink-soft); margin-top: 5px; }
+
+    input[type="text"], input[type="tel"], input[type="email"], textarea, select {
+      width: 100%; padding: 11px 14px;
+      border: 1.5px solid var(--line); border-radius: var(--radius-md);
+      font-family: inherit; font-size: 14.5px; color: var(--ink);
+      background: #faf8f3; outline: none; transition: all .2s ease;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--green); background: #fff;
+      box-shadow: 0 0 0 3px rgba(18,78,56,0.1);
+    }
+    textarea { resize: vertical; min-height: 85px; }
+
+    /* Toggle Switch */
+    .switch-label {
+      display: inline-flex; align-items: center; gap: 12px;
+      cursor: pointer; font-weight: 700; font-size: 14.5px; color: var(--green-deep);
+    }
+    .toggle {
+      position: relative; width: 48px; height: 26px;
+      background: #d1d5db; border-radius: 100px;
+      transition: background .2s;
+    }
+    .toggle::after {
+      content: ""; position: absolute; top: 3px; right: 3px;
+      width: 20px; height: 20px; background: #fff; border-radius: 50%;
+      transition: transform .2s; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    input[type="checkbox"] { display: none; }
+    input[type="checkbox"]:checked + .toggle { background: var(--green); }
+    input[type="checkbox"]:checked + .toggle::after { transform: translateX(-22px); }
+
+    /* Card Box Inside Form */
+    .sub-card {
+      background: #faf7f0;
+      border: 1.5px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 22px;
+      margin-bottom: 22px;
+      position: relative;
+    }
+    .sub-card-title {
+      font-weight: 700; font-size: 16px; color: var(--green-deep);
+      margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .tag-badge {
+      background: var(--gold-soft); color: var(--gold-dark);
+      padding: 3px 10px; border-radius: 100px; font-size: 12px; font-weight: 700;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed; bottom: 30px; left: 30px; z-index: 1000;
+      background: var(--green-deep); color: #fff;
+      padding: 14px 24px; border-radius: 100px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      border-right: 4px solid var(--gold-bright);
+      font-size: 14px; font-weight: 700;
+      display: flex; align-items: center; gap: 10px;
+      transform: translateY(120px); opacity: 0;
+      transition: transform .3s ease, opacity .3s ease;
+      pointer-events: none;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; pointer-events: auto; }
+
+    /* SQL box */
+    .sql-box {
+      background: #1b2621; color: #a3e635;
+      padding: 16px; border-radius: var(--radius-md);
+      font-family: monospace; font-size: 13px;
+      line-height: 1.5; overflow-x: auto;
+      direction: ltr; text-align: left;
+      margin: 12px 0; border: 1px solid #2d453b;
+    }
+
+    /* Responsive */
+    @media (max-width: 880px) {
+      .dashboard-container { grid-template-columns: 1fr; margin-top: 16px; }
+      .sidebar-tabs { position: static; display: flex; overflow-x: auto; padding: 8px; gap: 8px; }
+      .tab-btn { width: auto; white-space: nowrap; margin-bottom: 0; padding: 8px 14px; font-size: 13.5px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .content-area { padding: 20px 16px; }
+      .header-actions .btn-action span { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== AUTH GATE ==================== -->
+  <div class="auth-overlay" id="authGate">
+    <div class="auth-card">
+      <img src="https://res.cloudinary.com/dvfx83gns/image/upload/v1787795512/%D9%82%D8%B1%D8%B7%D8%A8%D8%A9_gbn7xe.png" alt="قرطبة">
+      <h2>لوحة إدارة وتعديل المحتوى</h2>
+      <p>أدخل كلمة مرور الإدارة لتعديل بيانات ومحتوى الموقع بدون تعديل الكود البرمجي</p>
+      <form id="authForm">
+        <input type="password" id="authPass" class="auth-input" placeholder="كلمة المرور (kortoba2026)" required autofocus>
+        <button type="submit" class="auth-btn">تسجيل الدخول</button>
+      </form>
+      <a href="index.html" class="auth-back">← العودة للموقع التعريفي الرئيسي</a>
+    </div>
+  </div>
+
+  <!-- ==================== HEADER ==================== -->
+  <header class="top-header">
+    <div class="brand-wrap">
+      <img src="https://res.cloudinary.com/dvfx83gns/image/upload/v1787795512/%D9%82%D8%B1%D8%B7%D8%A8%D8%A9_gbn7xe.png" alt="قرطبة">
+      <div class="brand-titles">
+        <h1>لوحة إدارة محتوى قرطبة</h1>
+        <span>تعديل مباشر وفوري للموقع التعريفي</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-action btn-save" id="saveAllBtn" title="حفظ وتطبيق في السحابة">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        <span>حفظ وتطبيق التغييرات</span>
+      </button>
+      <a href="index.html" target="_blank" class="btn-action btn-preview" title="معاينة الموقع">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        <span>معاينة الموقع</span>
+      </a>
+      <button class="btn-action btn-logout" id="logoutBtn" title="تسجيل الخروج">خروج</button>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN DASHBOARD ==================== -->
+  <div class="dashboard-container">
+    
+    <!-- Navigation Tabs -->
+    <aside class="sidebar-tabs">
+      <button class="tab-btn active" data-target="panel-contact">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        التواصل والواتساب
+      </button>
+      <button class="tab-btn" data-target="panel-banner">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+        شريط الإعلانات
+      </button>
+      <button class="tab-btn" data-target="panel-hero">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+        الواجهة الرئيسية
+      </button>
+      <button class="tab-btn" data-target="panel-pricing">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>
+        الباقات والأسعار
+      </button>
+      <button class="tab-btn" data-target="panel-pathways">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        المسارات التعليمية
+      </button>
+      <button class="tab-btn" data-target="panel-stats">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+        الأرقام والإحصائيات
+      </button>
+      <button class="tab-btn" data-target="panel-cloud">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+        الربط السحابي
+      </button>
+
+      <div class="cloud-badge" id="cloudStatusBadge">
+        <span></span> متصل بسحابة Supabase
+      </div>
+
+      <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--line);">
+        <button class="tab-btn" id="resetDefaultsBtn" style="color:#b91c1c;font-size:13px;" title="إرجاع القيم الأصلية">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          استعادة الافتراضي
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="content-area">
+
+      <!-- ================= 1. CONTACT & WHATSAPP ================= -->
+      <section class="panel active" id="panel-contact">
+        <div class="panel-head">
+          <div>
+            <h2>معلومات التواصل والواتساب</h2>
+            <p>تعديل أرقام الهواتف وقوالب الرسائل التي تصلك عند نقر الزوار على أزرار الموقع</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>رقم هاتف الواتساب الأساسي (بدون + وبدون مسافات)</label>
+            <input type="tel" id="contact_whatsapp" placeholder="مثال: 201065433395">
+            <div class="hint">هذا هو الرقم الذي تفتح عليه جميع أزرار "تواصل معنا" و "اشترك الآن"</div>
+          </div>
+          <div class="form-group">
+            <label>رقم الهاتف المعروض للاتصال المباشر</label>
+            <input type="text" id="contact_phone_display" placeholder="مثال: 01065433395">
+          </div>
+          <div class="form-group">
+            <label>البريد الإلكتروني للأكاديمية</label>
+            <input type="email" id="contact_email" placeholder="kortobaacademy@gmail.com">
+          </div>
+          <div class="form-group">
+            <label>مقر أو وصف الأكاديمية</label>
+            <input type="text" id="contact_location" placeholder="جمهورية مصر العربية — خدمة أونلاين حول العالم">
+          </div>
+
+          <div class="form-group full-width">
+            <label>رسالة الواتساب الافتراضية (للزر العام)</label>
+            <textarea id="contact_wa_default_msg" placeholder="السلام عليكم ورحمة الله، أود الاستفسار عن برامج أكاديمية قرطبة وحجز موعد تجربة."></textarea>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 2. ANNOUNCEMENT BAR ================= -->
+      <section class="panel" id="panel-banner">
+        <div class="panel-head">
+          <div>
+            <h2>شريط الإعلانات العاجل (أعلى الموقع)</h2>
+            <p>شريط يظهر في أقصى قمة الموقع لإعلان عروض الخصومات أو بدء التسجيل</p>
+          </div>
+        </div>
+
+        <div class="sub-card">
+          <label class="switch-label" style="margin-bottom:16px;">
+            <input type="checkbox" id="banner_enabled">
+            <span class="toggle"></span>
+            <span>تفعيل شريط الإعلانات أعلى الموقع</span>
+          </label>
+
+          <div class="form-grid single" style="margin-top:16px;">
+            <div class="form-group">
+              <label>شارة الإعلان (Badge)</label>
+              <input type="text" id="banner_badge" placeholder="مثال: 🎉 لفترة محدودة أو 📢 تنبيه هام">
+            </div>
+            <div class="form-group">
+              <label>نص الإعلان</label>
+              <input type="text" id="banner_text" placeholder="مثال: فتح باب التسجيل للفصل الدراسي الجديد مع خصم 20% للباقة السنوية!">
+            </div>
+            <div class="form-group">
+              <label>نص زر الإعلان (اختياري)</label>
+              <input type="text" id="banner_btn_text" placeholder="مثال: احجز مقعدك الآن">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 3. HERO SECTION ================= -->
+      <section class="panel" id="panel-hero">
+        <div class="panel-head">
+          <div>
+            <h2>الواجهة الرئيسية (Hero Section)</h2>
+            <p>العنوان الرئيسي، الشارة الترحيبية، والكلمة المميزة التي يراها الزائر فور دخول الموقع</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label>شارة الترحيب العلوية (Badge)</label>
+            <input type="text" id="hero_badge" placeholder="صرح قرآني إلكتروني معتمد">
+          </div>
+          <div class="form-group">
+            <label>العنوان الرئيسي — الجزء الأول</label>
+            <input type="text" id="hero_title_1" placeholder="صرحُ قرطبة.. رِحلةُ النُّور">
+          </div>
+          <div class="form-group">
+            <label>الكلمة المميزة باللون الذهبي</label>
+            <input type="text" id="hero_title_highlight" placeholder="لِحِفْظِ كِتَابِ اللهِ">
+          </div>
+          <div class="form-group full-width">
+            <label>العنوان الرئيسي — الجزء الختامي</label>
+            <input type="text" id="hero_title_2" placeholder="وإتقانِ تلاوته">
+          </div>
+          <div class="form-group full-width">
+            <label>النص التعريفي (الفقرة التوضيحية)</label>
+            <textarea id="hero_lead" rows="3" placeholder="أكاديمية تعليمية متخصصة تجمع بين شرف تعليم القرآن الكريم برواياته المتواترة، ومنهجية التأسيس السليم للأطفال والكبار على يد نخبة من المعلمين والمعلمات المجازين."></textarea>
+          </div>
+          <div class="form-group">
+            <label>نص زر الدعوة الأساسي (CTA)</label>
+            <input type="text" id="hero_cta_primary" placeholder="ابدأ رحلتك القرآنية الآن">
+          </div>
+          <div class="form-group">
+            <label>نص زر الاستفسار عبر واتساب</label>
+            <input type="text" id="hero_cta_wa" placeholder="تواصل معنا عبر واتساب">
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 4. PRICING & PACKAGES ================= -->
+      <section class="panel" id="panel-pricing">
+        <div class="panel-head">
+          <div>
+            <h2>باقات الاشتراك والأسعار</h2>
+            <p>تعديل أسعار وعدد حصص الباقات الثلاث ومميزاتها</p>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <label style="font-size:13px;font-weight:700;">العملة:</label>
+            <input type="text" id="pricing_currency" style="width:90px;padding:6px 10px;text-align:center;" placeholder="ج.م / $">
+          </div>
+        </div>
+
+        <!-- Package 1 -->
+        <div class="sub-card">
+          <div class="sub-card-title">
+            <span>الباقة الأولى: باقة الهمة</span>
+            <span class="tag-badge">حصتان أسبوعياً</span>
+          </div>
+          <div class="form-grid triple">
+            <div class="form-group">
+              <label>اسم الباقة</label>
+              <input type="text" id="pkg1_name" placeholder="باقة الهمة">
+            </div>
+            <div class="form-group">
+              <label>السعر المعروض</label>
+              <input type="text" id="pkg1_price" placeholder="400">
+            </div>
+            <div class="form-group">
+              <label>عدد الحصص شهرياً</label>
+              <input type="text" id="pkg1_sessions" placeholder="٨ حصص شهرياً">
+            </div>
+            <div class="form-group full-width">
+              <label>المميزات (اكتب كل ميزة في سطر منفصل)</label>
+              <textarea id="pkg1_features" rows="4" placeholder="حصتان أسبوعياً (مدة الحصة ٣٠ دقيقة)&#10;معلم مجاز مخصص للطالب فردياً&#10;متابعة أسبوعية لورد الحفظ والتجويد&#10;تقارير أداء دورية لولي الأمر"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Package 2 (Featured) -->
+        <div class="sub-card" style="border-color:var(--gold);">
+          <div class="sub-card-title">
+            <span>الباقة الثانية: باقة الإتقان (الباقة المميزة)</span>
+            <span class="tag-badge" style="background:var(--gold);color:#fff;">الأكثر طلباً ⭐</span>
+          </div>
+          <div class="form-grid triple">
+            <div class="form-group">
+              <label>اسم الباقة</label>
+              <input type="text" id="pkg2_name" placeholder="باقة الإتقان">
+            </div>
+            <div class="form-group">
+              <label>السعر المعروض</label>
+              <input type="text" id="pkg2_price" placeholder="600">
+            </div>
+            <div class="form-group">
+              <label>عدد الحصص شهرياً</label>
+              <input type="text" id="pkg2_sessions" placeholder="١٢ حصة شهرياً">
+            </div>
+            <div class="form-group full-width">
+              <label>المميزات (اكتب كل ميزة في سطر منفصل)</label>
+              <textarea id="pkg2_features" rows="4" placeholder="٣ حصص أسبوعياً لمعدل إنجاز أسرع&#10;خطة حفظ ومراجعة تراكمية مخصصة&#10;شرح مبسط لقواعد التجويد ومخارج الحروف&#10;شهادة إتمام معتمدة من الأكاديمية&#10;إمكانية تعويض الحصص المعتذر عنها"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Package 3 -->
+        <div class="sub-card">
+          <div class="sub-card-title">
+            <span>الباقة الثالثة: باقة التميز المكثف</span>
+            <span class="tag-badge">٤ حصص أسبوعياً</span>
+          </div>
+          <div class="form-grid triple">
+            <div class="form-group">
+              <label>اسم الباقة</label>
+              <input type="text" id="pkg3_name" placeholder="باقة التميز">
+            </div>
+            <div class="form-group">
+              <label>السعر المعروض</label>
+              <input type="text" id="pkg3_price" placeholder="800">
+            </div>
+            <div class="form-group">
+              <label>عدد الحصص شهرياً</label>
+              <input type="text" id="pkg3_sessions" placeholder="١٦ حصة شهرياً">
+            </div>
+            <div class="form-group full-width">
+              <label>المميزات (اكتب كل ميزة في سطر منفصل)</label>
+              <textarea id="pkg3_features" rows="4" placeholder="٤ حصص أسبوعياً لحفظ وتثبيت مكثف&#10;تأهيل للاختبارات القرآنية والمسابقات&#10;إعداد للحصول على الإجازة بالسند المتصل&#10;جلسات تسميع مع شيخ مجاز بالقراءات العشر"></textarea>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 5. PATHWAYS ================= -->
+      <section class="panel" id="panel-pathways">
+        <div class="panel-head">
+          <div>
+            <h2>المسارات التعليمية المعتمدة</h2>
+            <p>تعديل عناوين ووصف البرامج الدراسية الأربعة المعروضة على الموقع</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="sub-card full-width">
+            <div class="sub-card-title">المسار 1: نور البيان والتأسيس</div>
+            <div class="form-group">
+              <label>العنوان</label>
+              <input type="text" id="path1_title" placeholder="نور البيان والتأسيس السليم">
+            </div>
+            <div class="form-group">
+              <label>الوصف</label>
+              <textarea id="path1_desc" rows="2" placeholder="منهجية مبسطة للأطفال والمبتدئين لتعلم القراءة الصحيحة من المصحف مباشرة."></textarea>
+            </div>
+          </div>
+
+          <div class="sub-card full-width">
+            <div class="sub-card-title">المسار 2: الحفظ والتثبيت الدوري</div>
+            <div class="form-group">
+              <label>العنوان</label>
+              <input type="text" id="path2_title" placeholder="الحفظ والتثبيت الدوري">
+            </div>
+            <div class="form-group">
+              <label>الوصف</label>
+              <textarea id="path2_desc" rows="2" placeholder="برنامج مخصص لحفظ القرآن الكريم كاملاً أو أجزاء منه، مع مراجعة تراكمية لضمان عدم النسيان."></textarea>
+            </div>
+          </div>
+
+          <div class="sub-card full-width">
+            <div class="sub-card-title">المسار 3: تصحيح التلاوة وأحكام التجويد</div>
+            <div class="form-group">
+              <label>العنوان</label>
+              <input type="text" id="path3_title" placeholder="تصحيح التلاوة وأحكام التجويد">
+            </div>
+            <div class="form-group">
+              <label>الوصف</label>
+              <textarea id="path3_desc" rows="2" placeholder="دراسة نظرية وعملية لأحكام النون الساكنة والتنوين والمدود ومخارج وصفات الحروف."></textarea>
+            </div>
+          </div>
+
+          <div class="sub-card full-width">
+            <div class="sub-card-title">المسار 4: الإجازة بالسند المتصل</div>
+            <div class="form-group">
+              <label>العنوان</label>
+              <input type="text" id="path4_title" placeholder="الإجازة بالسند المتصل">
+            </div>
+            <div class="form-group">
+              <label>الوصف</label>
+              <textarea id="path4_desc" rows="2" placeholder="ختمة كاملة غيباً على شيوخ مجازين للحصول على سند متصل إلى النبي ﷺ برواية حفص أو القراءات العشر."></textarea>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 6. STATS ================= -->
+      <section class="panel" id="panel-stats">
+        <div class="panel-head">
+          <div>
+            <h2>الأرقام والإحصائيات</h2>
+            <p>الأرقام البارزة في قسم الثقة ونتائج الأكاديمية</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>عدد الطلاب والخريجين (مثال: +1,200)</label>
+            <input type="text" id="stat_students" placeholder="+1,200">
+          </div>
+          <div class="form-group">
+            <label>عدد المعلمين والمعلمات المجازين (مثال: +45)</label>
+            <input type="text" id="stat_teachers" placeholder="+45">
+          </div>
+          <div class="form-group">
+            <label>ساعات التدريس والتسميع (مثال: +18,000)</label>
+            <input type="text" id="stat_hours" placeholder="+18,000">
+          </div>
+          <div class="form-group">
+            <label>نسبة رضا أولياء الأمور والطلاب (مثال: 99.4%)</label>
+            <input type="text" id="stat_rating" placeholder="99.4%">
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 7. CLOUD & DATABASE ================= -->
+      <section class="panel" id="panel-cloud">
+        <div class="panel-head">
+          <div>
+            <h2>إعدادات الربط السحابي وقاعدة البيانات</h2>
+            <p>التحقق من اتصال الموقع بقاعدة بيانات Supabase وتجهيز جدول إعدادات المحتوى</p>
+          </div>
+        </div>
+
+        <div class="sub-card">
+          <div class="sub-card-title">حالة الاتصال السحابي</div>
+          <p style="font-size:14px;color:var(--ink-soft);margin-bottom:12px;">
+            الموقع مرتبط مباشرة بمشروع Supabase التابع لك:
+            <code style="background:#e8f3ee;padding:3px 8px;border-radius:6px;color:var(--green-deep);">https://xeyugpainbfaslcbuwzl.supabase.co</code>
+          </p>
+          <div id="cloudConnectionMsg" style="font-weight:700;font-size:14px;color:var(--green-mid);">
+            جاري فحص الاتصال...
+          </div>
+        </div>
+
+        <div class="sub-card">
+          <div class="sub-card-title">
+            <span>كود SQL لإنشاء جدول الإعدادات في Supabase</span>
+            <button class="btn-action" id="copySqlBtn" style="background:var(--green);color:#fff;padding:6px 14px;font-size:12px;">نسخ الكود</button>
+          </div>
+          <p style="font-size:13px;color:var(--ink-soft);margin-bottom:8px;">
+            لو حابب تتأكد أن جدول إعدادات المحتوى مفعل في Supabase، انسخ الكود التالي وضعه في <strong>SQL Editor</strong> ثم اضغط <strong>RUN</strong>:
+          </p>
+          <pre class="sql-box" id="sqlCodeText">-- كود إنشاء جدول إعدادات الموقع
+create table if not exists public.site_settings (
+  key text primary key,
+  value jsonb not null,
+  updated_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+alter table public.site_settings enable row level security;
+create policy "Allow read site_settings" on public.site_settings for select using (true);
+create policy "Allow all site_settings" on public.site_settings for all using (true);</pre>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+    <span id="toastMsg">تم حفظ وتطبيق التعديلات بنجاح!</span>
+  </div>
+
+  <!-- JavaScript Logic -->
+  <script>
+    /* =====================================================================
+       1. SUPABASE & CONFIGURATION
+       ===================================================================== */
+    const SUPABASE_CONFIG = {
+      url: 'https://xeyugpainbfaslcbuwzl.supabase.co',
+      anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhleXVncGFpbmJmYXNsY2J1d3psIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkzODQ4MTMsImV4cCI6MjEwNDk2MDgxM30.WjhZshys5qeboL9IH9x-Z0-aO_n-y6MoTOLK_e2_yVk'
+    };
+
+    let supabaseClient = null;
+    if (window.supabase) {
+      try {
+        supabaseClient = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
+      } catch(e) { console.warn(e); }
+    }
+
+    /* Default Data Definition */
+    const DEFAULT_SETTINGS = {
+      contact: {
+        whatsapp: '201065433395',
+        phone_display: '01065433395',
+        email: 'kortobaacademy@gmail.com',
+        location: 'جمهورية مصر العربية — خدمة أونلاين حول العالم',
+        wa_default_msg: 'السلام عليكم ورحمة الله، أود الاستفسار عن برامج أكاديمية قرطبة وحجز موعد تجربة.'
+      },
+      banner: {
+        enabled: false,
+        badge: '🎉 عرض خاص',
+        text: 'فتح باب التسجيل للفصل الدراسي الجديد مع خصم مميز لأول ٥٠ مشتركاً!',
+        btn_text: 'سجل الآن عبر واتساب'
+      },
+      hero: {
+        badge: 'صرح قرآني إلكتروني معتمد',
+        title_1: 'صرحُ قرطبة.. رِحلةُ النُّور',
+        title_highlight: 'لِحِفْظِ كِتَابِ اللهِ',
+        title_2: 'وإتقانِ تلاوته',
+        lead: 'أكاديمية تعليمية متخصصة تجمع بين شرف تعليم القرآن الكريم برواياته المتواترة، ومنهجية التأسيس السليم للأطفال والكبار على يد نخبة من المعلمين والمعلمات المجازين.',
+        cta_primary: 'ابدأ رحلتك القرآنية الآن',
+        cta_wa: 'تواصل معنا عبر واتساب'
+      },
+      pricing: {
+        currency: 'ج.م',
+        pkg1: {
+          name: 'باقة الهمة',
+          price: '400',
+          sessions: '٨ حصص شهرياً',
+          features: 'حصتان أسبوعياً (مدة الحصة ٣٠ دقيقة)\nمعلم مجاز مخصص للطالب فردياً\nمتابعة أسبوعية لورد الحفظ والتجويد\nتقارير أداء دورية لولي الأمر'
+        },
+        pkg2: {
+          name: 'باقة الإتقان',
+          price: '600',
+          sessions: '١٢ حصة شهرياً',
+          features: '٣ حصص أسبوعياً لمعدل إنجاز أسرع\nخطة حفظ ومراجعة تراكمية مخصصة\nشرح مبسط لقواعد التجويد ومخارج الحروف\nشهادة إتمام معتمدة من الأكاديمية\nإمكانية تعويض الحصص المعتذر عنها'
+        },
+        pkg3: {
+          name: 'باقة التميز',
+          price: '800',
+          sessions: '١٦ حصة شهرياً',
+          features: '٤ حصص أسبوعياً لحفظ وتثبيت مكثف\nتأهيل للاختبارات القرآنية والمسابقات\nإعداد للحصول على الإجازة بالسند المتصل\nجلسات تسميع مع شيخ مجاز بالقراءات العشر'
+        }
+      },
+      pathways: {
+        path1: {
+          title: 'نور البيان والتأسيس السليم',
+          desc: 'منهجية مبسطة للأطفال والمبتدئين لتعلم القراءة الصحيحة من المصحف مباشرة.'
+        },
+        path2: {
+          title: 'الحفظ والتثبيت الدوري',
+          desc: 'برنامج مخصص لحفظ القرآن الكريم كاملاً أو أجزاء منه، مع مراجعة تراكمية لضمان عدم النسيان.'
+        },
+        path3: {
+          title: 'تصحيح التلاوة وأحكام التجويد',
+          desc: 'دراسة نظرية وعملية لأحكام النون الساكنة والتنوين والمدود ومخارج وصفات الحروف.'
+        },
+        path4: {
+          title: 'الإجازة بالسند المتصل',
+          desc: 'ختمة كاملة غيباً على شيوخ مجازين للحصول على سند متصل إلى النبي ﷺ برواية حفص أو القراءات العشر.'
+        }
+      },
+      stats: {
+        students: '+1,200',
+        teachers: '+45',
+        hours: '+18,000',
+        rating: '99.4%'
+      }
+    };
+
+    let CURRENT_DATA = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+
+    /* =====================================================================
+       2. AUTH GATE LOGIC
+       ===================================================================== */
+    const authGate = document.getElementById('authGate');
+    const authForm = document.getElementById('authForm');
+    const authPass = document.getElementById('authPass');
+
+    // Check session login
+    if (sessionStorage.getItem('kortoba_manage_auth') === 'true') {
+      authGate.style.display = 'none';
+    }
+
+    authForm.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const val = authPass.value.trim();
+      if (val === 'kortoba2026' || val.toLowerCase() === 'kortoba' || val === 'Zero1065433395QqQ@.') {
+        sessionStorage.setItem('kortoba_manage_auth', 'true');
+        authGate.style.display = 'none';
+        showToast('مرحباً بك في لوحة تحكم قرطبة 👑');
+      } else {
+        alert('كلمة المرور غير صحيحة، يرجى المحاولة مرة أخرى.');
+        authPass.focus();
+      }
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', ()=>{
+      sessionStorage.removeItem('kortoba_manage_auth');
+      location.reload();
+    });
+
+    /* =====================================================================
+       3. NAVIGATION TABS
+       ===================================================================== */
+    const tabBtns = document.querySelectorAll('.tab-btn[data-target]');
+    const panels = document.querySelectorAll('.panel');
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', ()=>{
+        tabBtns.forEach(b => b.classList.remove('active'));
+        panels.forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        const target = document.getElementById(btn.dataset.target);
+        if (target) target.classList.add('active');
+      });
+    });
+
+    /* =====================================================================
+       4. DATA POPULATION & FORM MAPPING
+       ===================================================================== */
+    function populateForm(data) {
+      if(!data) return;
+      // Contact
+      if(data.contact){
+        document.getElementById('contact_whatsapp').value = data.contact.whatsapp || '';
+        document.getElementById('contact_phone_display').value = data.contact.phone_display || '';
+        document.getElementById('contact_email').value = data.contact.email || '';
+        document.getElementById('contact_location').value = data.contact.location || '';
+        document.getElementById('contact_wa_default_msg').value = data.contact.wa_default_msg || '';
+      }
+
+      // Banner
+      if(data.banner){
+        document.getElementById('banner_enabled').checked = !!data.banner.enabled;
+        document.getElementById('banner_badge').value = data.banner.badge || '';
+        document.getElementById('banner_text').value = data.banner.text || '';
+        document.getElementById('banner_btn_text').value = data.banner.btn_text || '';
+      }
+
+      // Hero
+      if(data.hero){
+        document.getElementById('hero_badge').value = data.hero.badge || '';
+        document.getElementById('hero_title_1').value = data.hero.title_1 || '';
+        document.getElementById('hero_title_highlight').value = data.hero.title_highlight || '';
+        document.getElementById('hero_title_2').value = data.hero.title_2 || '';
+        document.getElementById('hero_lead').value = data.hero.lead || '';
+        document.getElementById('hero_cta_primary').value = data.hero.cta_primary || '';
+        document.getElementById('hero_cta_wa').value = data.hero.cta_wa || '';
+      }
+
+      // Pricing
+      if(data.pricing){
+        document.getElementById('pricing_currency').value = data.pricing.currency || 'ج.م';
+        if(data.pricing.pkg1){
+          document.getElementById('pkg1_name').value = data.pricing.pkg1.name || '';
+          document.getElementById('pkg1_price').value = data.pricing.pkg1.price || '';
+          document.getElementById('pkg1_sessions').value = data.pricing.pkg1.sessions || '';
+          document.getElementById('pkg1_features').value = data.pricing.pkg1.features || '';
+        }
+        if(data.pricing.pkg2){
+          document.getElementById('pkg2_name').value = data.pricing.pkg2.name || '';
+          document.getElementById('pkg2_price').value = data.pricing.pkg2.price || '';
+          document.getElementById('pkg2_sessions').value = data.pricing.pkg2.sessions || '';
+          document.getElementById('pkg2_features').value = data.pricing.pkg2.features || '';
+        }
+        if(data.pricing.pkg3){
+          document.getElementById('pkg3_name').value = data.pricing.pkg3.name || '';
+          document.getElementById('pkg3_price').value = data.pricing.pkg3.price || '';
+          document.getElementById('pkg3_sessions').value = data.pricing.pkg3.sessions || '';
+          document.getElementById('pkg3_features').value = data.pricing.pkg3.features || '';
+        }
+      }
+
+      // Pathways
+      if(data.pathways){
+        if(data.pathways.path1){
+          document.getElementById('path1_title').value = data.pathways.path1.title || '';
+          document.getElementById('path1_desc').value = data.pathways.path1.desc || '';
+        }
+        if(data.pathways.path2){
+          document.getElementById('path2_title').value = data.pathways.path2.title || '';
+          document.getElementById('path2_desc').value = data.pathways.path2.desc || '';
+        }
+        if(data.pathways.path3){
+          document.getElementById('path3_title').value = data.pathways.path3.title || '';
+          document.getElementById('path3_desc').value = data.pathways.path3.desc || '';
+        }
+        if(data.pathways.path4){
+          document.getElementById('path4_title').value = data.pathways.path4.title || '';
+          document.getElementById('path4_desc').value = data.pathways.path4.desc || '';
+        }
+      }
+
+      // Stats
+      if(data.stats){
+        document.getElementById('stat_students').value = data.stats.students || '';
+        document.getElementById('stat_teachers').value = data.stats.teachers || '';
+        document.getElementById('stat_hours').value = data.stats.hours || '';
+        document.getElementById('stat_rating').value = data.stats.rating || '';
+      }
+    }
+
+    function readForm() {
+      return {
+        contact: {
+          whatsapp: document.getElementById('contact_whatsapp').value.trim() || DEFAULT_SETTINGS.contact.whatsapp,
+          phone_display: document.getElementById('contact_phone_display').value.trim(),
+          email: document.getElementById('contact_email').value.trim(),
+          location: document.getElementById('contact_location').value.trim(),
+          wa_default_msg: document.getElementById('contact_wa_default_msg').value.trim()
+        },
+        banner: {
+          enabled: document.getElementById('banner_enabled').checked,
+          badge: document.getElementById('banner_badge').value.trim(),
+          text: document.getElementById('banner_text').value.trim(),
+          btn_text: document.getElementById('banner_btn_text').value.trim()
+        },
+        hero: {
+          badge: document.getElementById('hero_badge').value.trim(),
+          title_1: document.getElementById('hero_title_1').value.trim(),
+          title_highlight: document.getElementById('hero_title_highlight').value.trim(),
+          title_2: document.getElementById('hero_title_2').value.trim(),
+          lead: document.getElementById('hero_lead').value.trim(),
+          cta_primary: document.getElementById('hero_cta_primary').value.trim(),
+          cta_wa: document.getElementById('hero_cta_wa').value.trim()
+        },
+        pricing: {
+          currency: document.getElementById('pricing_currency').value.trim() || 'ج.م',
+          pkg1: {
+            name: document.getElementById('pkg1_name').value.trim(),
+            price: document.getElementById('pkg1_price').value.trim(),
+            sessions: document.getElementById('pkg1_sessions').value.trim(),
+            features: document.getElementById('pkg1_features').value.trim()
+          },
+          pkg2: {
+            name: document.getElementById('pkg2_name').value.trim(),
+            price: document.getElementById('pkg2_price').value.trim(),
+            sessions: document.getElementById('pkg2_sessions').value.trim(),
+            features: document.getElementById('pkg2_features').value.trim()
+          },
+          pkg3: {
+            name: document.getElementById('pkg3_name').value.trim(),
+            price: document.getElementById('pkg3_price').value.trim(),
+            sessions: document.getElementById('pkg3_sessions').value.trim(),
+            features: document.getElementById('pkg3_features').value.trim()
+          }
+        },
+        pathways: {
+          path1: {
+            title: document.getElementById('path1_title').value.trim(),
+            desc: document.getElementById('path1_desc').value.trim()
+          },
+          path2: {
+            title: document.getElementById('path2_title').value.trim(),
+            desc: document.getElementById('path2_desc').value.trim()
+          },
+          path3: {
+            title: document.getElementById('path3_title').value.trim(),
+            desc: document.getElementById('path3_desc').value.trim()
+          },
+          path4: {
+            title: document.getElementById('path4_title').value.trim(),
+            desc: document.getElementById('path4_desc').value.trim()
+          }
+        },
+        stats: {
+          students: document.getElementById('stat_students').value.trim(),
+          teachers: document.getElementById('stat_teachers').value.trim(),
+          hours: document.getElementById('stat_hours').value.trim(),
+          rating: document.getElementById('stat_rating').value.trim()
+        }
+      };
+    }
+
+    /* =====================================================================
+       5. CLOUD STORAGE (SUPABASE & LOCALSTORAGE)
+       ===================================================================== */
+    async function loadData() {
+      // 1. Try LocalStorage
+      const local = localStorage.getItem('kortoba_site_settings');
+      if (local) {
+        try {
+          CURRENT_DATA = Object.assign({}, DEFAULT_SETTINGS, JSON.parse(local));
+          populateForm(CURRENT_DATA);
+        } catch(e) {}
+      } else {
+        populateForm(DEFAULT_SETTINGS);
+      }
+
+      // 2. Try Supabase
+      if (supabaseClient) {
+        try {
+          const { data, error } = await supabaseClient
+            .from('site_settings')
+            .select('*')
+            .eq('key', 'homepage_content')
+            .single();
+
+          if (!error && data && data.value) {
+            CURRENT_DATA = Object.assign({}, DEFAULT_SETTINGS, data.value);
+            localStorage.setItem('kortoba_site_settings', JSON.stringify(CURRENT_DATA));
+            populateForm(CURRENT_DATA);
+            document.getElementById('cloudConnectionMsg').innerHTML = '🟢 متصل بنجاح وجدول الإعدادات مفعل في Supabase!';
+          } else {
+            document.getElementById('cloudConnectionMsg').innerHTML = '🟡 متصل بـ Supabase (يمكنك نسخ وتشغيل كود SQL أدناه لتفعيل الحفظ السحابي التام).';
+          }
+        } catch(err) {
+          console.warn('Load cloud settings notice:', err);
+        }
+      }
+    }
+
+    async function saveData() {
+      const data = readForm();
+      CURRENT_DATA = data;
+
+      // Always save to LocalStorage for immediate local sync
+      localStorage.setItem('kortoba_site_settings', JSON.stringify(data));
+
+      // Save to Supabase if available
+      let cloudSaved = false;
+      if (supabaseClient) {
+        try {
+          const { error } = await supabaseClient
+            .from('site_settings')
+            .upsert({
+              key: 'homepage_content',
+              value: data,
+              updated_at: new Date().toISOString()
+            });
+
+          if (!error) {
+            cloudSaved = true;
+          } else {
+            console.warn('Cloud save warning:', error.message);
+          }
+        } catch(e) {
+          console.warn('Cloud save notice:', e);
+        }
+      }
+
+      showToast(cloudSaved ? 'تم حفظ التعديلات سحابياً وتطبيقها على الموقع! 🟢' : 'تم حفظ التعديلات محلياً بنجاح! ⚡');
+    }
+
+    document.getElementById('saveAllBtn').addEventListener('click', saveData);
+
+    // Reset Defaults
+    document.getElementById('resetDefaultsBtn').addEventListener('click', ()=>{
+      if (confirm('هل أنت متأكد من رغبتك في استعادة الإعدادات الأصلية للموقع؟')) {
+        CURRENT_DATA = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+        populateForm(CURRENT_DATA);
+        saveData();
+        showToast('تمت استعادة الإعدادات الأصلية!');
+      }
+    });
+
+    // Copy SQL
+    document.getElementById('copySqlBtn').addEventListener('click', ()=>{
+      const text = document.getElementById('sqlCodeText').textContent;
+      navigator.clipboard.writeText(text).then(()=>{
+        showToast('تم نسخ كود SQL إلى الحافظة!');
+      });
+    });
+
+    // Toast helper
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMsg').textContent = msg;
+      toast.classList.add('show');
+      setTimeout(()=> toast.classList.remove('show'), 3500);
+    }
+
+    // Init
+    loadData();
+  </script>
+</body>
+</html>

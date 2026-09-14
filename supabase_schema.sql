@@ -71,6 +71,13 @@ create table if not exists public.complaints (
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
+-- 7. جدول إعدادات ومحتوى الموقع (Content Management)
+create table if not exists public.site_settings (
+  key text primary key,
+  value jsonb not null,
+  updated_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
 -- تفعيل الحماية والصلاحيات (Row Level Security)
 alter table public.profiles enable row level security;
 alter table public.teachers enable row level security;
@@ -78,10 +85,14 @@ alter table public.students enable row level security;
 alter table public.sessions enable row level security;
 alter table public.evaluations enable row level security;
 alter table public.complaints enable row level security;
+alter table public.site_settings enable row level security;
 
 -- السماح بالوصول للبيانات (Policies)
 create policy "Allow read for all users" on public.profiles for select using (true);
 create policy "Allow all actions for profiles" on public.profiles for all using (true);
+
+create policy "Allow read for site_settings" on public.site_settings for select using (true);
+create policy "Allow all for site_settings" on public.site_settings for all using (true);
 
 create policy "Allow read for teachers" on public.teachers for select using (true);
 create policy "Allow all for teachers" on public.teachers for all using (true);
