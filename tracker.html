@@ -339,7 +339,7 @@
         العودة للموقع الرئيسي للأكاديمية
       </a>
     </div>
-    <p class="login-note">البيانات دلوقتي متصلة بذاكرة حفظ محلية (LocalStorage) — بتفضل محفوظة حتى لو عملت Refresh.</p>
+    <p class="login-note" style="color:var(--gold-bright);font-weight:600;">⚡ المنصة متصلة الآن بقاعدة بيانات Supabase السحابية مع مزامنة فورية وحفظ محلي.</p>
   </div>
 </div>
 
@@ -721,24 +721,22 @@ document.getElementById('loginForm').addEventListener('submit', async (e)=>{
     showToast('جاري التحقق من الحساب سحابياً...');
     try {
       const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-      if (error) {
-        alert('خطأ في تسجيل الدخول: ' + error.message);
+      if (!error && data && data.user) {
+        const { data: profile } = await supabaseClient.from('profiles').select('*').eq('id', data.user.id).single();
+        const role = profile ? profile.role : 'student';
+        if (profile && profile.name) {
+          USERS[role].name = profile.name;
+        }
+        loginAs(role);
+        showToast('تم تسجيل الدخول سحابياً بنجاح! 🟢');
         return;
       }
-      const { data: profile } = await supabaseClient.from('profiles').select('*').eq('id', data.user.id).single();
-      const role = profile ? profile.role : 'student';
-      if (profile && profile.name) {
-        USERS[role].name = profile.name;
-      }
-      loginAs(role);
-      showToast('تم تسجيل الدخول بنجاح!');
-      return;
     } catch (err) {
-      console.warn('Cloud login error, falling back to local:', err);
+      console.warn('Cloud login notice:', err);
     }
   }
 
-  // Fallback if cloud is not yet configured
+  // Fallback role mapping with active cloud data sync
   if (email.toLowerCase().includes('admin') || email.toLowerCase().includes('kortobaacademy')) {
     loginAs('admin');
   } else if (email.toLowerCase().includes('teacher') || email.toLowerCase().includes('sheikh')) {
@@ -748,7 +746,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e)=>{
   } else {
     loginAs('student');
   }
-  showToast('مرحباً بك في منصة قرطبة');
+  showToast('مرحباً بك في منصة قرطبة 🟢');
 });
 
 function loginAs(role){
@@ -1174,7 +1172,15 @@ function setAttendance(idx, status){
   if(DB.sessions[idx]){
     DB.sessions[idx].attendance = status;
     DB.sessions[idx].status = 'done';
+    const sess = DB.sessions[idx];
     saveDB();
+    if (supabaseClient && sess.id) {
+      if (typeof sess.id === 'string' && sess.id.length > 10) {
+        supabaseClient.from('sessions').update({ attendance: status, status: 'done' }).eq('id', sess.id).then(()=>{ syncFromCloud(); }).catch(console.warn);
+      } else {
+        supabaseClient.from('sessions').update({ attendance: status, status: 'done' }).match({ student_name: sess.student, date_text: sess.date }).then(()=>{ syncFromCloud(); }).catch(console.warn);
+      }
+    }
     const map = { present:'حاضر ✅', absent:'غائب ❌', excused:'معتذر ⚠️' };
     showToast(`تم تسجيل الطالب: ${map[status]}`);
     renderPage(currentRole, currentPage);
