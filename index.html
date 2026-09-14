@@ -1162,6 +1162,9 @@
   </div>
 </section>
 
+<!-- ============ CUSTOM SECTIONS CONTAINER ============ -->
+<div id="customSectionsContainer"></div>
+
 <!-- ============ FOOTER ============ -->
 <footer id="contact">
   <div class="container">
@@ -1274,49 +1277,53 @@
   let audioCtx = null;
   let osc = null;
 
-  document.querySelectorAll('.play-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const card = btn.closest('.audio-card');
-      const isCurrentlyPlaying = card.classList.contains('is-playing');
+  function setupAudioPlayers() {
+    document.querySelectorAll('.play-btn').forEach(btn => {
+      btn.onclick = () => {
+        const card = btn.closest('.audio-card');
+        if (!card) return;
+        const isCurrentlyPlaying = card.classList.contains('is-playing');
 
-      // Stop any current playback
-      document.querySelectorAll('.audio-card').forEach(c => {
-        c.classList.remove('is-playing');
-        const b = c.querySelector('.play-btn');
-        b.innerHTML = '<svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
-      });
-      if(audioTimer) { clearTimeout(audioTimer); audioTimer = null; }
-      if(osc) { try{ osc.stop(); osc.disconnect(); } catch(e){} osc = null; }
+        // Stop any current playback
+        document.querySelectorAll('.audio-card').forEach(c => {
+          c.classList.remove('is-playing');
+          const b = c.querySelector('.play-btn');
+          if (b) b.innerHTML = '<svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
+        });
+        if(audioTimer) { clearTimeout(audioTimer); audioTimer = null; }
+        if(osc) { try{ osc.stop(); osc.disconnect(); } catch(e){} osc = null; }
 
-      if(!isCurrentlyPlaying) {
-        card.classList.add('is-playing');
-        btn.innerHTML = '<svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
-        
-        // Play simulated recitation chime via Web Audio
-        try {
-          audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-          if (audioCtx.state === 'suspended') { audioCtx.resume(); }
-          osc = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(261.63, audioCtx.currentTime); // C4
-          osc.frequency.exponentialRampToValueAtTime(329.63, audioCtx.currentTime + 1.2); // E4
-          osc.frequency.exponentialRampToValueAtTime(392.00, audioCtx.currentTime + 2.5); // G4
-          gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 5.0);
-          osc.connect(gain);
-          gain.connect(audioCtx.destination);
-          osc.start();
-        } catch(e) {}
+        if(!isCurrentlyPlaying) {
+          card.classList.add('is-playing');
+          btn.innerHTML = '<svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
+          
+          // Play simulated recitation chime via Web Audio
+          try {
+            audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+            osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(261.63, audioCtx.currentTime); // C4
+            osc.frequency.exponentialRampToValueAtTime(329.63, audioCtx.currentTime + 1.2); // E4
+            osc.frequency.exponentialRampToValueAtTime(392.00, audioCtx.currentTime + 2.5); // G4
+            gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 5.0);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+          } catch(e) {}
 
-        // Auto stop after 7 seconds demo
-        audioTimer = setTimeout(() => {
-          card.classList.remove('is-playing');
-          btn.innerHTML = '<svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
-        }, 7000);
-      }
+          // Auto stop after 7 seconds demo
+          audioTimer = setTimeout(() => {
+            card.classList.remove('is-playing');
+            btn.innerHTML = '<svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
+          }, 7000);
+        }
+      };
     });
-  });
+  }
+  setupAudioPlayers();
 
   // radio pills
   document.querySelectorAll('#programGroup .radio-opt').forEach(opt=>{
@@ -1327,21 +1334,26 @@
   });
 
   // faq accordion
-  document.querySelectorAll('.faq-item').forEach(item=>{
-    const q = item.querySelector('.faq-q');
-    const a = item.querySelector('.faq-a');
-    q.addEventListener('click', ()=>{
-      const isOpen = item.classList.contains('open');
-      document.querySelectorAll('.faq-item').forEach(i=>{
-        i.classList.remove('open');
-        i.querySelector('.faq-a').style.maxHeight = null;
-      });
-      if(!isOpen){
-        item.classList.add('open');
-        a.style.maxHeight = a.scrollHeight + 'px';
-      }
+  function setupFaqAccordion() {
+    document.querySelectorAll('.faq-item').forEach(item=>{
+      const q = item.querySelector('.faq-q');
+      const a = item.querySelector('.faq-a');
+      if (!q || !a) return;
+      q.onclick = () => {
+        const isOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item').forEach(i=>{
+          i.classList.remove('open');
+          const innerA = i.querySelector('.faq-a');
+          if (innerA) innerA.style.maxHeight = null;
+        });
+        if(!isOpen){
+          item.classList.add('open');
+          a.style.maxHeight = a.scrollHeight + 'px';
+        }
+      };
     });
-  });
+  }
+  setupFaqAccordion();
 
   // registration form -> build whatsapp message
   document.getElementById('regForm').addEventListener('submit', function(e){
@@ -1389,6 +1401,16 @@
   function applySiteSettings(data) {
     if (!data) return;
 
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
     // Helper to safely set textContent
     const setText = (id, val) => {
       if (val !== undefined && val !== null && val !== '') {
@@ -1410,12 +1432,33 @@
       if (!el) return;
       const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
       if (lines.length > 0) {
-        el.innerHTML = lines.map(line => `<li>${svgIcon} ${line}</li>`).join('');
+        el.innerHTML = lines.map(line => `<li>${svgIcon} ${escapeHtml(line)}</li>`).join('');
       }
     };
 
     const checkSvg = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
     const checkSvgGreen = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2.5"><path d="m5 12 5 5L20 7"/></svg>';
+
+    // 0. Section Visibility (Show / Hide / Delete sections)
+    if (data.sections_visibility) {
+      const secMap = {
+        banner: document.getElementById('topAnnouncementBar'),
+        why: document.getElementById('why'),
+        pathways: document.getElementById('pathways'),
+        programs: document.getElementById('programs'),
+        showcase: document.getElementById('showcase'),
+        quality: document.querySelector('.quality'),
+        pricing: document.getElementById('pricing'),
+        stories: document.querySelector('.stories'),
+        faq: document.getElementById('faq'),
+        register: document.getElementById('register')
+      };
+      for (const k in secMap) {
+        if (secMap[k]) {
+          secMap[k].style.display = (data.sections_visibility[k] === false) ? 'none' : '';
+        }
+      }
+    }
 
     // 1. WhatsApp & Contact
     if (data.contact) {
@@ -1434,14 +1477,15 @@
       setHref('footerInsta', data.contact.insta);
       setHref('footerYt', data.contact.yt);
       if (data.contact.copyright && document.getElementById('footerCopyright')) {
-        document.getElementById('footerCopyright').innerHTML = `© <span id="year">${new Date().getFullYear()}</span> ${data.contact.copyright}`;
+        document.getElementById('footerCopyright').innerHTML = `© <span id="year">${new Date().getFullYear()}</span> ${escapeHtml(data.contact.copyright)}`;
       }
     }
 
     // 2. Top Announcement Bar
     const topBar = document.getElementById('topAnnouncementBar');
     if (topBar && data.banner) {
-      if (data.banner.enabled && data.banner.text) {
+      const isVisible = data.sections_visibility ? data.sections_visibility.banner !== false : true;
+      if (isVisible && data.banner.enabled && data.banner.text) {
         topBar.style.display = 'flex';
         setText('barBadge', data.banner.badge);
         setText('barText', data.banner.text);
@@ -1472,37 +1516,67 @@
       setText('heroTrust3', data.hero.trust_3);
     }
 
-    // 4. Why Us (Features)
+    // 4. Why Us (Dynamic Cards)
     if (data.why) {
       setText('whyTitle', data.why.title);
       setText('whySub', data.why.sub);
-      setText('why1Title', data.why.why1_title);
-      setText('why1Desc', data.why.why1_desc);
-      setText('why2Title', data.why.why2_title);
-      setText('why2Desc', data.why.why2_desc);
-      setText('why3Title', data.why.why3_title);
-      setText('why3Desc', data.why.why3_desc);
-      setText('why4Title', data.why.why4_title);
-      setText('why4Desc', data.why.why4_desc);
+      if (Array.isArray(data.why.items) && data.why.items.length > 0) {
+        const container = document.querySelector('#why .grid-4');
+        if (container) {
+          container.style.gridTemplateColumns = 'repeat(auto-fit, minmax(250px, 1fr))';
+          const icons = [
+            '<svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 3v14M12 17a4 4 0 0 1-4 4H5a1 1 0 0 1-1-1v-1a4 4 0 0 1 4-4h4ZM12 17a4 4 0 0 1 4 4h3a1 1 0 0 0 1-1v-1a4 4 0 0 0-4-4h-4Z"/></svg>',
+            '<svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>',
+            '<svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+            '<svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>'
+          ];
+          container.innerHTML = data.why.items.map((it, i) => `
+            <div class="feature-card in">
+              <div class="feature-icon">${icons[i % icons.length]}</div>
+              <h3>${escapeHtml(it.title)}</h3>
+              <p>${escapeHtml(it.desc)}</p>
+            </div>
+          `).join('');
+        }
+      } else {
+        setText('why1Title', data.why.why1_title);
+        setText('why1Desc', data.why.why1_desc);
+        setText('why2Title', data.why.why2_title);
+        setText('why2Desc', data.why.why2_desc);
+        setText('why3Title', data.why.why3_title);
+        setText('why3Desc', data.why.why3_desc);
+        setText('why4Title', data.why.why4_title);
+        setText('why4Desc', data.why.why4_desc);
+      }
     }
 
-    // 5. Pathways
+    // 5. Pathways (Dynamic Cards)
     if (data.pathways) {
-      if (data.pathways.path1) {
-        setText('path1Title', data.pathways.path1.title);
-        setText('path1Desc', data.pathways.path1.desc);
-      }
-      if (data.pathways.path2) {
-        setText('path2Title', data.pathways.path2.title);
-        setText('path2Desc', data.pathways.path2.desc);
-      }
-      if (data.pathways.path3) {
-        setText('path3Title', data.pathways.path3.title);
-        setText('path3Desc', data.pathways.path3.desc);
-      }
-      if (data.pathways.path4) {
-        setText('path4Title', data.pathways.path4.title);
-        setText('path4Desc', data.pathways.path4.desc);
+      setText('pathwaysTitle', data.pathways.title);
+      setText('pathwaysSub', data.pathways.sub);
+      if (Array.isArray(data.pathways.items) && data.pathways.items.length > 0) {
+        const container = document.querySelector('#pathways .grid-4');
+        if (container) {
+          container.style.gridTemplateColumns = 'repeat(auto-fit, minmax(250px, 1fr))';
+          container.innerHTML = data.pathways.items.map((p, i) => {
+            const badge = p.badge || `المسار ${i + 1}`;
+            const lines = (p.features || '').split('\n').filter(l => l.trim().length > 0);
+            const featuresHtml = lines.map(line => `<li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5"><path d="m5 12 5 5L20 7"/></svg> ${escapeHtml(line.trim())}</li>`).join('');
+            return `
+              <div class="pathway-card in">
+                <span class="pathway-badge">${escapeHtml(badge)}</span>
+                <h3>${escapeHtml(p.title)}</h3>
+                <p>${escapeHtml(p.desc)}</p>
+                ${lines.length > 0 ? `<ul class="pathway-features">${featuresHtml}</ul>` : ''}
+              </div>
+            `;
+          }).join('');
+        }
+      } else {
+        if (data.pathways.path1) { setText('path1Title', data.pathways.path1.title); setText('path1Desc', data.pathways.path1.desc); }
+        if (data.pathways.path2) { setText('path2Title', data.pathways.path2.title); setText('path2Desc', data.pathways.path2.desc); }
+        if (data.pathways.path3) { setText('path3Title', data.pathways.path3.title); setText('path3Desc', data.pathways.path3.desc); }
+        if (data.pathways.path4) { setText('path4Title', data.pathways.path4.title); setText('path4Desc', data.pathways.path4.desc); }
       }
     }
 
@@ -1519,85 +1593,181 @@
       setList('progAdultsList', data.programs.adults_points, checkSvg);
     }
 
-    // 7. Audio Showcase
+    // 7. Audio Showcase (Dynamic Cards)
     if (data.showcase) {
-      setText('audio1Name', data.showcase.audio1_name);
-      setText('audio1Track', data.showcase.audio1_track);
-      setText('audio1Surah', data.showcase.audio1_surah);
-
-      setText('audio2Name', data.showcase.audio2_name);
-      setText('audio2Track', data.showcase.audio2_track);
-      setText('audio2Surah', data.showcase.audio2_surah);
-
-      setText('audio3Name', data.showcase.audio3_name);
-      setText('audio3Track', data.showcase.audio3_track);
-      setText('audio3Surah', data.showcase.audio3_surah);
+      setText('showcaseTitle', data.showcase.title);
+      setText('showcaseSub', data.showcase.sub);
+      if (Array.isArray(data.showcase.items) && data.showcase.items.length > 0) {
+        const container = document.querySelector('.audio-grid');
+        if (container) {
+          container.innerHTML = data.showcase.items.map((it, i) => {
+            const initial = (it.name || 'ط').trim().charAt(0);
+            return `
+              <div class="audio-card in">
+                <div class="audio-head">
+                  <div class="audio-student">
+                    <div class="audio-avatar">${escapeHtml(initial)}</div>
+                    <div class="audio-info">
+                      <strong>${escapeHtml(it.name)}</strong>
+                      <span>${escapeHtml(it.track)}</span>
+                    </div>
+                  </div>
+                  <span class="audio-tag">${escapeHtml(it.tag || 'قرآن')}</span>
+                </div>
+                <div class="audio-player-box">
+                  <button class="play-btn" data-audio="${i + 1}" aria-label="تشغيل التلاوة">
+                    <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  </button>
+                  <div class="waveform">
+                    <span class="wave-bar"></span><span class="wave-bar"></span><span class="wave-bar"></span>
+                    <span class="wave-bar"></span><span class="wave-bar"></span><span class="wave-bar"></span>
+                    <span class="wave-bar"></span><span class="wave-bar"></span><span class="wave-bar"></span>
+                  </div>
+                </div>
+                <div class="audio-surah">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <span>${escapeHtml(it.surah)}</span>
+                </div>
+              </div>
+            `;
+          }).join('');
+          setupAudioPlayers();
+        }
+      } else {
+        setText('audio1Name', data.showcase.audio1_name); setText('audio1Track', data.showcase.audio1_track); setText('audio1Surah', data.showcase.audio1_surah);
+        setText('audio2Name', data.showcase.audio2_name); setText('audio2Track', data.showcase.audio2_track); setText('audio2Surah', data.showcase.audio2_surah);
+        setText('audio3Name', data.showcase.audio3_name); setText('audio3Track', data.showcase.audio3_track); setText('audio3Surah', data.showcase.audio3_surah);
+      }
     }
 
-    // 8. Quality Standards
+    // 8. Quality Standards (Dynamic Cards)
     if (data.quality) {
-      setText('qual1Tag', data.quality.q1_tag);
-      setText('qual1Title', data.quality.q1_title);
-      setText('qual1Desc', data.quality.q1_desc);
-
-      setText('qual2Tag', data.quality.q2_tag);
-      setText('qual2Title', data.quality.q2_title);
-      setText('qual2Desc', data.quality.q2_desc);
-
-      setText('qual3Tag', data.quality.q3_tag);
-      setText('qual3Title', data.quality.q3_title);
-      setText('qual3Desc', data.quality.q3_desc);
+      setText('qualityTitle', data.quality.title);
+      setText('qualitySub', data.quality.sub);
+      if (Array.isArray(data.quality.items) && data.quality.items.length > 0) {
+        const container = document.querySelector('.quality .grid-3');
+        if (container) {
+          container.style.gridTemplateColumns = 'repeat(auto-fit, minmax(280px, 1fr))';
+          container.innerHTML = data.quality.items.map(it => `
+            <div class="quality-card in">
+              <span class="num">${escapeHtml(it.tag)}</span>
+              <h3>${escapeHtml(it.title)}</h3>
+              <p>${escapeHtml(it.desc)}</p>
+            </div>
+          `).join('');
+        }
+      } else {
+        setText('qual1Tag', data.quality.q1_tag); setText('qual1Title', data.quality.q1_title); setText('qual1Desc', data.quality.q1_desc);
+        setText('qual2Tag', data.quality.q2_tag); setText('qual2Title', data.quality.q2_title); setText('qual2Desc', data.quality.q2_desc);
+        setText('qual3Tag', data.quality.q3_tag); setText('qual3Title', data.quality.q3_title); setText('qual3Desc', data.quality.q3_desc);
+      }
     }
 
-    // 9. Pricing Packages
+    // 9. Pricing Packages (Dynamic Cards)
     if (data.pricing) {
       const cur = data.pricing.currency || 'ج.م';
-      const mapPkg = (pkgKey, nameId, sessId, priceId, listId, btnId, defaultName) => {
-        const p = data.pricing[pkgKey];
-        if (!p) return;
-        setText(nameId, p.name);
-        setText(sessId, p.sessions);
-        if (p.price && document.getElementById(priceId)) document.getElementById(priceId).textContent = `${p.price} ${cur}`;
-        setList(listId, p.features, checkSvgGreen);
-        if (document.getElementById(btnId)) {
-          const pName = p.name || defaultName;
-          document.getElementById(btnId).href = `https://wa.me/${activeWaNumber}?text=` + encodeURIComponent(`السلام عليكم، حابب أشترك في ${pName}`);
-          document.getElementById(btnId).textContent = `اشترك في ${pName}`;
+      setText('pricingTitle', data.pricing.title);
+      if (Array.isArray(data.pricing.items) && data.pricing.items.length > 0) {
+        const container = document.querySelector('.pricing-grid');
+        if (container) {
+          container.innerHTML = data.pricing.items.map(p => {
+            const isFeatured = !!p.is_featured;
+            const lines = (p.features || '').split('\n').filter(l => l.trim().length > 0);
+            const featuresHtml = lines.map(l => `<li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5"><path d="m5 12 5 5L20 7"/></svg> ${escapeHtml(l.trim())}</li>`).join('');
+            const waMsg = encodeURIComponent(`السلام عليكم، حابب أشترك في ${p.name}`);
+            const btnClass = isFeatured ? 'btn-primary' : 'btn-ghost';
+            return `
+              <div class="price-card in ${isFeatured ? 'featured' : ''}">
+                ${isFeatured ? '<span class="price-badge">الأكثر اختياراً ⭐</span>' : ''}
+                <div class="price-header">
+                  <h3>${escapeHtml(p.name)}</h3>
+                  ${p.desc ? `<p>${escapeHtml(p.desc)}</p>` : ''}
+                </div>
+                <div class="price-box">
+                  <span class="sessions-count">${escapeHtml(p.sessions || '٨')}</span>
+                  <span class="freq">${escapeHtml(p.freq || 'حصص شهرياً')}</span>
+                  <div style="font-weight:800;color:var(--gold);font-size:18px;margin-top:6px;">${escapeHtml(p.price)} ${cur}</div>
+                </div>
+                <ul class="price-features">${featuresHtml}</ul>
+                <a href="https://wa.me/${activeWaNumber}?text=${waMsg}" target="_blank" class="btn ${btnClass} price-cta">
+                  اشترك في ${escapeHtml(p.name)}
+                </a>
+              </div>
+            `;
+          }).join('');
         }
-      };
-
-      mapPkg('pkg1', 'pkg1Name', 'pkg1Sessions', 'pkg1Price', 'pkg1FeaturesList', 'pkg1Btn', 'باقة الهمة');
-      mapPkg('pkg2', 'pkg2Name', 'pkg2Sessions', 'pkg2Price', 'pkg2FeaturesList', 'pkg2Btn', 'باقة الإتقان');
-      mapPkg('pkg3', 'pkg3Name', 'pkg3Sessions', 'pkg3Price', 'pkg3FeaturesList', 'pkg3Btn', 'باقة التميز');
+      } else {
+        const mapPkg = (pkgKey, nameId, sessId, priceId, listId, btnId, defaultName) => {
+          const p = data.pricing[pkgKey];
+          if (!p) return;
+          setText(nameId, p.name);
+          setText(sessId, p.sessions);
+          if (p.price && document.getElementById(priceId)) document.getElementById(priceId).textContent = `${p.price} ${cur}`;
+          setList(listId, p.features, checkSvgGreen);
+          if (document.getElementById(btnId)) {
+            const pName = p.name || defaultName;
+            document.getElementById(btnId).href = `https://wa.me/${activeWaNumber}?text=` + encodeURIComponent(`السلام عليكم، حابب أشترك في ${pName}`);
+            document.getElementById(btnId).textContent = `اشترك في ${pName}`;
+          }
+        };
+        mapPkg('pkg1', 'pkg1Name', 'pkg1Sessions', 'pkg1Price', 'pkg1FeaturesList', 'pkg1Btn', 'باقة الهمة');
+        mapPkg('pkg2', 'pkg2Name', 'pkg2Sessions', 'pkg2Price', 'pkg2FeaturesList', 'pkg2Btn', 'باقة الإتقان');
+        mapPkg('pkg3', 'pkg3Name', 'pkg3Sessions', 'pkg3Price', 'pkg3FeaturesList', 'pkg3Btn', 'باقة التميز');
+      }
     }
 
-    // 10. Stories / Testimonials
+    // 10. Stories / Testimonials (Dynamic Cards)
     if (data.stories) {
-      setText('story1Quote', data.stories.s1_quote ? `"${data.stories.s1_quote.replace(/^"|"$/g, '')}"` : '');
-      setText('story1Name', data.stories.s1_name);
-      setText('story1Prog', data.stories.s1_prog);
-
-      setText('story2Quote', data.stories.s2_quote ? `"${data.stories.s2_quote.replace(/^"|"$/g, '')}"` : '');
-      setText('story2Name', data.stories.s2_name);
-      setText('story2Prog', data.stories.s2_prog);
-
-      setText('story3Quote', data.stories.s3_quote ? `"${data.stories.s3_quote.replace(/^"|"$/g, '')}"` : '');
-      setText('story3Name', data.stories.s3_name);
-      setText('story3Prog', data.stories.s3_prog);
+      setText('storiesTitle', data.stories.title);
+      setText('storiesSub', data.stories.sub);
+      if (Array.isArray(data.stories.items) && data.stories.items.length > 0) {
+        const container = document.querySelector('.story-track');
+        if (container) {
+          container.innerHTML = data.stories.items.map(s => {
+            const quote = s.quote ? s.quote.replace(/^"|"$/g, '') : '';
+            const initial = (s.name || 'ط').trim().charAt(0);
+            return `
+              <div class="story-card in">
+                <p class="quote">"${escapeHtml(quote)}"</p>
+                <div class="who">
+                  <div class="avatar">${escapeHtml(initial)}</div>
+                  <div><strong>${escapeHtml(s.name)}</strong> <span>${escapeHtml(s.prog)}</span></div>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+      } else {
+        setText('story1Quote', data.stories.s1_quote ? `"${data.stories.s1_quote.replace(/^"|"$/g, '')}"` : '');
+        setText('story1Name', data.stories.s1_name); setText('story1Prog', data.stories.s1_prog);
+        setText('story2Quote', data.stories.s2_quote ? `"${data.stories.s2_quote.replace(/^"|"$/g, '')}"` : '');
+        setText('story2Name', data.stories.s2_name); setText('story2Prog', data.stories.s2_prog);
+        setText('story3Quote', data.stories.s3_quote ? `"${data.stories.s3_quote.replace(/^"|"$/g, '')}"` : '');
+        setText('story3Name', data.stories.s3_name); setText('story3Prog', data.stories.s3_prog);
+      }
     }
 
-    // 11. FAQs
+    // 11. FAQs (Dynamic Questions)
     if (data.faq) {
-      setText('faq1Q', data.faq.f1_q);
-      setText('faq1A', data.faq.f1_a);
-      setText('faq2Q', data.faq.f2_q);
-      setText('faq2A', data.faq.f2_a);
-      setText('faq3Q', data.faq.f3_q);
-      setText('faq3A', data.faq.f3_a);
-      setText('faq4Q', data.faq.f4_q);
-      setText('faq4A', data.faq.f4_a);
-      setText('faq5Q', data.faq.f5_q);
-      setText('faq5A', data.faq.f5_a);
+      setText('faqTitle', data.faq.title);
+      if (Array.isArray(data.faq.items) && data.faq.items.length > 0) {
+        const container = document.querySelector('.faq-list');
+        if (container) {
+          container.innerHTML = data.faq.items.map(f => `
+            <div class="faq-item in">
+              <button class="faq-q"><span>${escapeHtml(f.q)}</span> <span class="plus">+</span></button>
+              <div class="faq-a"><p>${escapeHtml(f.a)}</p></div>
+            </div>
+          `).join('');
+          setupFaqAccordion();
+        }
+      } else {
+        setText('faq1Q', data.faq.f1_q); setText('faq1A', data.faq.f1_a);
+        setText('faq2Q', data.faq.f2_q); setText('faq2A', data.faq.f2_a);
+        setText('faq3Q', data.faq.f3_q); setText('faq3A', data.faq.f3_a);
+        setText('faq4Q', data.faq.f4_q); setText('faq4A', data.faq.f4_a);
+        setText('faq5Q', data.faq.f5_q); setText('faq5A', data.faq.f5_a);
+      }
     }
 
     // 12. Register Form & Steps
@@ -1607,6 +1777,38 @@
       setText('regSideTitle', data.register.side_title);
       setText('regSubmitBtnText', data.register.btn_text);
       setList('regStepsList', data.register.steps, checkSvg);
+    }
+
+    // 13. Custom Sections (Dynamic Sections Builder)
+    const customContainer = document.getElementById('customSectionsContainer');
+    if (customContainer) {
+      if (Array.isArray(data.custom_sections) && data.custom_sections.length > 0) {
+        customContainer.innerHTML = data.custom_sections.map(sec => {
+          const btnHtml = (sec.btn_text && sec.btn_link) ? `
+            <div style="text-align:center;margin-top:28px;">
+              <a href="${escapeHtml(sec.btn_link)}" target="_blank" class="btn btn-primary">${escapeHtml(sec.btn_text)}</a>
+            </div>` : '';
+          return `
+            <section class="custom-section in" style="padding:70px 0;border-top:1px solid var(--line);background:var(--cream);">
+              <div class="container">
+                <div class="section-head center">
+                  ${sec.badge ? `<span class="eyebrow">${escapeHtml(sec.badge)}</span>` : ''}
+                  <h2 class="section-title">${escapeHtml(sec.title || '')}</h2>
+                  ${sec.sub ? `<p class="section-sub">${escapeHtml(sec.sub)}</p>` : ''}
+                </div>
+                ${sec.content ? `
+                  <div style="max-width:850px;margin:0 auto;font-size:16px;line-height:1.9;color:var(--ink-soft);background:#fff;padding:30px 36px;border-radius:18px;border:1px solid var(--line);box-shadow:var(--shadow-sm);white-space:pre-line;">
+                    ${escapeHtml(sec.content)}
+                  </div>
+                ` : ''}
+                ${btnHtml}
+              </div>
+            </section>
+          `;
+        }).join('');
+      } else {
+        customContainer.innerHTML = '';
+      }
     }
   }
 

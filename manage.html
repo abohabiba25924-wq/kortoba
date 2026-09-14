@@ -3,100 +3,65 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>لوحة التحكم الشاملة بمحتوى الموقع | أكاديمية قرطبة</title>
-  <link rel="icon" type="image/png" href="https://res.cloudinary.com/dvfx83gns/image/upload/v1787795512/%D9%82%D8%B1%D8%B7%D8%A8%D8%A9_gbn7xe.png">
+  <title>لوحة إدارة محتوى قرطبة الشاملة | Dynamic CMS</title>
   
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-  
-  <!-- Supabase JS CDN -->
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;500;600;700;800;900&family=Aref+Ruqaa:wght@700&display=swap" rel="stylesheet">
+
+  <!-- Supabase CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
-      --green-deep: #0c3826;
+      --green-deep: #0b3526;
       --green: #124e38;
-      --green-mid: #1c6c49;
+      --green-mid: #1b6348;
       --green-light: #e8f3ee;
-      --gold-dark: #966718;
-      --gold: #c8912a;
       --gold-bright: #d89518;
-      --gold-soft: #fbf0dc;
+      --gold: #c8912a;
+      --gold-dark: #9e6d17;
+      --gold-soft: #fbf3e4;
       --cream: #fbf6ec;
       --paper: #ffffff;
       --ink: #1a2420;
-      --ink-soft: #4a5d53;
-      --line: #e3d9c6;
-      --shadow-sm: 0 4px 12px rgba(18,78,56,0.06);
-      --shadow-md: 0 10px 28px -6px rgba(18,78,56,0.12);
-      --shadow-lg: 0 20px 40px -10px rgba(18,78,56,0.18);
+      --ink-soft: #4a5d54;
+      --line: #e3dacb;
+      --danger: #ef4444;
+      --danger-bg: #fee2e2;
       --radius-sm: 8px;
       --radius-md: 14px;
       --radius-lg: 20px;
+      --shadow-sm: 0 4px 12px rgba(11,53,38,0.05);
+      --shadow-md: 0 10px 28px rgba(11,53,38,0.08);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Cairo', sans-serif;
-      background: #f7f3eb;
+      background-color: var(--cream);
       color: var(--ink);
-      min-height: 100vh;
       line-height: 1.6;
+      min-height: 100vh;
     }
 
-    /* Auth Screen */
-    .auth-overlay {
-      position: fixed; inset: 0; z-index: 999;
-      background: linear-gradient(135deg, var(--green-deep) 0%, #061e14 100%);
-      display: flex; align-items: center; justify-content: center;
-      padding: 20px;
-    }
-    .auth-card {
-      background: var(--paper);
-      width: 100%; max-width: 440px;
-      border-radius: var(--radius-lg);
-      padding: 36px 30px;
-      box-shadow: var(--shadow-lg);
-      text-align: center;
-      position: relative;
-      border: 2px solid var(--gold-soft);
-    }
-    .auth-card img { width: 70px; height: 70px; margin-bottom: 16px; }
-    .auth-card h2 { font-family: 'Amiri', serif; font-size: 26px; color: var(--green-deep); margin-bottom: 6px; }
-    .auth-card p { font-size: 13.5px; color: var(--ink-soft); margin-bottom: 24px; }
-    .auth-input {
-      width: 100%; padding: 13px 16px; border: 1.5px solid var(--line);
-      border-radius: var(--radius-md); font-family: inherit; font-size: 15px;
-      margin-bottom: 16px; outline: none; transition: border-color .2s;
-      text-align: center;
-    }
-    .auth-input:focus { border-color: var(--green); }
-    .auth-btn {
-      width: 100%; padding: 13px; background: var(--green); color: #fff;
-      border: none; border-radius: var(--radius-md); font-family: inherit;
-      font-size: 16px; font-weight: 700; cursor: pointer; transition: background .2s, transform .2s;
-    }
-    .auth-btn:hover { background: var(--green-mid); transform: translateY(-1px); }
-    .auth-back {
-      display: inline-block; margin-top: 18px; font-size: 13px;
-      color: var(--green-mid); text-decoration: none; font-weight: 600;
-    }
-
-    /* App Header */
+    /* Top Bar */
     .top-header {
       background: var(--green-deep);
       color: #fff;
-      padding: 14px 24px;
-      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 3px solid var(--gold);
       position: sticky; top: 0; z-index: 100;
       box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-      border-bottom: 2px solid var(--gold);
     }
     .brand-wrap { display: flex; align-items: center; gap: 14px; }
-    .brand-wrap img { width: 42px; height: 42px; }
-    .brand-titles h1 { font-family: 'Amiri', serif; font-size: 20px; color: var(--gold-bright); line-height: 1.2; }
-    .brand-titles span { font-size: 12px; color: #b7d6c7; letter-spacing: 0.5px; }
+    .brand-wrap img { width: 44px; height: 44px; object-fit: contain; }
+    .brand-titles h1 { font-family: 'Amiri', serif; font-size: 20px; font-weight: 700; color: #fff; line-height: 1.2; }
+    .brand-titles span { font-size: 11.5px; color: var(--gold-bright); font-weight: 600; display: block; }
 
     .header-actions { display: flex; align-items: center; gap: 10px; }
     .btn-action {
@@ -114,10 +79,10 @@
 
     /* Layout */
     .dashboard-container {
-      max-width: 1280px; margin: 28px auto 60px;
+      max-width: 1320px; margin: 28px auto 60px;
       padding: 0 20px;
       display: grid;
-      grid-template-columns: 280px 1fr;
+      grid-template-columns: 290px 1fr;
       gap: 26px;
       align-items: start;
     }
@@ -148,6 +113,12 @@
       box-shadow: 0 6px 16px -4px rgba(18,78,56,0.4);
     }
     .tab-btn.active svg { stroke: var(--gold-bright); }
+    .tab-highlight {
+      background: #fdf6eb; color: var(--gold-dark); border: 1px dashed var(--gold);
+    }
+    .tab-highlight.active {
+      background: var(--gold-dark); color: #fff; border-color: transparent;
+    }
 
     .cloud-badge {
       margin-top: 14px; padding: 12px;
@@ -198,7 +169,7 @@
     input[type="text"], input[type="tel"], input[type="email"], textarea, select {
       width: 100%; padding: 11px 14px;
       border: 1.5px solid var(--line); border-radius: var(--radius-md);
-      font-family: inherit; font-size: 14.5px; color: var(--ink);
+      font-family: inherit; font-size: 14px; color: var(--ink);
       background: #faf8f3; outline: none; transition: all .2s ease;
     }
     input:focus, textarea:focus, select:focus {
@@ -226,22 +197,78 @@
     input[type="checkbox"]:checked + .toggle { background: var(--green); }
     input[type="checkbox"]:checked + .toggle::after { transform: translateX(-22px); }
 
-    /* Card Box Inside Form */
-    .sub-card {
+    /* Section Switch Grid */
+    .section-switch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .section-switch-card {
       background: #faf7f0;
       border: 1.5px solid var(--line);
       border-radius: var(--radius-md);
-      padding: 22px;
-      margin-bottom: 22px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all .2s ease;
+    }
+    .section-switch-card:hover { border-color: var(--gold); }
+    .section-switch-card strong { font-size: 14px; color: var(--green-deep); }
+    .section-switch-card span { font-size: 12px; color: var(--ink-soft); display: block; margin-top: 2px; }
+
+    /* Repeater Items */
+    .repeater-list { display: flex; flex-direction: column; gap: 16px; margin-top: 14px; }
+    .repeater-item {
+      background: #faf7f0;
+      border: 1.5px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 20px;
       position: relative;
+      transition: all .2s ease;
     }
-    .sub-card-title {
-      font-weight: 700; font-size: 16px; color: var(--green-deep);
-      margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;
+    .repeater-item:hover {
+      border-color: #d8c29d;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.04);
     }
-    .tag-badge {
-      background: var(--gold-soft); color: var(--gold-dark);
-      padding: 3px 10px; border-radius: 100px; font-size: 12px; font-weight: 700;
+    .repeater-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px dashed var(--line);
+    }
+    .repeater-badge {
+      font-size: 13px; font-weight: 700; color: var(--green-deep);
+      background: var(--gold-soft); padding: 4px 12px; border-radius: 100px;
+      border: 1px solid rgba(200,145,42,0.25);
+    }
+    .btn-delete {
+      background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5;
+      padding: 6px 14px; border-radius: 100px; font-size: 12.5px;
+      font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+      transition: all .2s ease; font-family: inherit;
+    }
+    .btn-delete:hover {
+      background: #ef4444; color: #fff; border-color: #ef4444; transform: translateY(-1px);
+    }
+
+    .btn-add {
+      width: 100%; padding: 14px; background: #fff;
+      border: 2px dashed var(--gold); border-radius: var(--radius-md);
+      color: var(--green-deep); font-family: inherit; font-size: 14.5px;
+      font-weight: 700; cursor: pointer; display: flex; align-items: center;
+      justify-content: center; gap: 8px; transition: all .2s ease; margin-top: 14px;
+    }
+    .btn-add:hover {
+      background: var(--gold-soft); border-color: var(--green); transform: translateY(-1px);
+    }
+
+    .sub-card {
+      background: #faf7f0; border: 1.5px solid var(--line);
+      border-radius: var(--radius-md); padding: 22px; margin-bottom: 22px;
     }
 
     /* Toast Notification */
@@ -249,50 +276,59 @@
       position: fixed; bottom: 30px; left: 30px; z-index: 1000;
       background: var(--green-deep); color: #fff;
       padding: 14px 24px; border-radius: 100px;
+      font-weight: 700; font-size: 14px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-      border-right: 4px solid var(--gold-bright);
-      font-size: 14px; font-weight: 700;
+      border: 2px solid var(--gold-bright);
       display: flex; align-items: center; gap: 10px;
       transform: translateY(120px); opacity: 0;
-      transition: transform .3s ease, opacity .3s ease;
-      pointer-events: none;
+      transition: all .3s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
-    .toast.show { transform: translateY(0); opacity: 1; pointer-events: auto; }
+    .toast.show { transform: translateY(0); opacity: 1; }
 
-    /* SQL box */
-    .sql-box {
-      background: #1b2621; color: #a3e635;
-      padding: 16px; border-radius: var(--radius-md);
-      font-family: monospace; font-size: 13px;
-      line-height: 1.5; overflow-x: auto;
-      direction: ltr; text-align: left;
-      margin: 12px 0; border: 1px solid #2d453b;
+    /* Modal Gate */
+    .auth-gate {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(11,53,38,0.85); backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center; padding: 20px;
     }
+    .auth-card {
+      background: #fff; border-radius: var(--radius-lg);
+      max-width: 420px; width: 100%; padding: 36px 30px; text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3); border: 1.5px solid var(--gold);
+    }
+    .auth-card h3 { font-family: 'Amiri', serif; font-size: 24px; color: var(--green-deep); margin-bottom: 8px; }
+    .auth-card p { font-size: 13.5px; color: var(--ink-soft); margin-bottom: 22px; }
+    .auth-card input {
+      width: 100%; padding: 13px 16px; border: 1.5px solid var(--line);
+      border-radius: var(--radius-md); font-family: inherit; font-size: 15px;
+      text-align: center; margin-bottom: 18px; outline: none;
+    }
+    .auth-card button {
+      width: 100%; padding: 13px; background: var(--green); color: #fff;
+      border: none; border-radius: var(--radius-md); font-family: inherit;
+      font-size: 15px; font-weight: 700; cursor: pointer; transition: background .2s;
+    }
+    .auth-card button:hover { background: var(--green-mid); }
 
-    /* Responsive */
-    @media (max-width: 960px) {
-      .dashboard-container { grid-template-columns: 1fr; margin-top: 16px; }
-      .sidebar-tabs { position: static; display: flex; overflow-x: auto; padding: 8px; gap: 8px; max-height: none; }
-      .tab-btn { width: auto; white-space: nowrap; margin-bottom: 0; padding: 8px 14px; font-size: 13px; }
+    @media (max-width: 900px) {
+      .dashboard-container { grid-template-columns: 1fr; }
+      .sidebar-tabs { position: static; max-height: none; }
       .form-grid { grid-template-columns: 1fr; }
-      .content-area { padding: 20px 16px; }
-      .header-actions .btn-action span { display: none; }
     }
   </style>
 </head>
 <body>
 
   <!-- ==================== AUTH GATE ==================== -->
-  <div class="auth-overlay" id="authGate">
+  <div class="auth-gate" id="authGate">
     <div class="auth-card">
-      <img src="https://res.cloudinary.com/dvfx83gns/image/upload/v1787795512/%D9%82%D8%B1%D8%B7%D8%A8%D8%A9_gbn7xe.png" alt="قرطبة">
-      <h2>لوحة إدارة وتعديل المحتوى</h2>
-      <p>أدخل كلمة مرور الإدارة لتعديل بيانات ومحتوى الموقع بدون تعديل الكود البرمجي</p>
+      <img src="https://res.cloudinary.com/dvfx83gns/image/upload/v1787795512/%D9%82%D8%B1%D8%B7%D8%A8%D8%A9_gbn7xe.png" alt="قرطبة" style="width:64px;height:64px;margin-bottom:14px;">
+      <h3>أكاديمية قرطبة</h3>
+      <p>لوحة التحكم محمية بكلمة مرور. أدخل كلمة مرور الإدارة للمتابعة:</p>
       <form id="authForm">
-        <input type="password" id="authPass" class="auth-input" placeholder="كلمة المرور (kortoba2026)" required autofocus>
-        <button type="submit" class="auth-btn">تسجيل الدخول</button>
+        <input type="password" id="authPass" placeholder="كلمة المرور..." autofocus required>
+        <button type="submit">تسجيل الدخول 🔓</button>
       </form>
-      <a href="index.html" class="auth-back">← العودة للموقع التعريفي الرئيسي</a>
     </div>
   </div>
 
@@ -302,13 +338,13 @@
       <img src="https://res.cloudinary.com/dvfx83gns/image/upload/v1787795512/%D9%82%D8%B1%D8%B7%D8%A8%D8%A9_gbn7xe.png" alt="قرطبة">
       <div class="brand-titles">
         <h1>لوحة إدارة محتوى قرطبة الشاملة</h1>
-        <span>تعديل مباشر لكافة تفاصيل واجهة الموقع</span>
+        <span>تحكم كامل في الأقسام، الحذف والإضافة، والنصوص والأسعار</span>
       </div>
     </div>
     <div class="header-actions">
       <button class="btn-action btn-save" id="saveAllBtn" title="حفظ وتطبيق في السحابة">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-        <span>حفظ وتطبيق التغييرات</span>
+        <span>حفظ جميع التعديلات</span>
       </button>
       <a href="index.html" target="_blank" class="btn-action btn-preview" title="معاينة الموقع">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -323,7 +359,11 @@
     
     <!-- Navigation Tabs -->
     <aside class="sidebar-tabs">
-      <button class="tab-btn active" data-target="panel-contact">
+      <button class="tab-btn active tab-highlight" data-target="panel-sections">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        🗂️ إدارة وحذف الأقسام
+      </button>
+      <button class="tab-btn" data-target="panel-contact">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
         التواصل والسوشيال
       </button>
@@ -391,8 +431,151 @@
     <!-- Main Content Area -->
     <main class="content-area">
 
+      <!-- ================= 0. SECTION MANAGER (NEW!) ================= -->
+      <section class="panel active" id="panel-sections">
+        <div class="panel-head">
+          <div>
+            <h2>🗂️ إدارة وحذف وإضافة أقسام الموقع</h2>
+            <p>يمكنك بنقرة زر إخفاء/حذف أي قسم كامل من الصفحة الرئيسية، أو إضافة أقسام مخصصة جديدة</p>
+          </div>
+        </div>
+
+        <h3 style="font-size:16px;color:var(--green-deep);margin-bottom:14px;">1. التحكم في ظهور أقسام الصفحة الرئيسية (إظهار / إخفاء)</h3>
+        <p style="font-size:13px;color:var(--ink-soft);margin-bottom:16px;">إلغاء تفعيل أي قسم سيقوم بحذفه وإخفائه فوراً من الموقع للزوار:</p>
+
+        <div class="section-switch-grid">
+          <div class="section-switch-card">
+            <div>
+              <strong>شريط الإعلانات العلوي</strong>
+              <span>التنبيه العاجل أعلى الصفحة</span>
+            </div>
+            <label class="switch-label">
+              <input type="checkbox" id="sec_banner" checked>
+              <span class="toggle"></span>
+            </label>
+          </div>
+
+          <div class="section-switch-card">
+            <div>
+              <strong>قسم «لماذا قرطبة»</strong>
+              <span>كروت القوة والمميزات</span>
+            </div>
+            <label class="switch-label">
+              <input type="checkbox" id="sec_why" checked>
+              <span class="toggle"></span>
+            </label>
+          </div>
+
+          <div class="section-switch-card">
+            <div>
+              <strong>قسم «المسارات التعليمية»</strong>
+              <span>مسارات التأسيس والحفظ والتجويد</span>
+            </div>
+            <label class="switch-label">
+              <input type="checkbox" id="sec_pathways" checked>
+              <span class="toggle"></span>
+            </label>
+          </div>
+
+          <div class="section-switch-card">
+            <div>
+              <strong>قسم «برامج الأطفال والكبار»</strong>
+              <span>الفئات العمرية ومناهج التدريس</span>
+            </div>
+            <label class="switch-label">
+              <input type="checkbox" id="sec_programs" checked>
+              <span class="toggle"></span>
+            </label>
+          </div>
+
+          <div class="section-switch-card">
+            <div>
+              <strong>قسم «نماذج التلاوات»</strong>
+              <span>التسجيلات الصوتية للطلاب</span>
+            </div>
+            <label class="switch-label">
+              <input type="checkbox" id="sec_showcase" checked>
+              <span class="toggle"></span>
+            </label>
+          </div>
+
+          <div class="section-switch-card">
+            <div>
+              <strong>قسم «معايير الجودة والمعلمين»</strong>
+              <span>كروت الأمانة والسند والخبرة</span>
+            </div>
+            <label class="switch-label">
+              <input type="checkbox" id="sec_quality" checked>
+              <span class="toggle"></span>
+            </label>
+          </div>
+
+          <div class="section-switch-card">
+            <div>
+              <strong>قسم «باقات الاشتراك والأسعار»</strong>
+              <span>جدول الباقات والأسعار</span>
+            </div>
+            <label class="switch-label">
+              <input type="checkbox" id="sec_pricing" checked>
+              <span class="toggle"></span>
+            </label>
+          </div>
+
+          <div class="section-switch-card">
+            <div>
+              <strong>قسم «آراء وقصص الطلاب»</strong>
+              <span>كلام الأهالي والطلاب</span>
+            </div>
+            <label class="switch-label">
+              <input type="checkbox" id="sec_stories" checked>
+              <span class="toggle"></span>
+            </label>
+          </div>
+
+          <div class="section-switch-card">
+            <div>
+              <strong>قسم «الأسئلة الشائعة»</strong>
+              <span>قائمة الإجابات عن الاستفسارات</span>
+            </div>
+            <label class="switch-label">
+              <input type="checkbox" id="sec_faq" checked>
+              <span class="toggle"></span>
+            </label>
+          </div>
+
+          <div class="section-switch-card">
+            <div>
+              <strong>قسم «حجز الحصة التجريبية»</strong>
+              <span>استمارة التسجيل الفورية</span>
+            </div>
+            <label class="switch-label">
+              <input type="checkbox" id="sec_register" checked>
+              <span class="toggle"></span>
+            </label>
+          </div>
+        </div>
+
+        <div style="margin-top:34px;padding-top:24px;border-top:1.5px solid var(--line);">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+            <div>
+              <h3 style="font-size:16px;color:var(--green-deep);">2. إضافة أقسام مخصصة جديدة للموقع (Custom Sections)</h3>
+              <p style="font-size:13px;color:var(--ink-soft);margin-top:2px;">أنشئ أقساماً إضافية في الموقع (مثل: تكريم الحفظة، أنشطة صيفية، أو شروط التسجيل)</p>
+            </div>
+          </div>
+
+          <div id="customSectionsContainer" class="repeater-list">
+            <!-- Dynamic Custom Sections will render here -->
+          </div>
+
+          <button type="button" class="btn-add" id="addCustomSectionBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>➕ إضافة قسم مخصص جديد للموقع</span>
+          </button>
+        </div>
+      </section>
+
       <!-- ================= 1. CONTACT & SOCIAL ================= -->
-      <section class="panel active" id="panel-contact">
+      <section class="panel" id="panel-contact">
         <div class="panel-head">
           <div>
             <h2>التواصل وروابط السوشيال ميديا</h2>
@@ -516,12 +699,12 @@
         </div>
       </section>
 
-      <!-- ================= 4. WHY US (FEATURES) ================= -->
+      <!-- ================= 4. WHY US (DYNAMIC REPEATER) ================= -->
       <section class="panel" id="panel-why">
         <div class="panel-head">
           <div>
-            <h2>قسم «لماذا قرطبة» (المميزات الأربعة)</h2>
-            <p>تعديل عناوين وبنود كروت القوة والتميز</p>
+            <h2>قسم «لماذا قرطبة» (المميزات)</h2>
+            <p>تعديل نصوص القسم مع إمكانية إضافة ميزات جديدة أو حذف أي ميزة</p>
           </div>
         </div>
 
@@ -536,130 +719,54 @@
           </div>
         </div>
 
-        <div class="form-grid" style="margin-top:16px;">
-          <div class="sub-card">
-            <div class="sub-card-title">الميزة 1: المعلمون</div>
-            <div class="form-group">
-              <label>العنوان</label>
-              <input type="text" id="why1_title" placeholder="معلمون مُجازون">
-            </div>
-            <div class="form-group">
-              <label>الوصف</label>
-              <textarea id="why1_desc" rows="2" placeholder="حفظة للقرآن الكريم بإجازات سند في القراءات، ومؤهَّلون لتدريس الأطفال والكبار."></textarea>
-            </div>
-          </div>
-
-          <div class="sub-card">
-            <div class="sub-card-title">الميزة 2: المواعيد</div>
-            <div class="form-group">
-              <label>العنوان</label>
-              <input type="text" id="why2_title" placeholder="مواعيد مرنة">
-            </div>
-            <div class="form-group">
-              <label>الوصف</label>
-              <textarea id="why2_desc" rows="2" placeholder="اختار المعاد اللي يناسب يومك، وغيّره وقت ما تحتاج، من غير التزام بمكان أو انتقال."></textarea>
-            </div>
-          </div>
-
-          <div class="sub-card">
-            <div class="sub-card-title">الميزة 3: المتابعة</div>
-            <div class="form-group">
-              <label>العنوان</label>
-              <input type="text" id="why3_title" placeholder="متابعة فردية">
-            </div>
-            <div class="form-group">
-              <label>الوصف</label>
-              <textarea id="why3_desc" rows="2" placeholder="خطة حفظ خاصة بكل طالب، وتقييم دوري لمستواه، وتواصل مستمر مع ولي الأمر."></textarea>
-            </div>
-          </div>
-
-          <div class="sub-card">
-            <div class="sub-card-title">الميزة 4: المناهج</div>
-            <div class="form-group">
-              <label>العنوان</label>
-              <input type="text" id="why4_title" placeholder="مناهج لكل الأعمار">
-            </div>
-            <div class="form-group">
-              <label>الوصف</label>
-              <textarea id="why4_desc" rows="2" placeholder="برامج مصمّمة خصيصًا للأطفال بأسلوب مبسّط وممتع، وأخرى للكبار بخطى مكثّفة."></textarea>
-            </div>
-          </div>
-        </div>
+        <h3 style="font-size:15px;color:var(--green-deep);margin:20px 0 10px;">كروت المميزات (يمكنك حذف أي كرت أو إضافة كروت جديدة):</h3>
+        <div id="whyItemsContainer" class="repeater-list"></div>
+        <button type="button" class="btn-add" id="addWhyItemBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>➕ إضافة ميزة جديدة</span>
+        </button>
       </section>
 
-      <!-- ================= 5. PATHWAYS ================= -->
+      <!-- ================= 5. PATHWAYS (DYNAMIC REPEATER) ================= -->
       <section class="panel" id="panel-pathways">
         <div class="panel-head">
           <div>
-            <h2>المسارات التعليمية الأربعة</h2>
-            <p>تعديل عناوين ومناهج المسارات المعتمدة</p>
+            <h2>المسارات التعليمية</h2>
+            <p>تعديل عناوين ومناهج المسارات مع إمكانية إضافة مسارات جديدة أو حذف أي مسار</p>
           </div>
         </div>
 
         <div class="form-grid">
-          <div class="sub-card full-width">
-            <div class="sub-card-title">المسار الأول: نور البيان والتأسيس</div>
-            <div class="form-group">
-              <label>العنوان</label>
-              <input type="text" id="path1_title" placeholder="نور البيان والتأسيس السليم">
-            </div>
-            <div class="form-group">
-              <label>الوصف</label>
-              <textarea id="path1_desc" rows="2" placeholder="مخصص للأطفال والمبتدئين لضبط النطق العربي ومخارج الحروف والقراءة الصحيحة من المصحف الشريف."></textarea>
-            </div>
+          <div class="form-group">
+            <label>عنوان القسم الرئيسي</label>
+            <input type="text" id="pathways_title" placeholder="مسارات مدروسة لكل مرحلة">
           </div>
-
-          <div class="sub-card full-width">
-            <div class="sub-card-title">المسار الثاني: الحفظ والتثبيت الدوري</div>
-            <div class="form-group">
-              <label>العنوان</label>
-              <input type="text" id="path2_title" placeholder="الحفظ والتثبيت الدوري">
-            </div>
-            <div class="form-group">
-              <label>الوصف</label>
-              <textarea id="path2_desc" rows="2" placeholder="خطة حفظ منتظمة مخصصة لكل طالب تناسب قدراته ووقته، تجمع بين حفظ الجديد والمراجعة الصغرى والكبرى."></textarea>
-            </div>
-          </div>
-
-          <div class="sub-card full-width">
-            <div class="sub-card-title">المسار الثالث: تصحيح التلاوة والتجويد</div>
-            <div class="form-group">
-              <label>العنوان</label>
-              <input type="text" id="path3_title" placeholder="تصحيح التلاوة والتجويد">
-            </div>
-            <div class="form-group">
-              <label>الوصف</label>
-              <textarea id="path3_desc" rows="2" placeholder="دراسة عملية ونظرية لأحكام التجويد (النون والميم الساكنتين، المدود، والتفخيم والترقيق) وتطبيقها آية بآية."></textarea>
-            </div>
-          </div>
-
-          <div class="sub-card full-width">
-            <div class="sub-card-title">المسار الرابع: الإجازة بالسند المتصل</div>
-            <div class="form-group">
-              <label>العنوان</label>
-              <input type="text" id="path4_title" placeholder="الإجازة بالسند المتصل">
-            </div>
-            <div class="form-group">
-              <label>الوصف</label>
-              <textarea id="path4_desc" rows="2" placeholder="مسار متخصص للخاتمين لقراءة القرآن كاملاً غيباً برواية حفص عن عاصم أو غيرها والحصول على سند متصل."></textarea>
-            </div>
+          <div class="form-group">
+            <label>النص الفرعي للقسم</label>
+            <input type="text" id="pathways_sub" placeholder="منهج تعليمي يبدأ من ضبط الحروف وقواعد القراءة حتى نيل الإجازة بالسند المتصل.">
           </div>
         </div>
+
+        <h3 style="font-size:15px;color:var(--green-deep);margin:20px 0 10px;">قائمة المسارات التعليمية:</h3>
+        <div id="pathwaysItemsContainer" class="repeater-list"></div>
+        <button type="button" class="btn-add" id="addPathwayItemBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>➕ إضافة مسار تعليمي جديد</span>
+        </button>
       </section>
 
-      <!-- ================= 6. PROGRAMS (KIDS & ADULTS) ================= -->
+      <!-- ================= 6. PROGRAMS ================= -->
       <section class="panel" id="panel-programs">
         <div class="panel-head">
           <div>
-            <h2>البرامج التعليمية (الأطفال والكبار)</h2>
-            <p>تعديل نصوص بطاقات البرامج للأطفال والكبار</p>
+            <h2>برامج الأطفال والكبار</h2>
+            <p>تعديل الفئات العمرية، المناهج وبنود كل فئة</p>
           </div>
         </div>
 
         <div class="form-grid">
-          <!-- Children -->
           <div class="sub-card">
-            <div class="sub-card-title">برنامج الأطفال</div>
+            <h3 style="color:var(--green-deep);margin-bottom:14px;">برنامج الأطفال</h3>
             <div class="form-group">
               <label>الفئة العمرية</label>
               <input type="text" id="prog_kids_age" placeholder="من ٤ إلى ١٢ سنة">
@@ -669,18 +776,17 @@
               <input type="text" id="prog_kids_title" placeholder="برنامج الأطفال">
             </div>
             <div class="form-group">
-              <label>بنود البرنامج (اكتب كل بند في سطر)</label>
-              <textarea id="prog_kids_points" rows="4" placeholder="تحفيظ ميسّر بأسلوب تفاعلي وممتع&#10;تصحيح مخارج الحروف والتلاوة&#10;تقارير دورية توصل لولي الأمر&#10;حوافز وتشجيع مستمر أثناء الحصة"></textarea>
-            </div>
-            <div class="form-group">
               <label>نص زر التسجيل</label>
               <input type="text" id="prog_kids_btn" placeholder="التسجيل في برنامج الأطفال">
             </div>
+            <div class="form-group">
+              <label>بنود ومميزات البرنامج (كل سطر يعتبر بنداً مستقلاً)</label>
+              <textarea id="prog_kids_points" rows="5" placeholder="تحفيظ ميسّر بأسلوب تفاعلي وممتع&#10;تصحيح مخارج الحروف والتلاوة&#10;تقارير دورية توصل لولي الأمر&#10;حوافز وتشجيع مستمر أثناء الحصة"></textarea>
+            </div>
           </div>
 
-          <!-- Adults -->
           <div class="sub-card">
-            <div class="sub-card-title">برنامج الكبار</div>
+            <h3 style="color:var(--green-deep);margin-bottom:14px;">برنامج الكبار</h3>
             <div class="form-group">
               <label>الفئة العمرية</label>
               <input type="text" id="prog_adults_age" placeholder="١٣ سنة فأكثر">
@@ -690,444 +796,218 @@
               <input type="text" id="prog_adults_title" placeholder="برنامج الكبار">
             </div>
             <div class="form-group">
-              <label>بنود البرنامج (اكتب كل بند في سطر)</label>
-              <textarea id="prog_adults_points" rows="4" placeholder="تحفيظ ومراجعة بخطة تناسب وقتك&#10;تجويد نظري وتطبيقي من الأساس&#10;تفسير ميسّر لما يتم حفظه&#10;مسار اختياري للإجازة بالسند"></textarea>
-            </div>
-            <div class="form-group">
               <label>نص زر التسجيل</label>
               <input type="text" id="prog_adults_btn" placeholder="التسجيل في برنامج الكبار">
+            </div>
+            <div class="form-group">
+              <label>بنود ومميزات البرنامج (كل سطر يعتبر بنداً مستقلاً)</label>
+              <textarea id="prog_adults_points" rows="5" placeholder="تحفيظ ومراجعة بخطة تناسب وقتك&#10;تجويد نظري وتطبيقي من الأساس&#10;تفسير ميسّر لما يتم حفظه&#10;مسار اختياري للإجازة بالسند"></textarea>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- ================= 7. AUDIO SHOWCASE ================= -->
+      <!-- ================= 7. AUDIO SHOWCASE (DYNAMIC REPEATER) ================= -->
       <section class="panel" id="panel-showcase">
         <div class="panel-head">
           <div>
-            <h2>نماذج التلاوات الصوتية</h2>
-            <p>تعديل أسماء وبيانات تلاوات الطلاب في المشغل الصوتي التفاعلي</p>
+            <h2>نماذج تلاوات الطلاب</h2>
+            <p>تعديل التلاوات المسجلة مع إمكانية إضافة طلاب ونماذج جديدة أو حذف أي نموذج</p>
           </div>
         </div>
 
         <div class="form-grid">
-          <div class="sub-card full-width">
-            <div class="sub-card-title">التلاوة الأولى</div>
-            <div class="form-grid triple">
-              <div class="form-group">
-                <label>اسم الطالب والسن</label>
-                <input type="text" id="audio1_name" placeholder="عمر خالد (٨ سنوات)">
-              </div>
-              <div class="form-group">
-                <label>المسار</label>
-                <input type="text" id="audio1_track" placeholder="مسار نور البيان وحفظ جزء عم">
-              </div>
-              <div class="form-group">
-                <label>السورة / الملاحظة</label>
-                <input type="text" id="audio1_surah" placeholder="تلاوة من سورة النبأ — بعد ٣ أشهر من الدراسة">
-              </div>
-            </div>
+          <div class="form-group">
+            <label>عنوان القسم الرئيسي</label>
+            <input type="text" id="showcase_title" placeholder="نماذج من تلاوات طلابنا">
           </div>
-
-          <div class="sub-card full-width">
-            <div class="sub-card-title">التلاوة الثانية</div>
-            <div class="form-grid triple">
-              <div class="form-group">
-                <label>اسم الطالب والسن</label>
-                <input type="text" id="audio2_name" placeholder="فاطمة الزهراء (١١ سنة)">
-              </div>
-              <div class="form-group">
-                <label>المسار</label>
-                <input type="text" id="audio2_track" placeholder="مسار الحفظ وتصحيح التلاوة">
-              </div>
-              <div class="form-group">
-                <label>السورة / الملاحظة</label>
-                <input type="text" id="audio2_surah" placeholder="تلاوة من سورة الرحمن — تطبيق أحكام المدود">
-              </div>
-            </div>
-          </div>
-
-          <div class="sub-card full-width">
-            <div class="sub-card-title">التلاوة الثالثة</div>
-            <div class="form-grid triple">
-              <div class="form-group">
-                <label>اسم الطالب والسن</label>
-                <input type="text" id="audio3_name" placeholder="م. أحمد حسن">
-              </div>
-              <div class="form-group">
-                <label>المسار</label>
-                <input type="text" id="audio3_track" placeholder="مسار الكبار والإتقان والتجويد">
-              </div>
-              <div class="form-group">
-                <label>السورة / الملاحظة</label>
-                <input type="text" id="audio3_surah" placeholder="تلاوة من سورة مريم — برواية حفص عن عاصم">
-              </div>
-            </div>
+          <div class="form-group">
+            <label>النص الفرعي للقسم</label>
+            <input type="text" id="showcase_sub" placeholder="استمع إلى مقاطع مسجلة من حصص طلاب الأكاديمية تُظهر إتقان الأحكام والمخارج وحسن الأداء.">
           </div>
         </div>
+
+        <h3 style="font-size:15px;color:var(--green-deep);margin:20px 0 10px;">قائمة تلاوات الطلاب:</h3>
+        <div id="showcaseItemsContainer" class="repeater-list"></div>
+        <button type="button" class="btn-add" id="addShowcaseItemBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>➕ إضافة نموذج تلاوة جديد</span>
+        </button>
       </section>
 
-      <!-- ================= 8. QUALITY / TEACHERS ================= -->
+      <!-- ================= 8. QUALITY STANDARDS (DYNAMIC REPEATER) ================= -->
       <section class="panel" id="panel-quality">
         <div class="panel-head">
           <div>
             <h2>معايير الجودة والمعلمين</h2>
-            <p>تعديل البطاقات الثلاثة التي توضح أمانة ومؤهلات المعلمين</p>
+            <p>تعديل كروت الأمانة والخبرة مع إمكانية إضافة معايير جديدة أو حذف أي معيار</p>
           </div>
         </div>
 
-        <div class="form-grid triple">
-          <div class="sub-card">
-            <div class="sub-card-title">المعيار الأول</div>
-            <div class="form-group">
-              <label>الوسم العلوي</label>
-              <input type="text" id="qual1_tag" placeholder="القرآن الكريم">
-            </div>
-            <div class="form-group">
-              <label>العنوان</label>
-              <input type="text" id="qual1_title" placeholder="حفظ متقن">
-            </div>
-            <div class="form-group">
-              <label>الوصف</label>
-              <textarea id="qual1_desc" rows="3" placeholder="معلمون حافظون لكتاب الله، مُتقنون للتلاوة قبل تدريسها لغيرهم."></textarea>
-            </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>عنوان القسم الرئيسي</label>
+            <input type="text" id="quality_title" placeholder="في إيه أمانة إحنا بنطمّنك عليه">
           </div>
-
-          <div class="sub-card">
-            <div class="sub-card-title">المعيار الثاني</div>
-            <div class="form-group">
-              <label>الوسم العلوي</label>
-              <input type="text" id="qual2_tag" placeholder="الإجازات">
-            </div>
-            <div class="form-group">
-              <label>العنوان</label>
-              <input type="text" id="qual2_title" placeholder="سند متصل">
-            </div>
-            <div class="form-group">
-              <label>الوصف</label>
-              <textarea id="qual2_desc" rows="3" placeholder="من يحملون إجازات في القراءات بسند متصل، لمن يرغب في هذا المسار."></textarea>
-            </div>
-          </div>
-
-          <div class="sub-card">
-            <div class="sub-card-title">المعيار الثالث</div>
-            <div class="form-group">
-              <label>الوسم العلوي</label>
-              <input type="text" id="qual3_tag" placeholder="الخبرة">
-            </div>
-            <div class="form-group">
-              <label>العنوان</label>
-              <input type="text" id="qual3_title" placeholder="تخصص في التعليم عن بُعد">
-            </div>
-            <div class="form-group">
-              <label>الوصف</label>
-              <textarea id="qual3_desc" rows="3" placeholder="خبرة فعلية في التعامل مع الأطفال والكبار من خلال الشاشة، بأساليب تناسب كل فئة."></textarea>
-            </div>
+          <div class="form-group">
+            <label>النص الفرعي للقسم</label>
+            <input type="text" id="quality_sub" placeholder="كل معلم في قرطبة بيمر باختيار دقيق قبل ما يبدأ التدريس مع طلابنا.">
           </div>
         </div>
+
+        <h3 style="font-size:15px;color:var(--green-deep);margin:20px 0 10px;">كروت المعايير:</h3>
+        <div id="qualityItemsContainer" class="repeater-list"></div>
+        <button type="button" class="btn-add" id="addQualityItemBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>➕ إضافة معيار جودة جديد</span>
+        </button>
       </section>
 
-      <!-- ================= 9. PRICING & PACKAGES ================= -->
+      <!-- ================= 9. PRICING PACKAGES (DYNAMIC REPEATER) ================= -->
       <section class="panel" id="panel-pricing">
         <div class="panel-head">
           <div>
             <h2>باقات الاشتراك والأسعار</h2>
-            <p>تعديل أسعار وعدد حصص الباقات الثلاث ومميزاتها</p>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px;">
-            <label style="font-size:13px;font-weight:700;">العملة:</label>
-            <input type="text" id="pricing_currency" style="width:90px;padding:6px 10px;text-align:center;" placeholder="ج.م / $">
+            <p>تحكم كامل بالعملة والأسعار مع إمكانية إضافة باقات جديدة أو حذف أي باقة وتحديد الأكثر اختياراً</p>
           </div>
         </div>
 
-        <!-- Package 1 -->
-        <div class="sub-card">
-          <div class="sub-card-title">
-            <span>الباقة الأولى: باقة الهمة</span>
-            <span class="tag-badge">حصتان أسبوعياً</span>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>عملة الأسعار في الموقع</label>
+            <input type="text" id="pricing_currency" placeholder="مثال: ج.م أو ر.س أو $">
           </div>
-          <div class="form-grid triple">
-            <div class="form-group">
-              <label>اسم الباقة</label>
-              <input type="text" id="pkg1_name" placeholder="باقة الهمة">
-            </div>
-            <div class="form-group">
-              <label>السعر المعروض</label>
-              <input type="text" id="pkg1_price" placeholder="400">
-            </div>
-            <div class="form-group">
-              <label>عدد الحصص شهرياً</label>
-              <input type="text" id="pkg1_sessions" placeholder="٨">
-            </div>
-            <div class="form-group full-width">
-              <label>المميزات (اكتب كل ميزة في سطر منفصل)</label>
-              <textarea id="pkg1_features" rows="4" placeholder="حصة فردية خاصة (صوت وصورة)&#10;مدة الحصة من ٣٠ إلى ٤٥ دقيقة&#10;متابعة ورد التسميع على المنصة&#10;تقرير شهري تفصيلي لولي الأمر&#10;إمكانية تعويض حصتين في الشهر"></textarea>
-            </div>
+          <div class="form-group">
+            <label>عنوان قسم الباقات</label>
+            <input type="text" id="pricing_title" placeholder="اختر الباقة المناسبة لهدفك">
           </div>
         </div>
 
-        <!-- Package 2 (Featured) -->
-        <div class="sub-card" style="border-color:var(--gold);">
-          <div class="sub-card-title">
-            <span>الباقة الثانية: باقة الإتقان (الباقة المميزة)</span>
-            <span class="tag-badge" style="background:var(--gold);color:#fff;">الأكثر طلباً ⭐</span>
-          </div>
-          <div class="form-grid triple">
-            <div class="form-group">
-              <label>اسم الباقة</label>
-              <input type="text" id="pkg2_name" placeholder="باقة الإتقان">
-            </div>
-            <div class="form-group">
-              <label>السعر المعروض</label>
-              <input type="text" id="pkg2_price" placeholder="600">
-            </div>
-            <div class="form-group">
-              <label>عدد الحصص شهرياً</label>
-              <input type="text" id="pkg2_sessions" placeholder="١٢">
-            </div>
-            <div class="form-group full-width">
-              <label>المميزات (اكتب كل ميزة في سطر منفصل)</label>
-              <textarea id="pkg2_features" rows="4" placeholder="كل مزايا باقة الهمة&#10;حصة أسبوعية مخصصة لتثبيت الماضي&#10;تقرير أسبوعي مباشر عبر واتساب والمنصة&#10;شهادة إتمام إلكترونية عند إنجاز كل جزء&#10;مرونة عالية في تعديل وتعويض المواعيد"></textarea>
-            </div>
-          </div>
-        </div>
-
-        <!-- Package 3 -->
-        <div class="sub-card">
-          <div class="sub-card-title">
-            <span>الباقة الثالثة: باقة التميز المكثف</span>
-            <span class="tag-badge">٤ حصص أسبوعياً</span>
-          </div>
-          <div class="form-grid triple">
-            <div class="form-group">
-              <label>اسم الباقة</label>
-              <input type="text" id="pkg3_name" placeholder="باقة التميز">
-            </div>
-            <div class="form-group">
-              <label>السعر المعروض</label>
-              <input type="text" id="pkg3_price" placeholder="800">
-            </div>
-            <div class="form-group">
-              <label>عدد الحصص شهرياً</label>
-              <input type="text" id="pkg3_sessions" placeholder="١٦">
-            </div>
-            <div class="form-group full-width">
-              <label>المميزات (اكتب كل ميزة في سطر منفصل)</label>
-              <textarea id="pkg3_features" rows="4" placeholder="أولوية كاملة في اختيار وتثبيت أفضل المواعيد&#10;مع معلم من كبار الحفظة المجازين بالسند&#10;خطة مكثفة مع تدريب عملي يومي&#10;اختبارات دورية بإشراف لجنة التقييم&#10;إمكانية تعويض غير محدودة بالتنسيق"></textarea>
-            </div>
-          </div>
-        </div>
+        <h3 style="font-size:15px;color:var(--green-deep);margin:20px 0 10px;">باقات الاشتراك الحالية (يمكنك حذف أي باقة أو إضافة باقة جديدة):</h3>
+        <div id="pricingItemsContainer" class="repeater-list"></div>
+        <button type="button" class="btn-add" id="addPricingItemBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>➕ إضافة باقة اشتراك جديدة</span>
+        </button>
       </section>
 
-      <!-- ================= 10. STORIES & TESTIMONIALS ================= -->
+      <!-- ================= 10. STORIES / TESTIMONIALS (DYNAMIC REPEATER) ================= -->
       <section class="panel" id="panel-stories">
         <div class="panel-head">
           <div>
-            <h2>آراء وقصص طلابنا</h2>
-            <p>تعديل شهادات وآراء أولياء الأمور والطلاب المعروضة على الموقع</p>
+            <h2>آراء وقصص الطلاب والأهالي</h2>
+            <p>تعديل شهادات وقصص النجاح مع إمكانية إضافة آراء جديدة أو حذف أي رأي</p>
           </div>
         </div>
 
         <div class="form-grid">
-          <div class="sub-card full-width">
-            <div class="sub-card-title">الرأي الأول</div>
-            <div class="form-group">
-              <label>نص الرأي / الاقتباس</label>
-              <textarea id="story1_quote" rows="2" placeholder="ابني بقى بيحب حصة القرآن ومستني ميعادها، والمعلم بيتعامل معاه بصبر جميل."></textarea>
-            </div>
-            <div class="form-grid">
-              <div class="form-group">
-                <label>اسم صاحب الرأي أو رمزه</label>
-                <input type="text" id="story1_name" placeholder="و.أ (ولي أمر طالب)">
-              </div>
-              <div class="form-group">
-                <label>البرنامج</label>
-                <input type="text" id="story1_prog" placeholder="برنامج الأطفال">
-              </div>
-            </div>
+          <div class="form-group">
+            <label>عنوان قسم الآراء</label>
+            <input type="text" id="stories_title" placeholder="كلام أهالينا وطلابنا">
           </div>
-
-          <div class="sub-card full-width">
-            <div class="sub-card-title">الرأي الثاني</div>
-            <div class="form-group">
-              <label>نص الرأي / الاقتباس</label>
-              <textarea id="story2_quote" rows="2" placeholder="كنت متردد إني أبدأ حفظ وأنا كبير، بس المرونة في المواعيد خلتني أكمل من غير ضغط."></textarea>
-            </div>
-            <div class="form-grid">
-              <div class="form-group">
-                <label>اسم صاحب الرأي أو رمزه</label>
-                <input type="text" id="story2_name" placeholder="ط.ك (طالب)">
-              </div>
-              <div class="form-group">
-                <label>البرنامج</label>
-                <input type="text" id="story2_prog" placeholder="برنامج الكبار">
-              </div>
-            </div>
-          </div>
-
-          <div class="sub-card full-width">
-            <div class="sub-card-title">الرأي الثالث</div>
-            <div class="form-group">
-              <label>نص الرأي / الاقتباس</label>
-              <textarea id="story3_quote" rows="2" placeholder="حسّيت بفرق واضح في تلاوتي بعد شهرين بس، والتقييم المستمر ساعدني أعرف نقاط ضعفي."></textarea>
-            </div>
-            <div class="form-grid">
-              <div class="form-group">
-                <label>اسم صاحب الرأي أو رمزه</label>
-                <input type="text" id="story3_name" placeholder="م.س (طالبة)">
-              </div>
-              <div class="form-group">
-                <label>البرنامج</label>
-                <input type="text" id="story3_prog" placeholder="برنامج الكبار">
-              </div>
-            </div>
+          <div class="form-group">
+            <label>النص الفرعي للقسم</label>
+            <input type="text" id="stories_sub" placeholder="نماذج لما ممكن يقوله طلاب الأكاديمية — استبدلها بآراء حقيقية من طلابك.">
           </div>
         </div>
+
+        <h3 style="font-size:15px;color:var(--green-deep);margin:20px 0 10px;">قائمة الآراء والشهادات:</h3>
+        <div id="storiesItemsContainer" class="repeater-list"></div>
+        <button type="button" class="btn-add" id="addStoryItemBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>➕ إضافة رأي/شهادة جديدة</span>
+        </button>
       </section>
 
-      <!-- ================= 11. FAQ ================= -->
+      <!-- ================= 11. FAQS (DYNAMIC REPEATER) ================= -->
       <section class="panel" id="panel-faq">
         <div class="panel-head">
           <div>
-            <h2>الأسئلة الشائعة وإجاباتها</h2>
-            <p>تعديل نصوص الأسئلة والإجابات في قسم الأكورديون التفاعلي</p>
+            <h2>الأسئلة الشائعة (FAQ)</h2>
+            <p>إدارة الأسئلة الشائعة مع إمكانية إضافة أسئلة جديدة أو حذف أي سؤال بنقرة زر</p>
           </div>
         </div>
 
-        <div class="form-grid single">
-          <div class="sub-card">
-            <div class="sub-card-title">السؤال الأول</div>
-            <div class="form-group">
-              <label>نص السؤال</label>
-              <input type="text" id="faq1_q" placeholder="إزاي بتتم الحصص أونلاين؟">
-            </div>
-            <div class="form-group">
-              <label>الإجابة</label>
-              <textarea id="faq1_a" rows="2" placeholder="الحصص بتتم بالصوت والصورة عن طريق برنامج مكالمات مرئية، حصة فردية مباشرة بين الطالب والمعلم في الميعاد المتفق عليه."></textarea>
-            </div>
-          </div>
-
-          <div class="sub-card">
-            <div class="sub-card-title">السؤال الثاني</div>
-            <div class="form-group">
-              <label>نص السؤال</label>
-              <input type="text" id="faq2_q" placeholder="من أي سن ممكن الطفل يبدأ؟">
-            </div>
-            <div class="form-group">
-              <label>الإجابة</label>
-              <textarea id="faq2_a" rows="2" placeholder="برنامج الأطفال متاح من سن ٤ سنوات، وبنراعي في أسلوب التدريس الفروق بين كل مرحلة عمرية."></textarea>
-            </div>
-          </div>
-
-          <div class="sub-card">
-            <div class="sub-card-title">السؤال الثالث</div>
-            <div class="form-group">
-              <label>نص السؤال</label>
-              <input type="text" id="faq3_q" placeholder="فيه حصة تجريبية قبل الاشتراك؟">
-            </div>
-            <div class="form-group">
-              <label>الإجابة</label>
-              <textarea id="faq3_a" rows="2" placeholder="أيوه، بنبدأ بحصة تجريبية لتقييم المستوى وتحديد الخطة المناسبة قبل ما تقرر الاشتراك."></textarea>
-            </div>
-          </div>
-
-          <div class="sub-card">
-            <div class="sub-card-title">السؤال الرابع</div>
-            <div class="form-group">
-              <label>نص السؤال</label>
-              <input type="text" id="faq4_q" placeholder="إزاي بيتم تحديد خطة الطالب؟">
-            </div>
-            <div class="form-group">
-              <label>الإجابة</label>
-              <textarea id="faq4_a" rows="2" placeholder="بعد الحصة التجريبية، بيحدد المعلم نقطة البداية المناسبة، ومعاها عدد الحصص الأسبوعية اللي تناسب هدفك."></textarea>
-            </div>
-          </div>
-
-          <div class="sub-card">
-            <div class="sub-card-title">السؤال الخامس</div>
-            <div class="form-group">
-              <label>نص السؤال</label>
-              <input type="text" id="faq5_q" placeholder="إزاي هيتم التواصل بخصوص الاشتراك والدفع؟">
-            </div>
-            <div class="form-group">
-              <label>الإجابة</label>
-              <textarea id="faq5_a" rows="2" placeholder="بعد إرسال بيانات التسجيل، هيتواصل معاك فريقنا على واتساب لتفاصيل الباقات وطرق الدفع المتاحة."></textarea>
-            </div>
-          </div>
+        <div class="form-group full-width">
+          <label>عنوان قسم الأسئلة الشائعة</label>
+          <input type="text" id="faq_title" placeholder="عندك سؤال؟ يمكن نكون جاوبنا عليه هنا">
         </div>
+
+        <h3 style="font-size:15px;color:var(--green-deep);margin:20px 0 10px;">قائمة الأسئلة الشائعة:</h3>
+        <div id="faqItemsContainer" class="repeater-list"></div>
+        <button type="button" class="btn-add" id="addFaqItemBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>➕ إضافة سؤال شائع جديد</span>
+        </button>
       </section>
 
-      <!-- ================= 12. REGISTER SECTION ================= -->
+      <!-- ================= 12. REGISTER FORM & STEPS ================= -->
       <section class="panel" id="panel-register">
         <div class="panel-head">
           <div>
-            <h2>قسم حجز الحصة التجريبية والتسجيل</h2>
-            <p>تعديل النصوص الجانبية ونموذج طلب الحصة التجريبية</p>
+            <h2>حجز الحصة التجريبية (استمارة التسجيل)</h2>
+            <p>تعديل نصوص الاستمارة، العنوان، والخطوات التوضيحية الجانبية</p>
           </div>
         </div>
 
         <div class="form-grid">
-          <div class="form-group full-width">
-            <label>عنوان قسم التسجيل</label>
+          <div class="form-group">
+            <label>عنوان قسم التسجيل الرئيسي</label>
             <input type="text" id="reg_title" placeholder="احجز حصتك التجريبية المجانية">
           </div>
-          <div class="form-group full-width">
-            <label>النص التعريفي لنموذج الحجز</label>
-            <textarea id="reg_sub" rows="2" placeholder="املأ البيانات وهيتم تجهيز رسالة جاهزة تبعتها لينا على واتساب في خطوة واحدة."></textarea>
+          <div class="form-group">
+            <label>النص الفرعي لقسم التسجيل</label>
+            <input type="text" id="reg_sub" placeholder="املأ البيانات وهيتم تجهيز رسالة جاهزة تبعتها لينا على واتساب في خطوة واحدة.">
           </div>
           <div class="form-group">
-            <label>عنوان خطوات ما بعد التسجيل (الجانب الإرشادي)</label>
+            <label>عنوان القائمة الجانبية المرافقة للاستمارة</label>
             <input type="text" id="reg_side_title" placeholder="خطوات بسيطة بعد التسجيل">
           </div>
           <div class="form-group">
-            <label>نص زر الإرسال للواتساب</label>
+            <label>نص زر إرسال الاستمارة</label>
             <input type="text" id="reg_btn_text" placeholder="إرسال البيانات عبر واتساب">
           </div>
           <div class="form-group full-width">
-            <label>الخطوات الثلاثة (اكتب كل خطوة في سطر)</label>
-            <textarea id="reg_steps" rows="3" placeholder="تأكيد البيانات خلال ٢٤ ساعة&#10;حصة تجريبية مجانية لتقييم المستوى&#10;اقتراح الخطة والمواعيد المناسبة"></textarea>
+            <label>خطوات ما بعد التسجيل (كل سطر يعتبر خطوة مستقلة بأيقونة صح)</label>
+            <textarea id="reg_steps" rows="4" placeholder="تأكيد البيانات خلال ٢٤ ساعة&#10;حصة تجريبية مجانية لتقييم المستوى&#10;اقتراح الخطة والمواعيد المناسبة"></textarea>
           </div>
         </div>
       </section>
 
-      <!-- ================= 13. CLOUD & DATABASE ================= -->
+      <!-- ================= 13. CLOUD SUPABASE SETTINGS ================= -->
       <section class="panel" id="panel-cloud">
         <div class="panel-head">
           <div>
-            <h2>إعدادات الربط السحابي (Supabase)</h2>
-            <p>التحقق من اتصال الموقع بقاعدة بيانات Supabase وتفعيل جدول الإعدادات</p>
+            <h2>الربط السحابي وقاعدة البيانات (Supabase)</h2>
+            <p>معلومات الربط السحابي التلقائي وكود SQL المساعد لإنشاء جدول الإعدادات</p>
           </div>
         </div>
 
         <div class="sub-card">
-          <div class="sub-card-title">حالة الاتصال السحابي</div>
-          <p style="font-size:14px;color:var(--ink-soft);margin-bottom:12px;">
-            الموقع مرتبط مباشرة بمشروع Supabase التابع لك:
-            <code style="background:#e8f3ee;padding:3px 8px;border-radius:6px;color:var(--green-deep);">https://xeyugpainbfaslcbuwzl.supabase.co</code>
-          </p>
-          <div id="cloudConnectionMsg" style="font-weight:700;font-size:14px;color:var(--green-mid);">
-            جاري فحص الاتصال...
-          </div>
+          <div class="sub-card-title">حالة الاتصال السحابي الحالية</div>
+          <p id="cloudConnectionMsg" style="font-size:14px;color:var(--green-deep);font-weight:700;">جاري الفحص والاتصال بسحابة Supabase...</p>
         </div>
 
-        <div class="sub-card">
+        <div class="sub-card" style="margin-top:20px;">
           <div class="sub-card-title">
-            <span>كود SQL لإنشاء جدول الإعدادات في Supabase</span>
-            <button class="btn-action" id="copySqlBtn" style="background:var(--green);color:#fff;padding:6px 14px;font-size:12px;">نسخ الكود</button>
+            <span>كود SQL لإنشاء جدول الإعدادات السحابي</span>
+            <button type="button" class="btn-action btn-preview" id="copySqlBtn" style="color:var(--green-deep);border-color:var(--gold);">نسخ الكود 📋</button>
           </div>
-          <p style="font-size:13px;color:var(--ink-soft);margin-bottom:8px;">
-            لو حابب تتأكد أن جدول إعدادات المحتوى مفعل في Supabase، انسخ الكود التالي وضعه في <strong>SQL Editor</strong> ثم اضغط <strong>RUN</strong>:
+          <p style="font-size:13px;color:var(--ink-soft);margin-bottom:14px;">
+            إذا لم يكن جدول <code>site_settings</code> منشأ في مشروعك، افتح <strong>SQL Editor</strong> في Supabase، الصق هذا الكود، ثم اضغط <strong>RUN</strong>:
           </p>
-          <pre class="sql-box" id="sqlCodeText">-- كود إنشاء جدول إعدادات الموقع
-create table if not exists public.site_settings (
-  key text primary key,
-  value jsonb not null,
-  updated_at timestamp with time zone default timezone('utc'::text, now()) not null
+          <pre id="sqlCodeText" style="background:#1a2420;color:#f0fdf4;padding:16px;border-radius:var(--radius-md);font-family:monospace;font-size:13px;direction:ltr;text-align:left;overflow-x:auto;">
+CREATE TABLE IF NOT EXISTS public.site_settings (
+  key TEXT PRIMARY KEY,
+  value JSONB NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
-alter table public.site_settings enable row level security;
-create policy "Allow read site_settings" on public.site_settings for select using (true);
-create policy "Allow all site_settings" on public.site_settings for all using (true);</pre>
+ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow read for site_settings" ON public.site_settings FOR SELECT USING (true);
+CREATE POLICY "Allow all for site_settings" ON public.site_settings FOR ALL USING (true);
+          </pre>
         </div>
       </section>
 
@@ -1136,168 +1016,176 @@ create policy "Allow all site_settings" on public.site_settings for all using (t
 
   <!-- Toast Notification -->
   <div class="toast" id="toast">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-    <span id="toastMsg">تم حفظ وتطبيق التعديلات بنجاح!</span>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+    <span id="toastMsg">تم الحفظ بنجاح!</span>
   </div>
 
-  <!-- JavaScript Logic -->
+  <!-- JavaScript Engine -->
   <script>
     /* =====================================================================
-       1. SUPABASE & CONFIGURATION
+       1. SUPABASE CLIENT & DEFAULT DATA
        ===================================================================== */
-    const SUPABASE_CONFIG = {
-      url: 'https://xeyugpainbfaslcbuwzl.supabase.co',
-      anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhleXVncGFpbmJmYXNsY2J1d3psIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkzODQ4MTMsImV4cCI6MjEwNDk2MDgxM30.WjhZshys5qeboL9IH9x-Z0-aO_n-y6MoTOLK_e2_yVk'
-    };
+    const SUPABASE_URL = 'https://xeyugpainbfaslcbuwzl.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhleXVncGFpbmJmYXNsY2J1d3psIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkzODQ4MTMsImV4cCI6MjEwNDk2MDgxM30.WjhZshys5qeboL9IH9x-Z0-aO_n-y6MoTOLK_e2_yVk';
 
     let supabaseClient = null;
     if (window.supabase) {
       try {
-        supabaseClient = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
-      } catch(e) { console.warn(e); }
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+      } catch(e) { console.error('Supabase init failed:', e); }
     }
 
-    /* Complete Default Data Definition */
     const DEFAULT_SETTINGS = {
+      sections_visibility: {
+        banner: true,
+        why: true,
+        pathways: true,
+        programs: true,
+        showcase: true,
+        quality: true,
+        pricing: true,
+        stories: true,
+        faq: true,
+        register: true
+      },
+      custom_sections: [],
       contact: {
-        whatsapp: '201044734782',
-        phone_display: '01044734782',
-        fb: 'https://www.facebook.com/Kortobaacademy/',
-        insta: 'https://www.instagram.com/kortoba_quran/',
-        yt: 'https://www.youtube.com/@kortobaacademy',
-        copyright: 'أكاديمية قرطبة لتعليم القرآن الكريم. جميع الحقوق محفوظة.',
-        wa_default_msg: 'السلام عليكم، حابب أعرف تفاصيل أكتر عن أكاديمية قرطبة.'
+        whatsapp: "201044734782",
+        phone_display: "01044734782",
+        fb: "https://www.facebook.com/Kortobaacademy/",
+        insta: "https://www.instagram.com/kortoba_quran/",
+        yt: "https://www.youtube.com/@kortobaacademy",
+        copyright: "أكاديمية قرطبة لتعليم القرآن الكريم. جميع الحقوق محفوظة.",
+        wa_default_msg: "السلام عليكم، حابب أعرف تفاصيل أكتر عن أكاديمية قرطبة."
       },
       banner: {
         enabled: false,
-        badge: '🎉 عرض خاص',
-        text: 'فتح باب التسجيل للفصل الدراسي الجديد مع خصم مميز لأول ٥٠ مشتركاً!',
-        btn_text: 'سجل الآن عبر واتساب'
+        badge: "إعلان",
+        text: "مرحباً بكم في أكاديمية قرطبة لتعليم القرآن الكريم",
+        btn_text: "تفاصيل أكثر"
       },
       hero: {
-        badge: 'حصّة تجريبية مجانية · للأطفال والكبار',
-        title_1: 'اتعلّم كتاب الله',
-        title_highlight: 'بسند وصحبة',
-        title_2: 'حقيقية',
-        lead: 'أكاديمية قرطبة تقدّم حصصًا مباشرة أونلاين في التحفيظ والتجويد، بمعلمين متخصصين ومتابعة فردية لكل طالب، أطفالًا كانوا أو كبارًا، من أي مكان في العالم.',
-        cta_primary: 'سجّل الآن',
-        cta_wa: 'واتساب مباشر',
-        trust_1: 'معلمون مجازون بالسند',
-        trust_2: 'مواعيد مرنة تناسبك',
-        trust_3: 'برامج للأطفال والكبار'
+        badge: "حصّة تجريبية مجانية · للأطفال والكبار",
+        title_1: "اتعلّم كتاب الله",
+        title_highlight: "بسند وصحبة",
+        title_2: "حقيقية",
+        lead: "أكاديمية قرطبة تقدّم حصصًا مباشرة أونلاين في التحفيظ والتجويد، بمعلمين متخصصين ومتابعة فردية لكل طالب، أطفالًا كانوا أو كبارًا، من أي مكان في العالم.",
+        cta_primary: "سجّل الآن",
+        cta_wa: "واتساب مباشر",
+        trust_1: "معلمون مجازون بالسند",
+        trust_2: "مواعيد مرنة تناسبك",
+        trust_3: "برامج للأطفال والكبار"
       },
       why: {
-        title: 'تجربة تعليم قرآن حقيقية.. من بيتك',
-        sub: 'مش مجرد حصص أونلاين، دي رحلة متكاملة مع الطالب من أول ما يبدأ لحد ما يوصل لهدفه في الحفظ والتجويد.',
-        why1_title: 'معلمون مُجازون',
-        why1_desc: 'حفظة للقرآن الكريم بإجازات سند في القراءات، ومؤهَّلون لتدريس الأطفال والكبار.',
-        why2_title: 'مواعيد مرنة',
-        why2_desc: 'اختار المعاد اللي يناسب يومك، وغيّره وقت ما تحتاج، من غير التزام بمكان أو انتقال.',
-        why3_title: 'متابعة فردية',
-        why3_desc: 'خطة حفظ خاصة بكل طالب، وتقييم دوري لمستواه، وتواصل مستمر مع ولي الأمر.',
-        why4_title: 'مناهج لكل الأعمار',
-        why4_desc: 'برامج مصمّمة خصيصًا للأطفال بأسلوب مبسّط وممتع، وأخرى للكبار بخطى مكثّفة.'
+        title: "تجربة تعليم قرآن حقيقية.. من بيتك",
+        sub: "مش مجرد حصص أونلاين، دي رحلة متكاملة مع الطالب من أول ما يبدأ لحد ما يوصل لهدفه في الحفظ والتجويد.",
+        items: [
+          { id: "w1", title: "معلمون مُجازون", desc: "حفظة للقرآن الكريم بإجازات سند في القراءات، ومؤهَّلون لتدريس الأطفال والكبار." },
+          { id: "w2", title: "مواعيد مرنة", desc: "اختار المعاد اللي يناسب يومك، وغيّره وقت ما تحتاج، من غير التزام بمكان أو انتقال." },
+          { id: "w3", title: "متابعة فردية", desc: "خطة حفظ خاصة بكل طالب، وتقييم دوري لمستواه، وتواصل مستمر مع ولي الأمر." },
+          { id: "w4", title: "مناهج لكل الأعمار", desc: "برامج مصمّمة خصيصًا للأطفال بأسلوب مبسّط وممتع، وأخرى للكبار بخطى مكثّفة." }
+        ]
       },
       pathways: {
-        path1: {
-          title: 'نور البيان والتأسيس',
-          desc: 'مخصص للأطفال والمبتدئين لضبط النطق العربي ومخارج الحروف والقراءة الصحيحة من المصحف الشريف.'
-        },
-        path2: {
-          title: 'الحفظ والتثبيت الدوري',
-          desc: 'خطة حفظ منتظمة مخصصة لكل طالب تناسب قدراته ووقته، تجمع بين حفظ الجديد والمراجعة الصغرى والكبرى.'
-        },
-        path3: {
-          title: 'تصحيح التلاوة والتجويد',
-          desc: 'دراسة عملية ونظرية لأحكام التجويد (النون والميم الساكنتين، المدود، والتفخيم والترقيق) وتطبيقها آية بآية.'
-        },
-        path4: {
-          title: 'الإجازة بالسند المتصل',
-          desc: 'مسار متخصص للخاتمين لقراءة القرآن كاملاً غيباً برواية حفص عن عاصم أو غيرها والحصول على سند متصل.'
-        }
+        title: "مسارات مدروسة لكل مرحلة",
+        sub: "منهج تعليمي يبدأ من ضبط الحروف وقواعد القراءة حتى نيل الإجازة بالسند المتصل.",
+        items: [
+          { id: "p1", badge: "المسار الأول", title: "نور البيان والتأسيس", desc: "مخصص للأطفال والمبتدئين لضبط النطق العربي ومخارج الحروف والقراءة الصحيحة من المصحف الشريف.", features: "إتقان مخارج الحروف وصفاتها\nالتهجي القرآني السليم\nحفظ قصار السور تدريجياً" },
+          { id: "p2", badge: "المسار الثاني", title: "الحفظ والتثبيت الدوري", desc: "خطة حفظ منتظمة مخصصة لكل طالب تناسب قدراته ووقته، تجمع بين حفظ الجديد والمراجعة الصغرى والكبرى.", features: "ورد حفظ يومي وأسبوعي\nتثبيت الماضي القريب والبعيد\nاختبار عند إتمام كل جزء" },
+          { id: "p3", badge: "المسار الثالث", title: "تصحيح التلاوة والتجويد", desc: "دراسة عملية ونظرية لأحكام التجويد (النون والميم الساكنتين، المدود، والتفخيم والترقيق) وتطبيقها آية بآية.", features: "تطبيق عملي فوري مع الشيخ\nتحسين نبرة ومقام التلاوة\nمعالجة الأخطاء الخفية واللحن" },
+          { id: "p4", badge: "المسار الرابع", title: "الإجازة بالسند المتصل", desc: "مسار متخصص للخاتمين لقراءة القرآن كاملاً غيباً برواية حفص عن عاصم أو غيرها والحصول على سند متصل.", features: "شيوخ مجازون بأعلى الأسانيد\nتدقيق دقيق في كل موضع\nشهادة إجازة معتمدة وموثقة" }
+        ]
       },
       programs: {
-        kids_age: 'من ٤ إلى ١٢ سنة',
-        kids_title: 'برنامج الأطفال',
-        kids_points: 'تحفيظ ميسّر بأسلوب تفاعلي وممتع\nتصحيح مخارج الحروف والتلاوة\nتقارير دورية توصل لولي الأمر\nحوافز وتشجيع مستمر أثناء الحصة',
-        kids_btn: 'التسجيل في برنامج الأطفال',
-        adults_age: '١٣ سنة فأكثر',
-        adults_title: 'برنامج الكبار',
-        adults_points: 'تحفيظ ومراجعة بخطة تناسب وقتك\nتجويد نظري وتطبيقي من الأساس\nتفسير ميسّر لما يتم حفظه\nمسار اختياري للإجازة بالسند',
-        adults_btn: 'التسجيل في برنامج الكبار'
+        kids_age: "من ٤ إلى ١٢ سنة",
+        kids_title: "برنامج الأطفال",
+        kids_points: "تحفيظ ميسّر بأسلوب تفاعلي وممتع\nتصحيح مخارج الحروف والتلاوة\nتقارير دورية توصل لولي الأمر\nحوافز وتشجيع مستمر أثناء الحصة",
+        kids_btn: "التسجيل في برنامج الأطفال",
+        adults_age: "١٣ سنة فأكثر",
+        adults_title: "برنامج الكبار",
+        adults_points: "تحفيظ ومراجعة بخطة تناسب وقتك\nتجويد نظري وتطبيقي من الأساس\nتفسير ميسّر لما يتم حفظه\nمسار اختياري للإجازة بالسند",
+        adults_btn: "التسجيل في برنامج الكبار"
       },
       showcase: {
-        audio1_name: 'عمر خالد (٨ سنوات)',
-        audio1_track: 'مسار نور البيان وحفظ جزء عم',
-        audio1_surah: 'تلاوة من سورة النبأ — بعد ٣ أشهر من الدراسة',
-        audio2_name: 'فاطمة الزهراء (١١ سنة)',
-        audio2_track: 'مسار الحفظ وتصحيح التلاوة',
-        audio2_surah: 'تلاوة من سورة الرحمن — تطبيق أحكام المدود',
-        audio3_name: 'م. أحمد حسن',
-        audio3_track: 'مسار الكبار والإتقان والتجويد',
-        audio3_surah: 'تلاوة من سورة مريم — برواية حفص عن عاصم'
+        title: "نماذج من تلاوات طلابنا",
+        sub: "استمع إلى مقاطع مسجلة من حصص طلاب الأكاديمية تُظهر إتقان الأحكام والمخارج وحسن الأداء.",
+        items: [
+          { id: "s1", name: "عمر خالد (٨ سنوات)", track: "مسار نور البيان وحفظ جزء عم", surah: "تلاوة من سورة النبأ — بعد ٣ أشهر من الدراسة", tag: "أطفال" },
+          { id: "s2", name: "فاطمة الزهراء (١١ سنة)", track: "مسار الحفظ وتصحيح التلاوة", surah: "تلاوة من سورة الرحمن — تطبيق أحكام المدود", tag: "أطفال" },
+          { id: "s3", name: "م. أحمد حسن", track: "مسار الكبار والإتقان والتجويد", surah: "تلاوة من سورة مريم — برواية حفص عن عاصم", tag: "كبار" }
+        ]
       },
       quality: {
-        q1_tag: 'القرآن الكريم',
-        q1_title: 'حفظ متقن',
-        q1_desc: 'معلمون حافظون لكتاب الله، مُتقنون للتلاوة قبل تدريسها لغيرهم.',
-        q2_tag: 'الإجازات',
-        q2_title: 'سند متصل',
-        q2_desc: 'من يحملون إجازات في القراءات بسند متصل، لمن يرغب في هذا المسار.',
-        q3_tag: 'الخبرة',
-        q3_title: 'تخصص في التعليم عن بُعد',
-        q3_desc: 'خبرة فعلية في التعامل مع الأطفال والكبار من خلال الشاشة، بأساليب تناسب كل فئة.'
+        title: "في إيه أمانة إحنا بنطمّنك عليه",
+        sub: "كل معلم في قرطبة بيمر باختيار دقيق قبل ما يبدأ التدريس مع طلابنا.",
+        items: [
+          { id: "q1", tag: "القرآن الكريم", title: "حفظ متقن", desc: "معلمون حافظون لكتاب الله، مُتقنون للتلاوة قبل تدريسها لغيرهم." },
+          { id: "q2", tag: "الإجازات", title: "سند متصل", desc: "من يحملون إجازات في القراءات بسند متصل، لمن يرغب في هذا المسار." },
+          { id: "q3", tag: "الخبرة", title: "تخصص في التعليم عن بُعد", desc: "خبرة فعلية في التعامل مع الأطفال والكبار من خلال الشاشة، بأساليب تناسب كل فئة." }
+        ]
       },
       pricing: {
-        currency: 'ج.م',
-        pkg1: {
-          name: 'باقة الهمة',
-          price: '400',
-          sessions: '٨',
-          features: 'حصة فردية خاصة (صوت وصورة)\nمدة الحصة من ٣٠ إلى ٤٥ دقيقة\nمتابعة ورد التسميع على المنصة\nتقرير شهري تفصيلي لولي الأمر\nإمكانية تعويض حصتين في الشهر'
-        },
-        pkg2: {
-          name: 'باقة الإتقان',
-          price: '600',
-          sessions: '١٢',
-          features: 'كل مزايا باقة الهمة\nحصة أسبوعية مخصصة لتثبيت الماضي\nتقرير أسبوعي مباشر عبر واتساب والمنصة\nشهادة إتمام إلكترونية عند إنجاز كل جزء\nمرونة عالية في تعديل وتعويض المواعيد'
-        },
-        pkg3: {
-          name: 'باقة التميز المكثفة',
-          price: '800',
-          sessions: '١٦',
-          features: 'أولوية كاملة في اختيار وتثبيت أفضل المواعيد\nمع معلم من كبار الحفظة المجازين بالسند\nخطة مكثفة مع تدريب عملي يومي\nاختبارات دورية بإشراف لجنة التقييم\nإمكانية تعويض غير محدودة بالتنسيق'
-        }
+        currency: "ج.م",
+        title: "اختر الباقة المناسبة لهدفك",
+        sub: "جميع الحصص فردية مباشرة (خاصة تماماً) مع معلم مجاز، بمواعيد تناسب يومك.",
+        items: [
+          {
+            id: "pkg1",
+            name: "باقة الهمة",
+            price: "400",
+            sessions: "٨",
+            freq: "حصص شهرياً (حصتان أسبوعياً)",
+            desc: "مثالية للمبتدئين في التأسيس أو للمراجعة الهادئة المنتظمة.",
+            is_featured: false,
+            features: "حصة فردية خاصة (صوت وصورة)\nمدة الحصة من ٣٠ إلى ٤٥ دقيقة\nمتابعة ورد التسميع على المنصة\nتقرير شهري تفصيلي لولي الأمر\nإمكانية تعويض حصتين في الشهر"
+          },
+          {
+            id: "pkg2",
+            name: "باقة الإتقان",
+            price: "600",
+            sessions: "١٢",
+            freq: "حصة شهرياً (٣ حصص أسبوعياً)",
+            desc: "المعدل الموصى به للحفظ الثابت مع المراجعة المستمرة دون نسيان.",
+            is_featured: true,
+            features: "كل مزايا باقة الهمة\nحصة أسبوعية مخصصة لتثبيت الماضي\nتقرير أسبوعي مباشر عبر واتساب والمنصة\nشهادة إتمام إلكترونية عند إنجاز كل جزء\nمرونة عالية في تعديل وتعويض المواعيد"
+          },
+          {
+            id: "pkg3",
+            name: "باقة التميز المكثفة",
+            price: "800",
+            sessions: "١٦",
+            freq: "حصة شهرياً (٤ حصص أسبوعياً)",
+            desc: "للراغبين في الختم السريع أو الاستعداد للحصول على الإجازة بالسند.",
+            is_featured: false,
+            features: "أولوية كاملة في اختيار وتثبيت أفضل المواعيد\nمع معلم من كبار الحفظة المجازين بالسند\nخطة مكثفة مع تدريب عملي يومي\nاختبارات دورية بإشراف لجنة التقييم\nإمكانية تعويض غير محدودة بالتنسيق"
+          }
+        ]
       },
       stories: {
-        s1_quote: 'ابني بقى بيحب حصة القرآن ومستني ميعادها، والمعلم بيتعامل معاه بصبر جميل.',
-        s1_name: 'و.أ (ولي أمر طالب)',
-        s1_prog: 'برنامج الأطفال',
-        s2_quote: 'كنت متردد إني أبدأ حفظ وأنا كبير، بس المرونة في المواعيد خلتني أكمل من غير ضغط.',
-        s2_name: 'ط.ك (طالب)',
-        s2_prog: 'برنامج الكبار',
-        s3_quote: 'حسّيت بفرق واضح في تلاوتي بعد شهرين بس، والتقييم المستمر ساعدني أعرف نقاط ضعفي.',
-        s3_name: 'م.س (طالبة)',
-        s3_prog: 'برنامج الكبار'
+        title: "كلام أهالينا وطلابنا",
+        sub: "نماذج لما ممكن يقوله طلاب الأكاديمية — استبدلها بآراء حقيقية من طلابك أول ما تتجمّع.",
+        items: [
+          { id: "st1", quote: "ابني بقى بيحب حصة القرآن ومستني ميعادها، والمعلم بيتعامل معاه بصبر جميل.", name: "ولي أمر طالب", prog: "برنامج الأطفال" },
+          { id: "st2", quote: "كنت متردد إني أبدأ حفظ وأنا كبير، بس المرونة في المواعيد خلتني أكمل من غير ضغط.", name: "طالب", prog: "برنامج الكبار" },
+          { id: "st3", quote: "حسّيت بفرق واضح في تلاوتي بعد شهرين بس، والتقييم المستمر ساعدني أعرف نقاط ضعفي.", name: "طالبة", prog: "برنامج الكبار" }
+        ]
       },
       faq: {
-        f1_q: 'إزاي بتتم الحصص أونلاين؟',
-        f1_a: 'الحصص بتتم بالصوت والصورة عن طريق برنامج مكالمات مرئية، حصة فردية مباشرة بين الطالب والمعلم في الميعاد المتفق عليه.',
-        f2_q: 'من أي سن ممكن الطفل يبدأ؟',
-        f2_a: 'برنامج الأطفال متاح من سن ٤ سنوات، وبنراعي في أسلوب التدريس الفروق بين كل مرحلة عمرية.',
-        f3_q: 'فيه حصة تجريبية قبل الاشتراك؟',
-        f3_a: 'أيوه، بنبدأ بحصة تجريبية لتقييم المستوى وتحديد الخطة المناسبة قبل ما تقرر الاشتراك.',
-        f4_q: 'إزاي بيتم تحديد خطة الطالب؟',
-        f4_a: 'بعد الحصة التجريبية، بيحدد المعلم نقطة البداية المناسبة، ومعاها عدد الحصص الأسبوعية اللي تناسب هدفك.',
-        f5_q: 'إزاي هيتم التواصل بخصوص الاشتراك والدفع؟',
-        f5_a: 'بعد إرسال بيانات التسجيل، هيتواصل معاك فريقنا على واتساب لتفاصيل الباقات وطرق الدفع المتاحة.'
+        title: "عندك سؤال؟ يمكن نكون جاوبنا عليه هنا",
+        items: [
+          { id: "f1", q: "إزاي بتتم الحصص أونلاين؟", a: "الحصص بتتم بالصوت والصورة عن طريق برنامج مكالمات مرئية، حصة فردية مباشرة بين الطالب والمعلم في الميعاد المتفق عليه." },
+          { id: "f2", q: "من أي سن ممكن الطفل يبدأ؟", a: "برنامج الأطفال متاح من سن ٤ سنوات، وبنراعي في أسلوب التدريس الفروق بين كل مرحلة عمرية." },
+          { id: "f3", q: "فيه حصة تجريبية قبل الاشتراك؟", a: "أيوه، بنبدأ بحصة تجريبية لتقييم المستوى وتحديد الخطة المناسبة قبل ما تقرر الاشتراك." },
+          { id: "f4", q: "إزاي بيتم تحديد خطة الطالب؟", a: "بعد الحصة التجريبية، بيحدد المعلم نقطة البداية المناسبة، ومعاها عدد الحصص الأسبوعية اللي تناسب هدفك." },
+          { id: "f5", q: "إزاي هيتم التواصل بخصوص الاشتراك والدفع؟", a: "بعد إرسال بيانات التسجيل، هيتواصل معاك فريقنا على واتساب لتفاصيل الباقات وطرق الدفع المتاحة." }
+        ]
       },
       register: {
-        title: 'احجز حصتك التجريبية المجانية',
-        sub: 'املأ البيانات وهيتم تجهيز رسالة جاهزة تبعتها لينا على واتساب في خطوة واحدة.',
-        side_title: 'خطوات بسيطة بعد التسجيل',
-        btn_text: 'إرسال البيانات عبر واتساب',
-        steps: 'تأكيد البيانات خلال ٢٤ ساعة\nحصة تجريبية مجانية لتقييم المستوى\nاقتراح الخطة والمواعيد المناسبة'
+        title: "احجز حصتك التجريبية المجانية",
+        sub: "املأ البيانات وهيتم تجهيز رسالة جاهزة تبعتها لينا على واتساب في خطوة واحدة.",
+        side_title: "خطوات بسيطة بعد التسجيل",
+        btn_text: "إرسال البيانات عبر واتساب",
+        steps: "تأكيد البيانات خلال ٢٤ ساعة\nحصة تجريبية مجانية لتقييم المستوى\nاقتراح الخطة والمواعيد المناسبة"
       }
     };
 
@@ -1349,10 +1237,501 @@ create policy "Allow all site_settings" on public.site_settings for all using (t
     });
 
     /* =====================================================================
-       4. FORM POPULATION & EXTRACTION
+       4. BACKWARD COMPATIBILITY NORMALIZER
        ===================================================================== */
-    function populateForm(data) {
-      if (!data) return;
+    function normalizeData(raw) {
+      if (!raw) return JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+      const d = Object.assign({}, DEFAULT_SETTINGS, raw);
+
+      // Normalize sections visibility
+      if (!d.sections_visibility) {
+        d.sections_visibility = Object.assign({}, DEFAULT_SETTINGS.sections_visibility);
+      }
+      if (!Array.isArray(d.custom_sections)) {
+        d.custom_sections = [];
+      }
+
+      // Normalize Why items
+      if (!d.why.items || !Array.isArray(d.why.items)) {
+        d.why.items = [];
+        if (d.why.why1_title) d.why.items.push({ id: 'w1', title: d.why.why1_title, desc: d.why.why1_desc || '' });
+        if (d.why.why2_title) d.why.items.push({ id: 'w2', title: d.why.why2_title, desc: d.why.why2_desc || '' });
+        if (d.why.why3_title) d.why.items.push({ id: 'w3', title: d.why.why3_title, desc: d.why.why3_desc || '' });
+        if (d.why.why4_title) d.why.items.push({ id: 'w4', title: d.why.why4_title, desc: d.why.why4_desc || '' });
+        if (d.why.items.length === 0) d.why.items = DEFAULT_SETTINGS.why.items;
+      }
+
+      // Normalize Pathways items
+      if (!d.pathways.items || !Array.isArray(d.pathways.items)) {
+        d.pathways.items = DEFAULT_SETTINGS.pathways.items;
+      }
+
+      // Normalize Showcase items
+      if (!d.showcase.items || !Array.isArray(d.showcase.items)) {
+        d.showcase.items = DEFAULT_SETTINGS.showcase.items;
+      }
+
+      // Normalize Quality items
+      if (!d.quality.items || !Array.isArray(d.quality.items)) {
+        d.quality.items = DEFAULT_SETTINGS.quality.items;
+      }
+
+      // Normalize Pricing items
+      if (!d.pricing.items || !Array.isArray(d.pricing.items)) {
+        d.pricing.items = [];
+        if (d.pricing.pkg1) d.pricing.items.push({ id: 'pkg1', name: d.pricing.pkg1.name, price: d.pricing.pkg1.price, sessions: d.pricing.pkg1.sessions, freq: 'حصص شهرياً', features: d.pricing.pkg1.features, is_featured: false });
+        if (d.pricing.pkg2) d.pricing.items.push({ id: 'pkg2', name: d.pricing.pkg2.name, price: d.pricing.pkg2.price, sessions: d.pricing.pkg2.sessions, freq: 'حصة شهرياً', features: d.pricing.pkg2.features, is_featured: true });
+        if (d.pricing.pkg3) d.pricing.items.push({ id: 'pkg3', name: d.pricing.pkg3.name, price: d.pricing.pkg3.price, sessions: d.pricing.pkg3.sessions, freq: 'حصة شهرياً', features: d.pricing.pkg3.features, is_featured: false });
+        if (d.pricing.items.length === 0) d.pricing.items = DEFAULT_SETTINGS.pricing.items;
+      }
+
+      // Normalize Stories items
+      if (!d.stories.items || !Array.isArray(d.stories.items)) {
+        d.stories.items = DEFAULT_SETTINGS.stories.items;
+      }
+
+      // Normalize FAQ items
+      if (!d.faq.items || !Array.isArray(d.faq.items)) {
+        d.faq.items = DEFAULT_SETTINGS.faq.items;
+      }
+
+      return d;
+    }
+
+    /* =====================================================================
+       5. DYNAMIC REPEATERS RENDERING & ACTIONS
+       ===================================================================== */
+    
+    // Helper to escape HTML in inputs
+    function esc(text) {
+      if (text === null || text === undefined) return '';
+      return String(text).replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // 1. Render Why Items
+    function renderWhyItems(items) {
+      const container = document.getElementById('whyItemsContainer');
+      container.innerHTML = items.map((it, i) => `
+        <div class="repeater-item" data-id="${it.id}">
+          <div class="repeater-top">
+            <span class="repeater-badge">الميزة #${i + 1}</span>
+            <button type="button" class="btn-delete" onclick="removeWhyItem('${it.id}')">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              حذف الميزة
+            </button>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>عنوان الميزة</label>
+              <input type="text" class="why-item-title" value="${esc(it.title)}" placeholder="مثال: معلمون مُجازون">
+            </div>
+            <div class="form-group">
+              <label>وصف الميزة</label>
+              <textarea class="why-item-desc" rows="2" placeholder="تفاصيل الميزة...">${esc(it.desc)}</textarea>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    window.removeWhyItem = function(id) {
+      CURRENT_DATA.why.items = CURRENT_DATA.why.items.filter(it => it.id !== id);
+      renderWhyItems(CURRENT_DATA.why.items);
+    };
+
+    document.getElementById('addWhyItemBtn').addEventListener('click', ()=>{
+      CURRENT_DATA.why.items.push({
+        id: 'w_' + Date.now(),
+        title: 'ميزة جديدة',
+        desc: 'اكتب تفاصيل الميزة هنا...'
+      });
+      renderWhyItems(CURRENT_DATA.why.items);
+    });
+
+    // 2. Render Pathways Items
+    function renderPathwaysItems(items) {
+      const container = document.getElementById('pathwaysItemsContainer');
+      container.innerHTML = items.map((p, i) => `
+        <div class="repeater-item" data-id="${p.id}">
+          <div class="repeater-top">
+            <span class="repeater-badge">المسار #${i + 1}</span>
+            <button type="button" class="btn-delete" onclick="removePathwayItem('${p.id}')">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              حذف المسار
+            </button>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>شارة المسار</label>
+              <input type="text" class="path-item-badge" value="${esc(p.badge || 'المسار ' + (i + 1))}" placeholder="مثال: المسار الأول">
+            </div>
+            <div class="form-group">
+              <label>عنوان المسار</label>
+              <input type="text" class="path-item-title" value="${esc(p.title)}" placeholder="مثال: نور البيان والتأسيس">
+            </div>
+            <div class="form-group full-width">
+              <label>وصف المسار</label>
+              <textarea class="path-item-desc" rows="2" placeholder="وصف المسار...">${esc(p.desc)}</textarea>
+            </div>
+            <div class="form-group full-width">
+              <label>بنود ومميزات المسار (كل سطر يعتبر بنداً مستقلاً بعلامة صح)</label>
+              <textarea class="path-item-features" rows="3" placeholder="بند ١&#10;بند ٢&#10;بند ٣">${esc(p.features || '')}</textarea>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    window.removePathwayItem = function(id) {
+      CURRENT_DATA.pathways.items = CURRENT_DATA.pathways.items.filter(p => p.id !== id);
+      renderPathwaysItems(CURRENT_DATA.pathways.items);
+    };
+
+    document.getElementById('addPathwayItemBtn').addEventListener('click', ()=>{
+      CURRENT_DATA.pathways.items.push({
+        id: 'p_' + Date.now(),
+        badge: 'مسار إضافي',
+        title: 'عنوان المسار الجديد',
+        desc: 'اكتب وصف المسار هنا...',
+        features: 'ميزة أولى\nميزة ثانية'
+      });
+      renderPathwaysItems(CURRENT_DATA.pathways.items);
+    });
+
+    // 3. Render Showcase Items
+    function renderShowcaseItems(items) {
+      const container = document.getElementById('showcaseItemsContainer');
+      container.innerHTML = items.map((it, i) => `
+        <div class="repeater-item" data-id="${it.id}">
+          <div class="repeater-top">
+            <span class="repeater-badge">التلاوة #${i + 1}</span>
+            <button type="button" class="btn-delete" onclick="removeShowcaseItem('${it.id}')">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              حذف التلاوة
+            </button>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>اسم الطالب والسن</label>
+              <input type="text" class="showcase-item-name" value="${esc(it.name)}" placeholder="مثال: عمر خالد (٨ سنوات)">
+            </div>
+            <div class="form-group">
+              <label>المسار التعليمي</label>
+              <input type="text" class="showcase-item-track" value="${esc(it.track)}" placeholder="مثال: مسار نور البيان وحفظ جزء عم">
+            </div>
+            <div class="form-group">
+              <label>السورة والتفاصيل</label>
+              <input type="text" class="showcase-item-surah" value="${esc(it.surah)}" placeholder="مثال: تلاوة من سورة النبأ — بعد ٣ أشهر من الدراسة">
+            </div>
+            <div class="form-group">
+              <label>شارة الفئة</label>
+              <input type="text" class="showcase-item-tag" value="${esc(it.tag || 'أطفال')}" placeholder="أطفال أو كبار">
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    window.removeShowcaseItem = function(id) {
+      CURRENT_DATA.showcase.items = CURRENT_DATA.showcase.items.filter(it => it.id !== id);
+      renderShowcaseItems(CURRENT_DATA.showcase.items);
+    };
+
+    document.getElementById('addShowcaseItemBtn').addEventListener('click', ()=>{
+      CURRENT_DATA.showcase.items.push({
+        id: 's_' + Date.now(),
+        name: 'اسم الطالب',
+        track: 'المسار التعليمي',
+        surah: 'تلاوة من سورة...',
+        tag: 'أطفال'
+      });
+      renderShowcaseItems(CURRENT_DATA.showcase.items);
+    });
+
+    // 4. Render Quality Items
+    function renderQualityItems(items) {
+      const container = document.getElementById('qualityItemsContainer');
+      container.innerHTML = items.map((q, i) => `
+        <div class="repeater-item" data-id="${q.id}">
+          <div class="repeater-top">
+            <span class="repeater-badge">المعيار #${i + 1}</span>
+            <button type="button" class="btn-delete" onclick="removeQualityItem('${q.id}')">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              حذف المعيار
+            </button>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>شارة المعيار (التاج)</label>
+              <input type="text" class="quality-item-tag" value="${esc(q.tag)}" placeholder="مثال: القرآن الكريم">
+            </div>
+            <div class="form-group">
+              <label>عنوان المعيار</label>
+              <input type="text" class="quality-item-title" value="${esc(q.title)}" placeholder="مثال: حفظ متقن">
+            </div>
+            <div class="form-group full-width">
+              <label>الوصف التفصيلي</label>
+              <textarea class="quality-item-desc" rows="2" placeholder="اكتب وصف المعيار...">${esc(q.desc)}</textarea>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    window.removeQualityItem = function(id) {
+      CURRENT_DATA.quality.items = CURRENT_DATA.quality.items.filter(q => q.id !== id);
+      renderQualityItems(CURRENT_DATA.quality.items);
+    };
+
+    document.getElementById('addQualityItemBtn').addEventListener('click', ()=>{
+      CURRENT_DATA.quality.items.push({
+        id: 'q_' + Date.now(),
+        tag: 'معيار جديد',
+        title: 'العنوان',
+        desc: 'اكتب تفاصيل المعيار هنا...'
+      });
+      renderQualityItems(CURRENT_DATA.quality.items);
+    });
+
+    // 5. Render Pricing Items
+    function renderPricingItems(items) {
+      const container = document.getElementById('pricingItemsContainer');
+      container.innerHTML = items.map((p, i) => `
+        <div class="repeater-item" data-id="${p.id}">
+          <div class="repeater-top">
+            <span class="repeater-badge">الباقة #${i + 1} ${p.is_featured ? '⭐ (الأكثر اختياراً)' : ''}</span>
+            <button type="button" class="btn-delete" onclick="removePricingItem('${p.id}')">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              حذف الباقة
+            </button>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>اسم الباقة</label>
+              <input type="text" class="pkg-item-name" value="${esc(p.name)}" placeholder="مثال: باقة الهمة">
+            </div>
+            <div class="form-group">
+              <label>السعر (أرقام فقط)</label>
+              <input type="text" class="pkg-item-price" value="${esc(p.price)}" placeholder="مثال: 400">
+            </div>
+            <div class="form-group">
+              <label>عدد الحصص</label>
+              <input type="text" class="pkg-item-sessions" value="${esc(p.sessions)}" placeholder="مثال: ٨ أو 12">
+            </div>
+            <div class="form-group">
+              <label>دورية الحصص (نص توضيحي)</label>
+              <input type="text" class="pkg-item-freq" value="${esc(p.freq || 'حصص شهرياً')}" placeholder="مثال: حصص شهرياً (حصتان أسبوعياً)">
+            </div>
+            <div class="form-group full-width">
+              <label>وصف الباقة المختصر</label>
+              <input type="text" class="pkg-item-desc" value="${esc(p.desc || '')}" placeholder="مثال: مثالية للمبتدئين في التأسيس">
+            </div>
+            <div class="form-group full-width">
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                <input type="checkbox" class="pkg-item-featured" style="display:inline;" ${p.is_featured ? 'checked' : ''}>
+                <span style="font-weight:700;color:var(--green-deep);">تمييز كـ «الأكثر اختياراً ⭐» (ستظهر بحجم أكبر وإطار ذهبي مميز)</span>
+              </label>
+            </div>
+            <div class="form-group full-width">
+              <label>مميزات الباقة (كل سطر يعتبر ميزة مستقلة)</label>
+              <textarea class="pkg-item-features" rows="4" placeholder="ميزة ١&#10;ميزة ٢&#10;ميزة ٣">${esc(p.features || '')}</textarea>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    window.removePricingItem = function(id) {
+      CURRENT_DATA.pricing.items = CURRENT_DATA.pricing.items.filter(p => p.id !== id);
+      renderPricingItems(CURRENT_DATA.pricing.items);
+    };
+
+    document.getElementById('addPricingItemBtn').addEventListener('click', ()=>{
+      CURRENT_DATA.pricing.items.push({
+        id: 'pkg_' + Date.now(),
+        name: 'باقة جديدة',
+        price: '500',
+        sessions: '١٠',
+        freq: 'حصص شهرياً',
+        desc: 'وصف مختصر للباقة...',
+        is_featured: false,
+        features: 'حصة خاصة مباشرة صوت وصورة\nمتابعة مستمرة على المنصة\nتقرير دوري شهري'
+      });
+      renderPricingItems(CURRENT_DATA.pricing.items);
+    });
+
+    // 6. Render Stories Items
+    function renderStoriesItems(items) {
+      const container = document.getElementById('storiesItemsContainer');
+      container.innerHTML = items.map((st, i) => `
+        <div class="repeater-item" data-id="${st.id}">
+          <div class="repeater-top">
+            <span class="repeater-badge">الرأي #${i + 1}</span>
+            <button type="button" class="btn-delete" onclick="removeStoryItem('${st.id}')">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              حذف الرأي
+            </button>
+          </div>
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <label>نص الرأي / الاقتباس</label>
+              <textarea class="story-item-quote" rows="2" placeholder="اكتب كلام الطالب أو ولي الأمر...">${esc(st.quote)}</textarea>
+            </div>
+            <div class="form-group">
+              <label>الاسم أو الصفة</label>
+              <input type="text" class="story-item-name" value="${esc(st.name)}" placeholder="مثال: ولي أمر طالب أو م. أحمد">
+            </div>
+            <div class="form-group">
+              <label>البرنامج أو الفئة</label>
+              <input type="text" class="story-item-prog" value="${esc(st.prog)}" placeholder="مثال: برنامج الأطفال أو برنامج الكبار">
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    window.removeStoryItem = function(id) {
+      CURRENT_DATA.stories.items = CURRENT_DATA.stories.items.filter(st => st.id !== id);
+      renderStoriesItems(CURRENT_DATA.stories.items);
+    };
+
+    document.getElementById('addStoryItemBtn').addEventListener('click', ()=>{
+      CURRENT_DATA.stories.items.push({
+        id: 'st_' + Date.now(),
+        quote: 'تجربة رائعة وتعليم متميز بفضل الله.',
+        name: 'طالب بالأكاديمية',
+        prog: 'برنامج الكبار'
+      });
+      renderStoriesItems(CURRENT_DATA.stories.items);
+    });
+
+    // 7. Render FAQ Items
+    function renderFaqItems(items) {
+      const container = document.getElementById('faqItemsContainer');
+      container.innerHTML = items.map((f, i) => `
+        <div class="repeater-item" data-id="${f.id}">
+          <div class="repeater-top">
+            <span class="repeater-badge">السؤال #${i + 1}</span>
+            <button type="button" class="btn-delete" onclick="removeFaqItem('${f.id}')">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              حذف السؤال
+            </button>
+          </div>
+          <div class="form-group full-width">
+            <label>نص السؤال</label>
+            <input type="text" class="faq-item-q" value="${esc(f.q)}" placeholder="مثال: كيف تتم الحصص أونلاين؟">
+          </div>
+          <div class="form-group full-width">
+            <label>نص الإجابة</label>
+            <textarea class="faq-item-a" rows="3" placeholder="اكتب الإجابة الشاملة هنا...">${esc(f.a)}</textarea>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    window.removeFaqItem = function(id) {
+      CURRENT_DATA.faq.items = CURRENT_DATA.faq.items.filter(f => f.id !== id);
+      renderFaqItems(CURRENT_DATA.faq.items);
+    };
+
+    document.getElementById('addFaqItemBtn').addEventListener('click', ()=>{
+      CURRENT_DATA.faq.items.push({
+        id: 'f_' + Date.now(),
+        q: 'سؤال شائع جديد؟',
+        a: 'إجابة السؤال هنا بالتفصيل...'
+      });
+      renderFaqItems(CURRENT_DATA.faq.items);
+    });
+
+    // 8. Render Custom Sections
+    function renderCustomSections(sections) {
+      const container = document.getElementById('customSectionsContainer');
+      if (!sections || sections.length === 0) {
+        container.innerHTML = '<p style="font-size:13.5px;color:var(--ink-soft);padding:14px;background:#fff;border-radius:var(--radius-md);border:1px dashed var(--line);text-align:center;">لا توجد أقسام مخصصة إضافية حالياً. يمكنك الضغط على الزر أدناه لإضافة قسمك الأول!</p>';
+        return;
+      }
+
+      container.innerHTML = sections.map((sec, i) => `
+        <div class="repeater-item" data-id="${sec.id}">
+          <div class="repeater-top">
+            <span class="repeater-badge">قسم مخصص #${i + 1}</span>
+            <button type="button" class="btn-delete" onclick="removeCustomSection('${sec.id}')">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              حذف هذا القسم بالكامل
+            </button>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>عنوان القسم الرئيسي</label>
+              <input type="text" class="custom-sec-title" value="${esc(sec.title)}" placeholder="مثال: تكريم حفظة كتاب الله">
+            </div>
+            <div class="form-group">
+              <label>شارة القسم العلوية (Badge اختياري)</label>
+              <input type="text" class="custom-sec-badge" value="${esc(sec.badge || '')}" placeholder="مثال: مميز أو جديد">
+            </div>
+            <div class="form-group full-width">
+              <label>النص الفرعي للقسم (اختياري)</label>
+              <input type="text" class="custom-sec-sub" value="${esc(sec.sub || '')}" placeholder="مقدمة سريعة للقسم...">
+            </div>
+            <div class="form-group full-width">
+              <label>محتوى القسم النصي</label>
+              <textarea class="custom-sec-content" rows="4" placeholder="اكتب التفاصيل والمحتوى الذي سيظهر في منتصف هذا القسم...">${esc(sec.content || '')}</textarea>
+            </div>
+            <div class="form-group">
+              <label>نص زر الإجراء (CTA اختياري)</label>
+              <input type="text" class="custom-sec-btn-text" value="${esc(sec.btn_text || '')}" placeholder="مثال: انضم للبرنامج أو اعرف المزيد">
+            </div>
+            <div class="form-group">
+              <label>رابط الزر (رابط صفحة أو رابط واتساب اختياري)</label>
+              <input type="text" class="custom-sec-btn-link" value="${esc(sec.btn_link || '')}" placeholder="https://wa.me/... أو #register">
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    window.removeCustomSection = function(id) {
+      CURRENT_DATA.custom_sections = CURRENT_DATA.custom_sections.filter(sec => sec.id !== id);
+      renderCustomSections(CURRENT_DATA.custom_sections);
+    };
+
+    document.getElementById('addCustomSectionBtn').addEventListener('click', ()=>{
+      CURRENT_DATA.custom_sections.push({
+        id: 'c_' + Date.now(),
+        title: 'قسم مخصص جديد',
+        badge: 'قسم مميز',
+        sub: 'وصف فرعي توضيحي لهذا القسم',
+        content: 'اكتب هنا كل ما ترغب في عرضه لزوار موقعك في هذا القسم المستقل...',
+        btn_text: 'تواصل معنا',
+        btn_link: '#contact'
+      });
+      renderCustomSections(CURRENT_DATA.custom_sections);
+    });
+
+    /* =====================================================================
+       6. FORM POPULATION & EXTRACTION
+       ===================================================================== */
+    function populateForm(raw) {
+      if (!raw) return;
+      const data = normalizeData(raw);
+      CURRENT_DATA = data;
+
+      // Section switches
+      if (data.sections_visibility) {
+        document.getElementById('sec_banner').checked = data.sections_visibility.banner !== false;
+        document.getElementById('sec_why').checked = data.sections_visibility.why !== false;
+        document.getElementById('sec_pathways').checked = data.sections_visibility.pathways !== false;
+        document.getElementById('sec_programs').checked = data.sections_visibility.programs !== false;
+        document.getElementById('sec_showcase').checked = data.sections_visibility.showcase !== false;
+        document.getElementById('sec_quality').checked = data.sections_visibility.quality !== false;
+        document.getElementById('sec_pricing').checked = data.sections_visibility.pricing !== false;
+        document.getElementById('sec_stories').checked = data.sections_visibility.stories !== false;
+        document.getElementById('sec_faq').checked = data.sections_visibility.faq !== false;
+        document.getElementById('sec_register').checked = data.sections_visibility.register !== false;
+      }
+
+      // Render custom sections
+      renderCustomSections(data.custom_sections || []);
 
       // Contact
       if (data.contact) {
@@ -1391,34 +1770,14 @@ create policy "Allow all site_settings" on public.site_settings for all using (t
       if (data.why) {
         document.getElementById('why_title').value = data.why.title || '';
         document.getElementById('why_sub').value = data.why.sub || '';
-        document.getElementById('why1_title').value = data.why.why1_title || '';
-        document.getElementById('why1_desc').value = data.why.why1_desc || '';
-        document.getElementById('why2_title').value = data.why.why2_title || '';
-        document.getElementById('why2_desc').value = data.why.why2_desc || '';
-        document.getElementById('why3_title').value = data.why.why3_title || '';
-        document.getElementById('why3_desc').value = data.why.why3_desc || '';
-        document.getElementById('why4_title').value = data.why.why4_title || '';
-        document.getElementById('why4_desc').value = data.why.why4_desc || '';
+        renderWhyItems(data.why.items || []);
       }
 
       // Pathways
       if (data.pathways) {
-        if (data.pathways.path1) {
-          document.getElementById('path1_title').value = data.pathways.path1.title || '';
-          document.getElementById('path1_desc').value = data.pathways.path1.desc || '';
-        }
-        if (data.pathways.path2) {
-          document.getElementById('path2_title').value = data.pathways.path2.title || '';
-          document.getElementById('path2_desc').value = data.pathways.path2.desc || '';
-        }
-        if (data.pathways.path3) {
-          document.getElementById('path3_title').value = data.pathways.path3.title || '';
-          document.getElementById('path3_desc').value = data.pathways.path3.desc || '';
-        }
-        if (data.pathways.path4) {
-          document.getElementById('path4_title').value = data.pathways.path4.title || '';
-          document.getElementById('path4_desc').value = data.pathways.path4.desc || '';
-        }
+        document.getElementById('pathways_title').value = data.pathways.title || '';
+        document.getElementById('pathways_sub').value = data.pathways.sub || '';
+        renderPathwaysItems(data.pathways.items || []);
       }
 
       // Programs
@@ -1435,78 +1794,36 @@ create policy "Allow all site_settings" on public.site_settings for all using (t
 
       // Showcase
       if (data.showcase) {
-        document.getElementById('audio1_name').value = data.showcase.audio1_name || '';
-        document.getElementById('audio1_track').value = data.showcase.audio1_track || '';
-        document.getElementById('audio1_surah').value = data.showcase.audio1_surah || '';
-        document.getElementById('audio2_name').value = data.showcase.audio2_name || '';
-        document.getElementById('audio2_track').value = data.showcase.audio2_track || '';
-        document.getElementById('audio2_surah').value = data.showcase.audio2_surah || '';
-        document.getElementById('audio3_name').value = data.showcase.audio3_name || '';
-        document.getElementById('audio3_track').value = data.showcase.audio3_track || '';
-        document.getElementById('audio3_surah').value = data.showcase.audio3_surah || '';
+        document.getElementById('showcase_title').value = data.showcase.title || '';
+        document.getElementById('showcase_sub').value = data.showcase.sub || '';
+        renderShowcaseItems(data.showcase.items || []);
       }
 
       // Quality
       if (data.quality) {
-        document.getElementById('qual1_tag').value = data.quality.q1_tag || '';
-        document.getElementById('qual1_title').value = data.quality.q1_title || '';
-        document.getElementById('qual1_desc').value = data.quality.q1_desc || '';
-        document.getElementById('qual2_tag').value = data.quality.q2_tag || '';
-        document.getElementById('qual2_title').value = data.quality.q2_title || '';
-        document.getElementById('qual2_desc').value = data.quality.q2_desc || '';
-        document.getElementById('qual3_tag').value = data.quality.q3_tag || '';
-        document.getElementById('qual3_title').value = data.quality.q3_title || '';
-        document.getElementById('qual3_desc').value = data.quality.q3_desc || '';
+        document.getElementById('quality_title').value = data.quality.title || '';
+        document.getElementById('quality_sub').value = data.quality.sub || '';
+        renderQualityItems(data.quality.items || []);
       }
 
       // Pricing
       if (data.pricing) {
         document.getElementById('pricing_currency').value = data.pricing.currency || 'ج.م';
-        if (data.pricing.pkg1) {
-          document.getElementById('pkg1_name').value = data.pricing.pkg1.name || '';
-          document.getElementById('pkg1_price').value = data.pricing.pkg1.price || '';
-          document.getElementById('pkg1_sessions').value = data.pricing.pkg1.sessions || '';
-          document.getElementById('pkg1_features').value = data.pricing.pkg1.features || '';
-        }
-        if (data.pricing.pkg2) {
-          document.getElementById('pkg2_name').value = data.pricing.pkg2.name || '';
-          document.getElementById('pkg2_price').value = data.pricing.pkg2.price || '';
-          document.getElementById('pkg2_sessions').value = data.pricing.pkg2.sessions || '';
-          document.getElementById('pkg2_features').value = data.pricing.pkg2.features || '';
-        }
-        if (data.pricing.pkg3) {
-          document.getElementById('pkg3_name').value = data.pricing.pkg3.name || '';
-          document.getElementById('pkg3_price').value = data.pricing.pkg3.price || '';
-          document.getElementById('pkg3_sessions').value = data.pricing.pkg3.sessions || '';
-          document.getElementById('pkg3_features').value = data.pricing.pkg3.features || '';
-        }
+        document.getElementById('pricing_title').value = data.pricing.title || '';
+        renderPricingItems(data.pricing.items || []);
       }
 
       // Stories
       if (data.stories) {
-        document.getElementById('story1_quote').value = data.stories.s1_quote || '';
-        document.getElementById('story1_name').value = data.stories.s1_name || '';
-        document.getElementById('story1_prog').value = data.stories.s1_prog || '';
-        document.getElementById('story2_quote').value = data.stories.s2_quote || '';
-        document.getElementById('story2_name').value = data.stories.s2_name || '';
-        document.getElementById('story2_prog').value = data.stories.s2_prog || '';
-        document.getElementById('story3_quote').value = data.stories.s3_quote || '';
-        document.getElementById('story3_name').value = data.stories.s3_name || '';
-        document.getElementById('story3_prog').value = data.stories.s3_prog || '';
+        document.getElementById('stories_title').value = data.stories.title || '';
+        document.getElementById('stories_sub').value = data.stories.sub || '';
+        renderStoriesItems(data.stories.items || []);
       }
 
       // FAQ
       if (data.faq) {
-        document.getElementById('faq1_q').value = data.faq.f1_q || '';
-        document.getElementById('faq1_a').value = data.faq.f1_a || '';
-        document.getElementById('faq2_q').value = data.faq.f2_q || '';
-        document.getElementById('faq2_a').value = data.faq.f2_a || '';
-        document.getElementById('faq3_q').value = data.faq.f3_q || '';
-        document.getElementById('faq3_a').value = data.faq.f3_a || '';
-        document.getElementById('faq4_q').value = data.faq.f4_q || '';
-        document.getElementById('faq4_a').value = data.faq.f4_a || '';
-        document.getElementById('faq5_q').value = data.faq.f5_q || '';
-        document.getElementById('faq5_a').value = data.faq.f5_a || '';
+        document.getElementById('faq_title').value = data.faq.title || '';
+        renderFaqItems(data.faq.items || []);
       }
 
       // Register
@@ -1520,7 +1837,99 @@ create policy "Allow all site_settings" on public.site_settings for all using (t
     }
 
     function readForm() {
+      // Collect dynamic why items
+      const whyCards = document.querySelectorAll('#whyItemsContainer .repeater-item');
+      const whyItems = Array.from(whyCards).map(card => ({
+        id: card.dataset.id,
+        title: card.querySelector('.why-item-title').value.trim(),
+        desc: card.querySelector('.why-item-desc').value.trim()
+      }));
+
+      // Collect dynamic pathways items
+      const pathCards = document.querySelectorAll('#pathwaysItemsContainer .repeater-item');
+      const pathItems = Array.from(pathCards).map(card => ({
+        id: card.dataset.id,
+        badge: card.querySelector('.path-item-badge').value.trim(),
+        title: card.querySelector('.path-item-title').value.trim(),
+        desc: card.querySelector('.path-item-desc').value.trim(),
+        features: card.querySelector('.path-item-features').value.trim()
+      }));
+
+      // Collect dynamic showcase items
+      const scCards = document.querySelectorAll('#showcaseItemsContainer .repeater-item');
+      const scItems = Array.from(scCards).map(card => ({
+        id: card.dataset.id,
+        name: card.querySelector('.showcase-item-name').value.trim(),
+        track: card.querySelector('.showcase-item-track').value.trim(),
+        surah: card.querySelector('.showcase-item-surah').value.trim(),
+        tag: card.querySelector('.showcase-item-tag').value.trim()
+      }));
+
+      // Collect dynamic quality items
+      const qCards = document.querySelectorAll('#qualityItemsContainer .repeater-item');
+      const qItems = Array.from(qCards).map(card => ({
+        id: card.dataset.id,
+        tag: card.querySelector('.quality-item-tag').value.trim(),
+        title: card.querySelector('.quality-item-title').value.trim(),
+        desc: card.querySelector('.quality-item-desc').value.trim()
+      }));
+
+      // Collect dynamic pricing items
+      const pkgCards = document.querySelectorAll('#pricingItemsContainer .repeater-item');
+      const pkgItems = Array.from(pkgCards).map(card => ({
+        id: card.dataset.id,
+        name: card.querySelector('.pkg-item-name').value.trim(),
+        price: card.querySelector('.pkg-item-price').value.trim(),
+        sessions: card.querySelector('.pkg-item-sessions').value.trim(),
+        freq: card.querySelector('.pkg-item-freq').value.trim(),
+        desc: card.querySelector('.pkg-item-desc').value.trim(),
+        is_featured: card.querySelector('.pkg-item-featured').checked,
+        features: card.querySelector('.pkg-item-features').value.trim()
+      }));
+
+      // Collect dynamic stories items
+      const stCards = document.querySelectorAll('#storiesItemsContainer .repeater-item');
+      const stItems = Array.from(stCards).map(card => ({
+        id: card.dataset.id,
+        quote: card.querySelector('.story-item-quote').value.trim(),
+        name: card.querySelector('.story-item-name').value.trim(),
+        prog: card.querySelector('.story-item-prog').value.trim()
+      }));
+
+      // Collect dynamic FAQ items
+      const faqCards = document.querySelectorAll('#faqItemsContainer .repeater-item');
+      const faqItems = Array.from(faqCards).map(card => ({
+        id: card.dataset.id,
+        q: card.querySelector('.faq-item-q').value.trim(),
+        a: card.querySelector('.faq-item-a').value.trim()
+      }));
+
+      // Collect custom sections
+      const customCards = document.querySelectorAll('#customSectionsContainer .repeater-item');
+      const customSections = Array.from(customCards).map(card => ({
+        id: card.dataset.id,
+        title: card.querySelector('.custom-sec-title').value.trim(),
+        badge: card.querySelector('.custom-sec-badge').value.trim(),
+        sub: card.querySelector('.custom-sec-sub').value.trim(),
+        content: card.querySelector('.custom-sec-content').value.trim(),
+        btn_text: card.querySelector('.custom-sec-btn-text').value.trim(),
+        btn_link: card.querySelector('.custom-sec-btn-link').value.trim()
+      }));
+
       return {
+        sections_visibility: {
+          banner: document.getElementById('sec_banner').checked,
+          why: document.getElementById('sec_why').checked,
+          pathways: document.getElementById('sec_pathways').checked,
+          programs: document.getElementById('sec_programs').checked,
+          showcase: document.getElementById('sec_showcase').checked,
+          quality: document.getElementById('sec_quality').checked,
+          pricing: document.getElementById('sec_pricing').checked,
+          stories: document.getElementById('sec_stories').checked,
+          faq: document.getElementById('sec_faq').checked,
+          register: document.getElementById('sec_register').checked
+        },
+        custom_sections: customSections,
         contact: {
           whatsapp: document.getElementById('contact_whatsapp').value.trim() || DEFAULT_SETTINGS.contact.whatsapp,
           phone_display: document.getElementById('contact_phone_display').value.trim(),
@@ -1551,32 +1960,12 @@ create policy "Allow all site_settings" on public.site_settings for all using (t
         why: {
           title: document.getElementById('why_title').value.trim(),
           sub: document.getElementById('why_sub').value.trim(),
-          why1_title: document.getElementById('why1_title').value.trim(),
-          why1_desc: document.getElementById('why1_desc').value.trim(),
-          why2_title: document.getElementById('why2_title').value.trim(),
-          why2_desc: document.getElementById('why2_desc').value.trim(),
-          why3_title: document.getElementById('why3_title').value.trim(),
-          why3_desc: document.getElementById('why3_desc').value.trim(),
-          why4_title: document.getElementById('why4_title').value.trim(),
-          why4_desc: document.getElementById('why4_desc').value.trim()
+          items: whyItems
         },
         pathways: {
-          path1: {
-            title: document.getElementById('path1_title').value.trim(),
-            desc: document.getElementById('path1_desc').value.trim()
-          },
-          path2: {
-            title: document.getElementById('path2_title').value.trim(),
-            desc: document.getElementById('path2_desc').value.trim()
-          },
-          path3: {
-            title: document.getElementById('path3_title').value.trim(),
-            desc: document.getElementById('path3_desc').value.trim()
-          },
-          path4: {
-            title: document.getElementById('path4_title').value.trim(),
-            desc: document.getElementById('path4_desc').value.trim()
-          }
+          title: document.getElementById('pathways_title').value.trim(),
+          sub: document.getElementById('pathways_sub').value.trim(),
+          items: pathItems
         },
         programs: {
           kids_age: document.getElementById('prog_kids_age').value.trim(),
@@ -1589,70 +1978,28 @@ create policy "Allow all site_settings" on public.site_settings for all using (t
           adults_btn: document.getElementById('prog_adults_btn').value.trim()
         },
         showcase: {
-          audio1_name: document.getElementById('audio1_name').value.trim(),
-          audio1_track: document.getElementById('audio1_track').value.trim(),
-          audio1_surah: document.getElementById('audio1_surah').value.trim(),
-          audio2_name: document.getElementById('audio2_name').value.trim(),
-          audio2_track: document.getElementById('audio2_track').value.trim(),
-          audio2_surah: document.getElementById('audio2_surah').value.trim(),
-          audio3_name: document.getElementById('audio3_name').value.trim(),
-          audio3_track: document.getElementById('audio3_track').value.trim(),
-          audio3_surah: document.getElementById('audio3_surah').value.trim()
+          title: document.getElementById('showcase_title').value.trim(),
+          sub: document.getElementById('showcase_sub').value.trim(),
+          items: scItems
         },
         quality: {
-          q1_tag: document.getElementById('qual1_tag').value.trim(),
-          q1_title: document.getElementById('qual1_title').value.trim(),
-          q1_desc: document.getElementById('qual1_desc').value.trim(),
-          q2_tag: document.getElementById('qual2_tag').value.trim(),
-          q2_title: document.getElementById('qual2_title').value.trim(),
-          q2_desc: document.getElementById('qual2_desc').value.trim(),
-          q3_tag: document.getElementById('qual3_tag').value.trim(),
-          q3_title: document.getElementById('qual3_title').value.trim(),
-          q3_desc: document.getElementById('qual3_desc').value.trim()
+          title: document.getElementById('quality_title').value.trim(),
+          sub: document.getElementById('quality_sub').value.trim(),
+          items: qItems
         },
         pricing: {
           currency: document.getElementById('pricing_currency').value.trim() || 'ج.م',
-          pkg1: {
-            name: document.getElementById('pkg1_name').value.trim(),
-            price: document.getElementById('pkg1_price').value.trim(),
-            sessions: document.getElementById('pkg1_sessions').value.trim(),
-            features: document.getElementById('pkg1_features').value.trim()
-          },
-          pkg2: {
-            name: document.getElementById('pkg2_name').value.trim(),
-            price: document.getElementById('pkg2_price').value.trim(),
-            sessions: document.getElementById('pkg2_sessions').value.trim(),
-            features: document.getElementById('pkg2_features').value.trim()
-          },
-          pkg3: {
-            name: document.getElementById('pkg3_name').value.trim(),
-            price: document.getElementById('pkg3_price').value.trim(),
-            sessions: document.getElementById('pkg3_sessions').value.trim(),
-            features: document.getElementById('pkg3_features').value.trim()
-          }
+          title: document.getElementById('pricing_title').value.trim(),
+          items: pkgItems
         },
         stories: {
-          s1_quote: document.getElementById('story1_quote').value.trim(),
-          s1_name: document.getElementById('story1_name').value.trim(),
-          s1_prog: document.getElementById('story1_prog').value.trim(),
-          s2_quote: document.getElementById('story2_quote').value.trim(),
-          s2_name: document.getElementById('story2_name').value.trim(),
-          s2_prog: document.getElementById('story2_prog').value.trim(),
-          s3_quote: document.getElementById('story3_quote').value.trim(),
-          s3_name: document.getElementById('story3_name').value.trim(),
-          s3_prog: document.getElementById('story3_prog').value.trim()
+          title: document.getElementById('stories_title').value.trim(),
+          sub: document.getElementById('stories_sub').value.trim(),
+          items: stItems
         },
         faq: {
-          f1_q: document.getElementById('faq1_q').value.trim(),
-          f1_a: document.getElementById('faq1_a').value.trim(),
-          f2_q: document.getElementById('faq2_q').value.trim(),
-          f2_a: document.getElementById('faq2_a').value.trim(),
-          f3_q: document.getElementById('faq3_q').value.trim(),
-          f3_a: document.getElementById('faq3_a').value.trim(),
-          f4_q: document.getElementById('faq4_q').value.trim(),
-          f4_a: document.getElementById('faq4_a').value.trim(),
-          f5_q: document.getElementById('faq5_q').value.trim(),
-          f5_a: document.getElementById('faq5_a').value.trim()
+          title: document.getElementById('faq_title').value.trim(),
+          items: faqItems
         },
         register: {
           title: document.getElementById('reg_title').value.trim(),
@@ -1665,14 +2012,14 @@ create policy "Allow all site_settings" on public.site_settings for all using (t
     }
 
     /* =====================================================================
-       5. CLOUD STORAGE (SUPABASE & LOCALSTORAGE)
+       7. CLOUD STORAGE (SUPABASE & LOCALSTORAGE)
        ===================================================================== */
     async function loadData() {
       // 1. Try LocalStorage
       const local = localStorage.getItem('kortoba_site_settings');
       if (local) {
         try {
-          CURRENT_DATA = Object.assign({}, DEFAULT_SETTINGS, JSON.parse(local));
+          CURRENT_DATA = normalizeData(JSON.parse(local));
           populateForm(CURRENT_DATA);
         } catch(e) {}
       } else {
@@ -1689,12 +2036,12 @@ create policy "Allow all site_settings" on public.site_settings for all using (t
             .single();
 
           if (!error && data && data.value) {
-            CURRENT_DATA = Object.assign({}, DEFAULT_SETTINGS, data.value);
+            CURRENT_DATA = normalizeData(data.value);
             localStorage.setItem('kortoba_site_settings', JSON.stringify(CURRENT_DATA));
             populateForm(CURRENT_DATA);
             document.getElementById('cloudConnectionMsg').innerHTML = '🟢 متصل بنجاح وجدول الإعدادات مفعل في Supabase!';
           } else {
-            document.getElementById('cloudConnectionMsg').innerHTML = '🟡 متصل بـ Supabase (يمكنك نسخ وتشغيل كود SQL أدناه لتفعيل الحفظ السحابي التام).';
+            document.getElementById('cloudConnectionMsg').innerHTML = '🟡 متصل بـ Supabase (يمكنك نسخ وتشغيل كود SQL لتفعيل الحفظ السحابي التام).';
           }
         } catch(err) {
           console.warn('Load cloud settings notice:', err);
@@ -1738,7 +2085,7 @@ create policy "Allow all site_settings" on public.site_settings for all using (t
 
     // Reset Defaults
     document.getElementById('resetDefaultsBtn').addEventListener('click', ()=>{
-      if (confirm('هل أنت متأكد من رغبتك في استعادة الإعدادات الأصلية لكافة تفاصيل الموقع؟')) {
+      if (confirm('هل أنت متأكد من رغبتك في استعادة الإعدادات الأصلية لكافة الأقسام والعناصر؟')) {
         CURRENT_DATA = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
         populateForm(CURRENT_DATA);
         saveData();
