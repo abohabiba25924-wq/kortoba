@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>لوحة إدارة المحتوى | أكاديمية قرطبة لتعليم القرآن الكريم</title>
+  <title>لوحة التحكم الشاملة بمحتوى الموقع | أكاديمية قرطبة</title>
   <link rel="icon" type="image/png" href="https://res.cloudinary.com/dvfx83gns/image/upload/v1787795512/%D9%82%D8%B1%D8%B7%D8%A8%D8%A9_gbn7xe.png">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Cairo:wght@400;600;700;800&family=Aref+Ruqaa:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
   
   <!-- Supabase JS CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -114,10 +114,10 @@
 
     /* Layout */
     .dashboard-container {
-      max-width: 1220px; margin: 28px auto 60px;
+      max-width: 1280px; margin: 28px auto 60px;
       padding: 0 20px;
       display: grid;
-      grid-template-columns: 260px 1fr;
+      grid-template-columns: 280px 1fr;
       gap: 26px;
       align-items: start;
     }
@@ -130,14 +130,16 @@
       box-shadow: var(--shadow-sm);
       border: 1px solid var(--line);
       position: sticky; top: 88px;
+      max-height: calc(100vh - 110px);
+      overflow-y: auto;
     }
     .tab-btn {
       width: 100%; display: flex; align-items: center; gap: 12px;
-      padding: 12px 16px; border: none; background: transparent;
-      border-radius: var(--radius-md); font-family: inherit; font-size: 14.5px;
+      padding: 11px 14px; border: none; background: transparent;
+      border-radius: var(--radius-md); font-family: inherit; font-size: 13.5px;
       font-weight: 700; color: var(--ink-soft); cursor: pointer;
       text-align: right; transition: all .2s ease;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
     .tab-btn svg { width: 18px; height: 18px; stroke: currentColor; flex-shrink: 0; }
     .tab-btn:hover { background: var(--green-light); color: var(--green-deep); }
@@ -186,7 +188,7 @@
     .form-grid.triple { grid-template-columns: repeat(3, 1fr); }
     .full-width { grid-column: 1 / -1; }
 
-    .form-group { margin-bottom: 20px; }
+    .form-group { margin-bottom: 18px; }
     .form-group label {
       display: block; font-size: 13.5px; font-weight: 700;
       color: var(--green-deep); margin-bottom: 8px;
@@ -203,7 +205,7 @@
       border-color: var(--green); background: #fff;
       box-shadow: 0 0 0 3px rgba(18,78,56,0.1);
     }
-    textarea { resize: vertical; min-height: 85px; }
+    textarea { resize: vertical; min-height: 80px; }
 
     /* Toggle Switch */
     .switch-label {
@@ -268,10 +270,10 @@
     }
 
     /* Responsive */
-    @media (max-width: 880px) {
+    @media (max-width: 960px) {
       .dashboard-container { grid-template-columns: 1fr; margin-top: 16px; }
-      .sidebar-tabs { position: static; display: flex; overflow-x: auto; padding: 8px; gap: 8px; }
-      .tab-btn { width: auto; white-space: nowrap; margin-bottom: 0; padding: 8px 14px; font-size: 13.5px; }
+      .sidebar-tabs { position: static; display: flex; overflow-x: auto; padding: 8px; gap: 8px; max-height: none; }
+      .tab-btn { width: auto; white-space: nowrap; margin-bottom: 0; padding: 8px 14px; font-size: 13px; }
       .form-grid { grid-template-columns: 1fr; }
       .content-area { padding: 20px 16px; }
       .header-actions .btn-action span { display: none; }
@@ -299,8 +301,8 @@
     <div class="brand-wrap">
       <img src="https://res.cloudinary.com/dvfx83gns/image/upload/v1787795512/%D9%82%D8%B1%D8%B7%D8%A8%D8%A9_gbn7xe.png" alt="قرطبة">
       <div class="brand-titles">
-        <h1>لوحة إدارة محتوى قرطبة</h1>
-        <span>تعديل مباشر وفوري للموقع التعريفي</span>
+        <h1>لوحة إدارة محتوى قرطبة الشاملة</h1>
+        <span>تعديل مباشر لكافة تفاصيل واجهة الموقع</span>
       </div>
     </div>
     <div class="header-actions">
@@ -323,7 +325,7 @@
     <aside class="sidebar-tabs">
       <button class="tab-btn active" data-target="panel-contact">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-        التواصل والواتساب
+        التواصل والسوشيال
       </button>
       <button class="tab-btn" data-target="panel-banner">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
@@ -331,23 +333,47 @@
       </button>
       <button class="tab-btn" data-target="panel-hero">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
-        الواجهة الرئيسية
+        الواجهة الرئيسية (Hero)
       </button>
-      <button class="tab-btn" data-target="panel-pricing">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>
-        الباقات والأسعار
+      <button class="tab-btn" data-target="panel-why">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        لماذا قرطبة (المميزات)
       </button>
       <button class="tab-btn" data-target="panel-pathways">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
         المسارات التعليمية
       </button>
-      <button class="tab-btn" data-target="panel-stats">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-        الأرقام والإحصائيات
+      <button class="tab-btn" data-target="panel-programs">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        برامج الأطفال والكبار
+      </button>
+      <button class="tab-btn" data-target="panel-showcase">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        نماذج التلاوات
+      </button>
+      <button class="tab-btn" data-target="panel-quality">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        معايير الجودة والمعلمين
+      </button>
+      <button class="tab-btn" data-target="panel-pricing">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>
+        الباقات والأسعار
+      </button>
+      <button class="tab-btn" data-target="panel-stories">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        آراء وقصص الطلاب
+      </button>
+      <button class="tab-btn" data-target="panel-faq">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        الأسئلة الشائعة
+      </button>
+      <button class="tab-btn" data-target="panel-register">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+        حجز الحصة التجريبية
       </button>
       <button class="tab-btn" data-target="panel-cloud">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
-        الربط السحابي
+        الربط السحابي (Supabase)
       </button>
 
       <div class="cloud-badge" id="cloudStatusBadge">
@@ -365,37 +391,45 @@
     <!-- Main Content Area -->
     <main class="content-area">
 
-      <!-- ================= 1. CONTACT & WHATSAPP ================= -->
+      <!-- ================= 1. CONTACT & SOCIAL ================= -->
       <section class="panel active" id="panel-contact">
         <div class="panel-head">
           <div>
-            <h2>معلومات التواصل والواتساب</h2>
-            <p>تعديل أرقام الهواتف وقوالب الرسائل التي تصلك عند نقر الزوار على أزرار الموقع</p>
+            <h2>التواصل وروابط السوشيال ميديا</h2>
+            <p>أرقام الهواتف، الواتساب، والروابط التي توجه الزائر لحسابات الأكاديمية</p>
           </div>
         </div>
 
         <div class="form-grid">
           <div class="form-group">
             <label>رقم هاتف الواتساب الأساسي (بدون + وبدون مسافات)</label>
-            <input type="tel" id="contact_whatsapp" placeholder="مثال: 201065433395">
-            <div class="hint">هذا هو الرقم الذي تفتح عليه جميع أزرار "تواصل معنا" و "اشترك الآن"</div>
+            <input type="tel" id="contact_whatsapp" placeholder="مثال: 201044734782">
+            <div class="hint">هذا الرقم توجه إليه جميع أزرار "اشترك الآن" و "تواصل معنا"</div>
           </div>
           <div class="form-group">
             <label>رقم الهاتف المعروض للاتصال المباشر</label>
-            <input type="text" id="contact_phone_display" placeholder="مثال: 01065433395">
+            <input type="text" id="contact_phone_display" placeholder="مثال: 01044734782">
           </div>
           <div class="form-group">
-            <label>البريد الإلكتروني للأكاديمية</label>
-            <input type="email" id="contact_email" placeholder="kortobaacademy@gmail.com">
+            <label>رابط صفحة الفيسبوك (Facebook)</label>
+            <input type="text" id="contact_fb" placeholder="https://www.facebook.com/Kortobaacademy/">
           </div>
           <div class="form-group">
-            <label>مقر أو وصف الأكاديمية</label>
-            <input type="text" id="contact_location" placeholder="جمهورية مصر العربية — خدمة أونلاين حول العالم">
+            <label>رابط حساب إنستغرام (Instagram)</label>
+            <input type="text" id="contact_insta" placeholder="https://www.instagram.com/kortoba_quran/">
+          </div>
+          <div class="form-group">
+            <label>رابط قناة اليوتيوب (YouTube)</label>
+            <input type="text" id="contact_yt" placeholder="https://www.youtube.com/@kortobaacademy">
+          </div>
+          <div class="form-group">
+            <label>نص الحقوق أسفل الموقع (Footer Copyright)</label>
+            <input type="text" id="contact_copyright" placeholder="أكاديمية قرطبة لتعليم القرآن الكريم. جميع الحقوق محفوظة.">
           </div>
 
           <div class="form-group full-width">
-            <label>رسالة الواتساب الافتراضية (للزر العام)</label>
-            <textarea id="contact_wa_default_msg" placeholder="السلام عليكم ورحمة الله، أود الاستفسار عن برامج أكاديمية قرطبة وحجز موعد تجربة."></textarea>
+            <label>رسالة الواتساب الافتراضية (للزر العائم وزر الهيدر)</label>
+            <textarea id="contact_wa_default_msg" placeholder="السلام عليكم، حابب أعرف تفاصيل أكتر عن أكاديمية قرطبة."></textarea>
           </div>
         </div>
       </section>
@@ -404,8 +438,8 @@
       <section class="panel" id="panel-banner">
         <div class="panel-head">
           <div>
-            <h2>شريط الإعلانات العاجل (أعلى الموقع)</h2>
-            <p>شريط يظهر في أقصى قمة الموقع لإعلان عروض الخصومات أو بدء التسجيل</p>
+            <h2>شريط الإعلانات العاجل (أعلى قمة الموقع)</h2>
+            <p>تفعيل شريط تنبيهات وعروض الخصومات أعلى نافبار الموقع</p>
           </div>
         </div>
 
@@ -413,21 +447,21 @@
           <label class="switch-label" style="margin-bottom:16px;">
             <input type="checkbox" id="banner_enabled">
             <span class="toggle"></span>
-            <span>تفعيل شريط الإعلانات أعلى الموقع</span>
+            <span>تفعيل شريط الإعلانات في أعلى الموقع</span>
           </label>
 
           <div class="form-grid single" style="margin-top:16px;">
             <div class="form-group">
               <label>شارة الإعلان (Badge)</label>
-              <input type="text" id="banner_badge" placeholder="مثال: 🎉 لفترة محدودة أو 📢 تنبيه هام">
+              <input type="text" id="banner_badge" placeholder="مثال: 🎉 عرض خاص أو 📢 تنبيه">
             </div>
             <div class="form-group">
               <label>نص الإعلان</label>
-              <input type="text" id="banner_text" placeholder="مثال: فتح باب التسجيل للفصل الدراسي الجديد مع خصم 20% للباقة السنوية!">
+              <input type="text" id="banner_text" placeholder="مثال: فتح باب التسجيل للفصل الدراسي الجديد مع خصم مميز لأول ٥٠ مشتركاً!">
             </div>
             <div class="form-group">
-              <label>نص زر الإعلان (اختياري)</label>
-              <input type="text" id="banner_btn_text" placeholder="مثال: احجز مقعدك الآن">
+              <label>نص زر الإعلان</label>
+              <input type="text" id="banner_btn_text" placeholder="مثال: احجز الآن أو تفاصيل أكثر">
             </div>
           </div>
         </div>
@@ -438,43 +472,362 @@
         <div class="panel-head">
           <div>
             <h2>الواجهة الرئيسية (Hero Section)</h2>
-            <p>العنوان الرئيسي، الشارة الترحيبية، والكلمة المميزة التي يراها الزائر فور دخول الموقع</p>
+            <p>العنوان الرئيسي، الكلمة الذهبية، والنص التعريفي في بداية الموقع</p>
           </div>
         </div>
 
         <div class="form-grid">
           <div class="form-group full-width">
-            <label>شارة الترحيب العلوية (Badge)</label>
-            <input type="text" id="hero_badge" placeholder="صرح قرآني إلكتروني معتمد">
+            <label>شارة الترحيب العلوية (Eyebrow Badge)</label>
+            <input type="text" id="hero_badge" placeholder="حصّة تجريبية مجانية · للأطفال والكبار">
           </div>
           <div class="form-group">
-            <label>العنوان الرئيسي — الجزء الأول</label>
-            <input type="text" id="hero_title_1" placeholder="صرحُ قرطبة.. رِحلةُ النُّور">
+            <label>العنوان الرئيسي — السطر الأول</label>
+            <input type="text" id="hero_title_1" placeholder="اتعلّم كتاب الله">
           </div>
           <div class="form-group">
             <label>الكلمة المميزة باللون الذهبي</label>
-            <input type="text" id="hero_title_highlight" placeholder="لِحِفْظِ كِتَابِ اللهِ">
+            <input type="text" id="hero_title_highlight" placeholder="بسند وصحبة">
           </div>
           <div class="form-group full-width">
-            <label>العنوان الرئيسي — الجزء الختامي</label>
-            <input type="text" id="hero_title_2" placeholder="وإتقانِ تلاوته">
+            <label>العنوان الرئيسي — تكملة السطر الثاني</label>
+            <input type="text" id="hero_title_2" placeholder="حقيقية">
           </div>
           <div class="form-group full-width">
-            <label>النص التعريفي (الفقرة التوضيحية)</label>
-            <textarea id="hero_lead" rows="3" placeholder="أكاديمية تعليمية متخصصة تجمع بين شرف تعليم القرآن الكريم برواياته المتواترة، ومنهجية التأسيس السليم للأطفال والكبار على يد نخبة من المعلمين والمعلمات المجازين."></textarea>
+            <label>النص التعريفي (الفقرة التوضيحية الرئيسية)</label>
+            <textarea id="hero_lead" rows="3" placeholder="أكاديمية قرطبة تقدّم حصصًا مباشرة أونلاين في التحفيظ والتجويد، بمعلمين متخصصين ومتابعة فردية لكل طالب، أطفالًا كانوا أو كبارًا، من أي مكان في العالم."></textarea>
           </div>
           <div class="form-group">
-            <label>نص زر الدعوة الأساسي (CTA)</label>
-            <input type="text" id="hero_cta_primary" placeholder="ابدأ رحلتك القرآنية الآن">
+            <label>نص زر الدعوة الأساسي</label>
+            <input type="text" id="hero_cta_primary" placeholder="سجّل الآن">
           </div>
           <div class="form-group">
-            <label>نص زر الاستفسار عبر واتساب</label>
-            <input type="text" id="hero_cta_wa" placeholder="تواصل معنا عبر واتساب">
+            <label>نص زر الواتساب المباشر</label>
+            <input type="text" id="hero_cta_wa" placeholder="واتساب مباشر">
+          </div>
+          <div class="form-group full-width">
+            <label>بنود الثقة السريعة أسفل الأزرار</label>
+            <div class="form-grid triple">
+              <input type="text" id="hero_trust_1" placeholder="معلمون مجازون بالسند">
+              <input type="text" id="hero_trust_2" placeholder="مواعيد مرنة تناسبك">
+              <input type="text" id="hero_trust_3" placeholder="برامج للأطفال والكبار">
+            </div>
           </div>
         </div>
       </section>
 
-      <!-- ================= 4. PRICING & PACKAGES ================= -->
+      <!-- ================= 4. WHY US (FEATURES) ================= -->
+      <section class="panel" id="panel-why">
+        <div class="panel-head">
+          <div>
+            <h2>قسم «لماذا قرطبة» (المميزات الأربعة)</h2>
+            <p>تعديل عناوين وبنود كروت القوة والتميز</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>عنوان القسم الرئيسي</label>
+            <input type="text" id="why_title" placeholder="تجربة تعليم قرآن حقيقية.. من بيتك">
+          </div>
+          <div class="form-group">
+            <label>النص الفرعي للقسم</label>
+            <input type="text" id="why_sub" placeholder="مش مجرد حصص أونلاين، دي رحلة متكاملة مع الطالب من أول ما يبدأ لحد ما يوصل لهدفه.">
+          </div>
+        </div>
+
+        <div class="form-grid" style="margin-top:16px;">
+          <div class="sub-card">
+            <div class="sub-card-title">الميزة 1: المعلمون</div>
+            <div class="form-group">
+              <label>العنوان</label>
+              <input type="text" id="why1_title" placeholder="معلمون مُجازون">
+            </div>
+            <div class="form-group">
+              <label>الوصف</label>
+              <textarea id="why1_desc" rows="2" placeholder="حفظة للقرآن الكريم بإجازات سند في القراءات، ومؤهَّلون لتدريس الأطفال والكبار."></textarea>
+            </div>
+          </div>
+
+          <div class="sub-card">
+            <div class="sub-card-title">الميزة 2: المواعيد</div>
+            <div class="form-group">
+              <label>العنوان</label>
+              <input type="text" id="why2_title" placeholder="مواعيد مرنة">
+            </div>
+            <div class="form-group">
+              <label>الوصف</label>
+              <textarea id="why2_desc" rows="2" placeholder="اختار المعاد اللي يناسب يومك، وغيّره وقت ما تحتاج، من غير التزام بمكان أو انتقال."></textarea>
+            </div>
+          </div>
+
+          <div class="sub-card">
+            <div class="sub-card-title">الميزة 3: المتابعة</div>
+            <div class="form-group">
+              <label>العنوان</label>
+              <input type="text" id="why3_title" placeholder="متابعة فردية">
+            </div>
+            <div class="form-group">
+              <label>الوصف</label>
+              <textarea id="why3_desc" rows="2" placeholder="خطة حفظ خاصة بكل طالب، وتقييم دوري لمستواه، وتواصل مستمر مع ولي الأمر."></textarea>
+            </div>
+          </div>
+
+          <div class="sub-card">
+            <div class="sub-card-title">الميزة 4: المناهج</div>
+            <div class="form-group">
+              <label>العنوان</label>
+              <input type="text" id="why4_title" placeholder="مناهج لكل الأعمار">
+            </div>
+            <div class="form-group">
+              <label>الوصف</label>
+              <textarea id="why4_desc" rows="2" placeholder="برامج مصمّمة خصيصًا للأطفال بأسلوب مبسّط وممتع، وأخرى للكبار بخطى مكثّفة."></textarea>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 5. PATHWAYS ================= -->
+      <section class="panel" id="panel-pathways">
+        <div class="panel-head">
+          <div>
+            <h2>المسارات التعليمية الأربعة</h2>
+            <p>تعديل عناوين ومناهج المسارات المعتمدة</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="sub-card full-width">
+            <div class="sub-card-title">المسار الأول: نور البيان والتأسيس</div>
+            <div class="form-group">
+              <label>العنوان</label>
+              <input type="text" id="path1_title" placeholder="نور البيان والتأسيس السليم">
+            </div>
+            <div class="form-group">
+              <label>الوصف</label>
+              <textarea id="path1_desc" rows="2" placeholder="مخصص للأطفال والمبتدئين لضبط النطق العربي ومخارج الحروف والقراءة الصحيحة من المصحف الشريف."></textarea>
+            </div>
+          </div>
+
+          <div class="sub-card full-width">
+            <div class="sub-card-title">المسار الثاني: الحفظ والتثبيت الدوري</div>
+            <div class="form-group">
+              <label>العنوان</label>
+              <input type="text" id="path2_title" placeholder="الحفظ والتثبيت الدوري">
+            </div>
+            <div class="form-group">
+              <label>الوصف</label>
+              <textarea id="path2_desc" rows="2" placeholder="خطة حفظ منتظمة مخصصة لكل طالب تناسب قدراته ووقته، تجمع بين حفظ الجديد والمراجعة الصغرى والكبرى."></textarea>
+            </div>
+          </div>
+
+          <div class="sub-card full-width">
+            <div class="sub-card-title">المسار الثالث: تصحيح التلاوة والتجويد</div>
+            <div class="form-group">
+              <label>العنوان</label>
+              <input type="text" id="path3_title" placeholder="تصحيح التلاوة والتجويد">
+            </div>
+            <div class="form-group">
+              <label>الوصف</label>
+              <textarea id="path3_desc" rows="2" placeholder="دراسة عملية ونظرية لأحكام التجويد (النون والميم الساكنتين، المدود، والتفخيم والترقيق) وتطبيقها آية بآية."></textarea>
+            </div>
+          </div>
+
+          <div class="sub-card full-width">
+            <div class="sub-card-title">المسار الرابع: الإجازة بالسند المتصل</div>
+            <div class="form-group">
+              <label>العنوان</label>
+              <input type="text" id="path4_title" placeholder="الإجازة بالسند المتصل">
+            </div>
+            <div class="form-group">
+              <label>الوصف</label>
+              <textarea id="path4_desc" rows="2" placeholder="مسار متخصص للخاتمين لقراءة القرآن كاملاً غيباً برواية حفص عن عاصم أو غيرها والحصول على سند متصل."></textarea>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 6. PROGRAMS (KIDS & ADULTS) ================= -->
+      <section class="panel" id="panel-programs">
+        <div class="panel-head">
+          <div>
+            <h2>البرامج التعليمية (الأطفال والكبار)</h2>
+            <p>تعديل نصوص بطاقات البرامج للأطفال والكبار</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <!-- Children -->
+          <div class="sub-card">
+            <div class="sub-card-title">برنامج الأطفال</div>
+            <div class="form-group">
+              <label>الفئة العمرية</label>
+              <input type="text" id="prog_kids_age" placeholder="من ٤ إلى ١٢ سنة">
+            </div>
+            <div class="form-group">
+              <label>عنوان البرنامج</label>
+              <input type="text" id="prog_kids_title" placeholder="برنامج الأطفال">
+            </div>
+            <div class="form-group">
+              <label>بنود البرنامج (اكتب كل بند في سطر)</label>
+              <textarea id="prog_kids_points" rows="4" placeholder="تحفيظ ميسّر بأسلوب تفاعلي وممتع&#10;تصحيح مخارج الحروف والتلاوة&#10;تقارير دورية توصل لولي الأمر&#10;حوافز وتشجيع مستمر أثناء الحصة"></textarea>
+            </div>
+            <div class="form-group">
+              <label>نص زر التسجيل</label>
+              <input type="text" id="prog_kids_btn" placeholder="التسجيل في برنامج الأطفال">
+            </div>
+          </div>
+
+          <!-- Adults -->
+          <div class="sub-card">
+            <div class="sub-card-title">برنامج الكبار</div>
+            <div class="form-group">
+              <label>الفئة العمرية</label>
+              <input type="text" id="prog_adults_age" placeholder="١٣ سنة فأكثر">
+            </div>
+            <div class="form-group">
+              <label>عنوان البرنامج</label>
+              <input type="text" id="prog_adults_title" placeholder="برنامج الكبار">
+            </div>
+            <div class="form-group">
+              <label>بنود البرنامج (اكتب كل بند في سطر)</label>
+              <textarea id="prog_adults_points" rows="4" placeholder="تحفيظ ومراجعة بخطة تناسب وقتك&#10;تجويد نظري وتطبيقي من الأساس&#10;تفسير ميسّر لما يتم حفظه&#10;مسار اختياري للإجازة بالسند"></textarea>
+            </div>
+            <div class="form-group">
+              <label>نص زر التسجيل</label>
+              <input type="text" id="prog_adults_btn" placeholder="التسجيل في برنامج الكبار">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 7. AUDIO SHOWCASE ================= -->
+      <section class="panel" id="panel-showcase">
+        <div class="panel-head">
+          <div>
+            <h2>نماذج التلاوات الصوتية</h2>
+            <p>تعديل أسماء وبيانات تلاوات الطلاب في المشغل الصوتي التفاعلي</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="sub-card full-width">
+            <div class="sub-card-title">التلاوة الأولى</div>
+            <div class="form-grid triple">
+              <div class="form-group">
+                <label>اسم الطالب والسن</label>
+                <input type="text" id="audio1_name" placeholder="عمر خالد (٨ سنوات)">
+              </div>
+              <div class="form-group">
+                <label>المسار</label>
+                <input type="text" id="audio1_track" placeholder="مسار نور البيان وحفظ جزء عم">
+              </div>
+              <div class="form-group">
+                <label>السورة / الملاحظة</label>
+                <input type="text" id="audio1_surah" placeholder="تلاوة من سورة النبأ — بعد ٣ أشهر من الدراسة">
+              </div>
+            </div>
+          </div>
+
+          <div class="sub-card full-width">
+            <div class="sub-card-title">التلاوة الثانية</div>
+            <div class="form-grid triple">
+              <div class="form-group">
+                <label>اسم الطالب والسن</label>
+                <input type="text" id="audio2_name" placeholder="فاطمة الزهراء (١١ سنة)">
+              </div>
+              <div class="form-group">
+                <label>المسار</label>
+                <input type="text" id="audio2_track" placeholder="مسار الحفظ وتصحيح التلاوة">
+              </div>
+              <div class="form-group">
+                <label>السورة / الملاحظة</label>
+                <input type="text" id="audio2_surah" placeholder="تلاوة من سورة الرحمن — تطبيق أحكام المدود">
+              </div>
+            </div>
+          </div>
+
+          <div class="sub-card full-width">
+            <div class="sub-card-title">التلاوة الثالثة</div>
+            <div class="form-grid triple">
+              <div class="form-group">
+                <label>اسم الطالب والسن</label>
+                <input type="text" id="audio3_name" placeholder="م. أحمد حسن">
+              </div>
+              <div class="form-group">
+                <label>المسار</label>
+                <input type="text" id="audio3_track" placeholder="مسار الكبار والإتقان والتجويد">
+              </div>
+              <div class="form-group">
+                <label>السورة / الملاحظة</label>
+                <input type="text" id="audio3_surah" placeholder="تلاوة من سورة مريم — برواية حفص عن عاصم">
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 8. QUALITY / TEACHERS ================= -->
+      <section class="panel" id="panel-quality">
+        <div class="panel-head">
+          <div>
+            <h2>معايير الجودة والمعلمين</h2>
+            <p>تعديل البطاقات الثلاثة التي توضح أمانة ومؤهلات المعلمين</p>
+          </div>
+        </div>
+
+        <div class="form-grid triple">
+          <div class="sub-card">
+            <div class="sub-card-title">المعيار الأول</div>
+            <div class="form-group">
+              <label>الوسم العلوي</label>
+              <input type="text" id="qual1_tag" placeholder="القرآن الكريم">
+            </div>
+            <div class="form-group">
+              <label>العنوان</label>
+              <input type="text" id="qual1_title" placeholder="حفظ متقن">
+            </div>
+            <div class="form-group">
+              <label>الوصف</label>
+              <textarea id="qual1_desc" rows="3" placeholder="معلمون حافظون لكتاب الله، مُتقنون للتلاوة قبل تدريسها لغيرهم."></textarea>
+            </div>
+          </div>
+
+          <div class="sub-card">
+            <div class="sub-card-title">المعيار الثاني</div>
+            <div class="form-group">
+              <label>الوسم العلوي</label>
+              <input type="text" id="qual2_tag" placeholder="الإجازات">
+            </div>
+            <div class="form-group">
+              <label>العنوان</label>
+              <input type="text" id="qual2_title" placeholder="سند متصل">
+            </div>
+            <div class="form-group">
+              <label>الوصف</label>
+              <textarea id="qual2_desc" rows="3" placeholder="من يحملون إجازات في القراءات بسند متصل، لمن يرغب في هذا المسار."></textarea>
+            </div>
+          </div>
+
+          <div class="sub-card">
+            <div class="sub-card-title">المعيار الثالث</div>
+            <div class="form-group">
+              <label>الوسم العلوي</label>
+              <input type="text" id="qual3_tag" placeholder="الخبرة">
+            </div>
+            <div class="form-group">
+              <label>العنوان</label>
+              <input type="text" id="qual3_title" placeholder="تخصص في التعليم عن بُعد">
+            </div>
+            <div class="form-group">
+              <label>الوصف</label>
+              <textarea id="qual3_desc" rows="3" placeholder="خبرة فعلية في التعامل مع الأطفال والكبار من خلال الشاشة، بأساليب تناسب كل فئة."></textarea>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 9. PRICING & PACKAGES ================= -->
       <section class="panel" id="panel-pricing">
         <div class="panel-head">
           <div>
@@ -504,11 +857,11 @@
             </div>
             <div class="form-group">
               <label>عدد الحصص شهرياً</label>
-              <input type="text" id="pkg1_sessions" placeholder="٨ حصص شهرياً">
+              <input type="text" id="pkg1_sessions" placeholder="٨">
             </div>
             <div class="form-group full-width">
               <label>المميزات (اكتب كل ميزة في سطر منفصل)</label>
-              <textarea id="pkg1_features" rows="4" placeholder="حصتان أسبوعياً (مدة الحصة ٣٠ دقيقة)&#10;معلم مجاز مخصص للطالب فردياً&#10;متابعة أسبوعية لورد الحفظ والتجويد&#10;تقارير أداء دورية لولي الأمر"></textarea>
+              <textarea id="pkg1_features" rows="4" placeholder="حصة فردية خاصة (صوت وصورة)&#10;مدة الحصة من ٣٠ إلى ٤٥ دقيقة&#10;متابعة ورد التسميع على المنصة&#10;تقرير شهري تفصيلي لولي الأمر&#10;إمكانية تعويض حصتين في الشهر"></textarea>
             </div>
           </div>
         </div>
@@ -530,11 +883,11 @@
             </div>
             <div class="form-group">
               <label>عدد الحصص شهرياً</label>
-              <input type="text" id="pkg2_sessions" placeholder="١٢ حصة شهرياً">
+              <input type="text" id="pkg2_sessions" placeholder="١٢">
             </div>
             <div class="form-group full-width">
               <label>المميزات (اكتب كل ميزة في سطر منفصل)</label>
-              <textarea id="pkg2_features" rows="4" placeholder="٣ حصص أسبوعياً لمعدل إنجاز أسرع&#10;خطة حفظ ومراجعة تراكمية مخصصة&#10;شرح مبسط لقواعد التجويد ومخارج الحروف&#10;شهادة إتمام معتمدة من الأكاديمية&#10;إمكانية تعويض الحصص المعتذر عنها"></textarea>
+              <textarea id="pkg2_features" rows="4" placeholder="كل مزايا باقة الهمة&#10;حصة أسبوعية مخصصة لتثبيت الماضي&#10;تقرير أسبوعي مباشر عبر واتساب والمنصة&#10;شهادة إتمام إلكترونية عند إنجاز كل جزء&#10;مرونة عالية في تعديل وتعويض المواعيد"></textarea>
             </div>
           </div>
         </div>
@@ -556,111 +909,193 @@
             </div>
             <div class="form-group">
               <label>عدد الحصص شهرياً</label>
-              <input type="text" id="pkg3_sessions" placeholder="١٦ حصة شهرياً">
+              <input type="text" id="pkg3_sessions" placeholder="١٦">
             </div>
             <div class="form-group full-width">
               <label>المميزات (اكتب كل ميزة في سطر منفصل)</label>
-              <textarea id="pkg3_features" rows="4" placeholder="٤ حصص أسبوعياً لحفظ وتثبيت مكثف&#10;تأهيل للاختبارات القرآنية والمسابقات&#10;إعداد للحصول على الإجازة بالسند المتصل&#10;جلسات تسميع مع شيخ مجاز بالقراءات العشر"></textarea>
+              <textarea id="pkg3_features" rows="4" placeholder="أولوية كاملة في اختيار وتثبيت أفضل المواعيد&#10;مع معلم من كبار الحفظة المجازين بالسند&#10;خطة مكثفة مع تدريب عملي يومي&#10;اختبارات دورية بإشراف لجنة التقييم&#10;إمكانية تعويض غير محدودة بالتنسيق"></textarea>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- ================= 5. PATHWAYS ================= -->
-      <section class="panel" id="panel-pathways">
+      <!-- ================= 10. STORIES & TESTIMONIALS ================= -->
+      <section class="panel" id="panel-stories">
         <div class="panel-head">
           <div>
-            <h2>المسارات التعليمية المعتمدة</h2>
-            <p>تعديل عناوين ووصف البرامج الدراسية الأربعة المعروضة على الموقع</p>
+            <h2>آراء وقصص طلابنا</h2>
+            <p>تعديل شهادات وآراء أولياء الأمور والطلاب المعروضة على الموقع</p>
           </div>
         </div>
 
         <div class="form-grid">
           <div class="sub-card full-width">
-            <div class="sub-card-title">المسار 1: نور البيان والتأسيس</div>
+            <div class="sub-card-title">الرأي الأول</div>
             <div class="form-group">
-              <label>العنوان</label>
-              <input type="text" id="path1_title" placeholder="نور البيان والتأسيس السليم">
+              <label>نص الرأي / الاقتباس</label>
+              <textarea id="story1_quote" rows="2" placeholder="ابني بقى بيحب حصة القرآن ومستني ميعادها، والمعلم بيتعامل معاه بصبر جميل."></textarea>
             </div>
-            <div class="form-group">
-              <label>الوصف</label>
-              <textarea id="path1_desc" rows="2" placeholder="منهجية مبسطة للأطفال والمبتدئين لتعلم القراءة الصحيحة من المصحف مباشرة."></textarea>
-            </div>
-          </div>
-
-          <div class="sub-card full-width">
-            <div class="sub-card-title">المسار 2: الحفظ والتثبيت الدوري</div>
-            <div class="form-group">
-              <label>العنوان</label>
-              <input type="text" id="path2_title" placeholder="الحفظ والتثبيت الدوري">
-            </div>
-            <div class="form-group">
-              <label>الوصف</label>
-              <textarea id="path2_desc" rows="2" placeholder="برنامج مخصص لحفظ القرآن الكريم كاملاً أو أجزاء منه، مع مراجعة تراكمية لضمان عدم النسيان."></textarea>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>اسم صاحب الرأي أو رمزه</label>
+                <input type="text" id="story1_name" placeholder="و.أ (ولي أمر طالب)">
+              </div>
+              <div class="form-group">
+                <label>البرنامج</label>
+                <input type="text" id="story1_prog" placeholder="برنامج الأطفال">
+              </div>
             </div>
           </div>
 
           <div class="sub-card full-width">
-            <div class="sub-card-title">المسار 3: تصحيح التلاوة وأحكام التجويد</div>
+            <div class="sub-card-title">الرأي الثاني</div>
             <div class="form-group">
-              <label>العنوان</label>
-              <input type="text" id="path3_title" placeholder="تصحيح التلاوة وأحكام التجويد">
+              <label>نص الرأي / الاقتباس</label>
+              <textarea id="story2_quote" rows="2" placeholder="كنت متردد إني أبدأ حفظ وأنا كبير، بس المرونة في المواعيد خلتني أكمل من غير ضغط."></textarea>
             </div>
-            <div class="form-group">
-              <label>الوصف</label>
-              <textarea id="path3_desc" rows="2" placeholder="دراسة نظرية وعملية لأحكام النون الساكنة والتنوين والمدود ومخارج وصفات الحروف."></textarea>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>اسم صاحب الرأي أو رمزه</label>
+                <input type="text" id="story2_name" placeholder="ط.ك (طالب)">
+              </div>
+              <div class="form-group">
+                <label>البرنامج</label>
+                <input type="text" id="story2_prog" placeholder="برنامج الكبار">
+              </div>
             </div>
           </div>
 
           <div class="sub-card full-width">
-            <div class="sub-card-title">المسار 4: الإجازة بالسند المتصل</div>
+            <div class="sub-card-title">الرأي الثالث</div>
             <div class="form-group">
-              <label>العنوان</label>
-              <input type="text" id="path4_title" placeholder="الإجازة بالسند المتصل">
+              <label>نص الرأي / الاقتباس</label>
+              <textarea id="story3_quote" rows="2" placeholder="حسّيت بفرق واضح في تلاوتي بعد شهرين بس، والتقييم المستمر ساعدني أعرف نقاط ضعفي."></textarea>
             </div>
-            <div class="form-group">
-              <label>الوصف</label>
-              <textarea id="path4_desc" rows="2" placeholder="ختمة كاملة غيباً على شيوخ مجازين للحصول على سند متصل إلى النبي ﷺ برواية حفص أو القراءات العشر."></textarea>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>اسم صاحب الرأي أو رمزه</label>
+                <input type="text" id="story3_name" placeholder="م.س (طالبة)">
+              </div>
+              <div class="form-group">
+                <label>البرنامج</label>
+                <input type="text" id="story3_prog" placeholder="برنامج الكبار">
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- ================= 6. STATS ================= -->
-      <section class="panel" id="panel-stats">
+      <!-- ================= 11. FAQ ================= -->
+      <section class="panel" id="panel-faq">
         <div class="panel-head">
           <div>
-            <h2>الأرقام والإحصائيات</h2>
-            <p>الأرقام البارزة في قسم الثقة ونتائج الأكاديمية</p>
+            <h2>الأسئلة الشائعة وإجاباتها</h2>
+            <p>تعديل نصوص الأسئلة والإجابات في قسم الأكورديون التفاعلي</p>
+          </div>
+        </div>
+
+        <div class="form-grid single">
+          <div class="sub-card">
+            <div class="sub-card-title">السؤال الأول</div>
+            <div class="form-group">
+              <label>نص السؤال</label>
+              <input type="text" id="faq1_q" placeholder="إزاي بتتم الحصص أونلاين؟">
+            </div>
+            <div class="form-group">
+              <label>الإجابة</label>
+              <textarea id="faq1_a" rows="2" placeholder="الحصص بتتم بالصوت والصورة عن طريق برنامج مكالمات مرئية، حصة فردية مباشرة بين الطالب والمعلم في الميعاد المتفق عليه."></textarea>
+            </div>
+          </div>
+
+          <div class="sub-card">
+            <div class="sub-card-title">السؤال الثاني</div>
+            <div class="form-group">
+              <label>نص السؤال</label>
+              <input type="text" id="faq2_q" placeholder="من أي سن ممكن الطفل يبدأ؟">
+            </div>
+            <div class="form-group">
+              <label>الإجابة</label>
+              <textarea id="faq2_a" rows="2" placeholder="برنامج الأطفال متاح من سن ٤ سنوات، وبنراعي في أسلوب التدريس الفروق بين كل مرحلة عمرية."></textarea>
+            </div>
+          </div>
+
+          <div class="sub-card">
+            <div class="sub-card-title">السؤال الثالث</div>
+            <div class="form-group">
+              <label>نص السؤال</label>
+              <input type="text" id="faq3_q" placeholder="فيه حصة تجريبية قبل الاشتراك؟">
+            </div>
+            <div class="form-group">
+              <label>الإجابة</label>
+              <textarea id="faq3_a" rows="2" placeholder="أيوه، بنبدأ بحصة تجريبية لتقييم المستوى وتحديد الخطة المناسبة قبل ما تقرر الاشتراك."></textarea>
+            </div>
+          </div>
+
+          <div class="sub-card">
+            <div class="sub-card-title">السؤال الرابع</div>
+            <div class="form-group">
+              <label>نص السؤال</label>
+              <input type="text" id="faq4_q" placeholder="إزاي بيتم تحديد خطة الطالب؟">
+            </div>
+            <div class="form-group">
+              <label>الإجابة</label>
+              <textarea id="faq4_a" rows="2" placeholder="بعد الحصة التجريبية، بيحدد المعلم نقطة البداية المناسبة، ومعاها عدد الحصص الأسبوعية اللي تناسب هدفك."></textarea>
+            </div>
+          </div>
+
+          <div class="sub-card">
+            <div class="sub-card-title">السؤال الخامس</div>
+            <div class="form-group">
+              <label>نص السؤال</label>
+              <input type="text" id="faq5_q" placeholder="إزاي هيتم التواصل بخصوص الاشتراك والدفع؟">
+            </div>
+            <div class="form-group">
+              <label>الإجابة</label>
+              <textarea id="faq5_a" rows="2" placeholder="بعد إرسال بيانات التسجيل، هيتواصل معاك فريقنا على واتساب لتفاصيل الباقات وطرق الدفع المتاحة."></textarea>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 12. REGISTER SECTION ================= -->
+      <section class="panel" id="panel-register">
+        <div class="panel-head">
+          <div>
+            <h2>قسم حجز الحصة التجريبية والتسجيل</h2>
+            <p>تعديل النصوص الجانبية ونموذج طلب الحصة التجريبية</p>
           </div>
         </div>
 
         <div class="form-grid">
-          <div class="form-group">
-            <label>عدد الطلاب والخريجين (مثال: +1,200)</label>
-            <input type="text" id="stat_students" placeholder="+1,200">
+          <div class="form-group full-width">
+            <label>عنوان قسم التسجيل</label>
+            <input type="text" id="reg_title" placeholder="احجز حصتك التجريبية المجانية">
+          </div>
+          <div class="form-group full-width">
+            <label>النص التعريفي لنموذج الحجز</label>
+            <textarea id="reg_sub" rows="2" placeholder="املأ البيانات وهيتم تجهيز رسالة جاهزة تبعتها لينا على واتساب في خطوة واحدة."></textarea>
           </div>
           <div class="form-group">
-            <label>عدد المعلمين والمعلمات المجازين (مثال: +45)</label>
-            <input type="text" id="stat_teachers" placeholder="+45">
+            <label>عنوان خطوات ما بعد التسجيل (الجانب الإرشادي)</label>
+            <input type="text" id="reg_side_title" placeholder="خطوات بسيطة بعد التسجيل">
           </div>
           <div class="form-group">
-            <label>ساعات التدريس والتسميع (مثال: +18,000)</label>
-            <input type="text" id="stat_hours" placeholder="+18,000">
+            <label>نص زر الإرسال للواتساب</label>
+            <input type="text" id="reg_btn_text" placeholder="إرسال البيانات عبر واتساب">
           </div>
-          <div class="form-group">
-            <label>نسبة رضا أولياء الأمور والطلاب (مثال: 99.4%)</label>
-            <input type="text" id="stat_rating" placeholder="99.4%">
+          <div class="form-group full-width">
+            <label>الخطوات الثلاثة (اكتب كل خطوة في سطر)</label>
+            <textarea id="reg_steps" rows="3" placeholder="تأكيد البيانات خلال ٢٤ ساعة&#10;حصة تجريبية مجانية لتقييم المستوى&#10;اقتراح الخطة والمواعيد المناسبة"></textarea>
           </div>
         </div>
       </section>
 
-      <!-- ================= 7. CLOUD & DATABASE ================= -->
+      <!-- ================= 13. CLOUD & DATABASE ================= -->
       <section class="panel" id="panel-cloud">
         <div class="panel-head">
           <div>
-            <h2>إعدادات الربط السحابي وقاعدة البيانات</h2>
-            <p>التحقق من اتصال الموقع بقاعدة بيانات Supabase وتجهيز جدول إعدادات المحتوى</p>
+            <h2>إعدادات الربط السحابي (Supabase)</h2>
+            <p>التحقق من اتصال الموقع بقاعدة بيانات Supabase وتفعيل جدول الإعدادات</p>
           </div>
         </div>
 
@@ -722,14 +1157,16 @@ create policy "Allow all site_settings" on public.site_settings for all using (t
       } catch(e) { console.warn(e); }
     }
 
-    /* Default Data Definition */
+    /* Complete Default Data Definition */
     const DEFAULT_SETTINGS = {
       contact: {
-        whatsapp: '201065433395',
-        phone_display: '01065433395',
-        email: 'kortobaacademy@gmail.com',
-        location: 'جمهورية مصر العربية — خدمة أونلاين حول العالم',
-        wa_default_msg: 'السلام عليكم ورحمة الله، أود الاستفسار عن برامج أكاديمية قرطبة وحجز موعد تجربة.'
+        whatsapp: '201044734782',
+        phone_display: '01044734782',
+        fb: 'https://www.facebook.com/Kortobaacademy/',
+        insta: 'https://www.instagram.com/kortoba_quran/',
+        yt: 'https://www.youtube.com/@kortobaacademy',
+        copyright: 'أكاديمية قرطبة لتعليم القرآن الكريم. جميع الحقوق محفوظة.',
+        wa_default_msg: 'السلام عليكم، حابب أعرف تفاصيل أكتر عن أكاديمية قرطبة.'
       },
       banner: {
         enabled: false,
@@ -738,71 +1175,141 @@ create policy "Allow all site_settings" on public.site_settings for all using (t
         btn_text: 'سجل الآن عبر واتساب'
       },
       hero: {
-        badge: 'صرح قرآني إلكتروني معتمد',
-        title_1: 'صرحُ قرطبة.. رِحلةُ النُّور',
-        title_highlight: 'لِحِفْظِ كِتَابِ اللهِ',
-        title_2: 'وإتقانِ تلاوته',
-        lead: 'أكاديمية تعليمية متخصصة تجمع بين شرف تعليم القرآن الكريم برواياته المتواترة، ومنهجية التأسيس السليم للأطفال والكبار على يد نخبة من المعلمين والمعلمات المجازين.',
-        cta_primary: 'ابدأ رحلتك القرآنية الآن',
-        cta_wa: 'تواصل معنا عبر واتساب'
+        badge: 'حصّة تجريبية مجانية · للأطفال والكبار',
+        title_1: 'اتعلّم كتاب الله',
+        title_highlight: 'بسند وصحبة',
+        title_2: 'حقيقية',
+        lead: 'أكاديمية قرطبة تقدّم حصصًا مباشرة أونلاين في التحفيظ والتجويد، بمعلمين متخصصين ومتابعة فردية لكل طالب، أطفالًا كانوا أو كبارًا، من أي مكان في العالم.',
+        cta_primary: 'سجّل الآن',
+        cta_wa: 'واتساب مباشر',
+        trust_1: 'معلمون مجازون بالسند',
+        trust_2: 'مواعيد مرنة تناسبك',
+        trust_3: 'برامج للأطفال والكبار'
+      },
+      why: {
+        title: 'تجربة تعليم قرآن حقيقية.. من بيتك',
+        sub: 'مش مجرد حصص أونلاين، دي رحلة متكاملة مع الطالب من أول ما يبدأ لحد ما يوصل لهدفه في الحفظ والتجويد.',
+        why1_title: 'معلمون مُجازون',
+        why1_desc: 'حفظة للقرآن الكريم بإجازات سند في القراءات، ومؤهَّلون لتدريس الأطفال والكبار.',
+        why2_title: 'مواعيد مرنة',
+        why2_desc: 'اختار المعاد اللي يناسب يومك، وغيّره وقت ما تحتاج، من غير التزام بمكان أو انتقال.',
+        why3_title: 'متابعة فردية',
+        why3_desc: 'خطة حفظ خاصة بكل طالب، وتقييم دوري لمستواه، وتواصل مستمر مع ولي الأمر.',
+        why4_title: 'مناهج لكل الأعمار',
+        why4_desc: 'برامج مصمّمة خصيصًا للأطفال بأسلوب مبسّط وممتع، وأخرى للكبار بخطى مكثّفة.'
+      },
+      pathways: {
+        path1: {
+          title: 'نور البيان والتأسيس',
+          desc: 'مخصص للأطفال والمبتدئين لضبط النطق العربي ومخارج الحروف والقراءة الصحيحة من المصحف الشريف.'
+        },
+        path2: {
+          title: 'الحفظ والتثبيت الدوري',
+          desc: 'خطة حفظ منتظمة مخصصة لكل طالب تناسب قدراته ووقته، تجمع بين حفظ الجديد والمراجعة الصغرى والكبرى.'
+        },
+        path3: {
+          title: 'تصحيح التلاوة والتجويد',
+          desc: 'دراسة عملية ونظرية لأحكام التجويد (النون والميم الساكنتين، المدود، والتفخيم والترقيق) وتطبيقها آية بآية.'
+        },
+        path4: {
+          title: 'الإجازة بالسند المتصل',
+          desc: 'مسار متخصص للخاتمين لقراءة القرآن كاملاً غيباً برواية حفص عن عاصم أو غيرها والحصول على سند متصل.'
+        }
+      },
+      programs: {
+        kids_age: 'من ٤ إلى ١٢ سنة',
+        kids_title: 'برنامج الأطفال',
+        kids_points: 'تحفيظ ميسّر بأسلوب تفاعلي وممتع\nتصحيح مخارج الحروف والتلاوة\nتقارير دورية توصل لولي الأمر\nحوافز وتشجيع مستمر أثناء الحصة',
+        kids_btn: 'التسجيل في برنامج الأطفال',
+        adults_age: '١٣ سنة فأكثر',
+        adults_title: 'برنامج الكبار',
+        adults_points: 'تحفيظ ومراجعة بخطة تناسب وقتك\nتجويد نظري وتطبيقي من الأساس\nتفسير ميسّر لما يتم حفظه\nمسار اختياري للإجازة بالسند',
+        adults_btn: 'التسجيل في برنامج الكبار'
+      },
+      showcase: {
+        audio1_name: 'عمر خالد (٨ سنوات)',
+        audio1_track: 'مسار نور البيان وحفظ جزء عم',
+        audio1_surah: 'تلاوة من سورة النبأ — بعد ٣ أشهر من الدراسة',
+        audio2_name: 'فاطمة الزهراء (١١ سنة)',
+        audio2_track: 'مسار الحفظ وتصحيح التلاوة',
+        audio2_surah: 'تلاوة من سورة الرحمن — تطبيق أحكام المدود',
+        audio3_name: 'م. أحمد حسن',
+        audio3_track: 'مسار الكبار والإتقان والتجويد',
+        audio3_surah: 'تلاوة من سورة مريم — برواية حفص عن عاصم'
+      },
+      quality: {
+        q1_tag: 'القرآن الكريم',
+        q1_title: 'حفظ متقن',
+        q1_desc: 'معلمون حافظون لكتاب الله، مُتقنون للتلاوة قبل تدريسها لغيرهم.',
+        q2_tag: 'الإجازات',
+        q2_title: 'سند متصل',
+        q2_desc: 'من يحملون إجازات في القراءات بسند متصل، لمن يرغب في هذا المسار.',
+        q3_tag: 'الخبرة',
+        q3_title: 'تخصص في التعليم عن بُعد',
+        q3_desc: 'خبرة فعلية في التعامل مع الأطفال والكبار من خلال الشاشة، بأساليب تناسب كل فئة.'
       },
       pricing: {
         currency: 'ج.م',
         pkg1: {
           name: 'باقة الهمة',
           price: '400',
-          sessions: '٨ حصص شهرياً',
-          features: 'حصتان أسبوعياً (مدة الحصة ٣٠ دقيقة)\nمعلم مجاز مخصص للطالب فردياً\nمتابعة أسبوعية لورد الحفظ والتجويد\nتقارير أداء دورية لولي الأمر'
+          sessions: '٨',
+          features: 'حصة فردية خاصة (صوت وصورة)\nمدة الحصة من ٣٠ إلى ٤٥ دقيقة\nمتابعة ورد التسميع على المنصة\nتقرير شهري تفصيلي لولي الأمر\nإمكانية تعويض حصتين في الشهر'
         },
         pkg2: {
           name: 'باقة الإتقان',
           price: '600',
-          sessions: '١٢ حصة شهرياً',
-          features: '٣ حصص أسبوعياً لمعدل إنجاز أسرع\nخطة حفظ ومراجعة تراكمية مخصصة\nشرح مبسط لقواعد التجويد ومخارج الحروف\nشهادة إتمام معتمدة من الأكاديمية\nإمكانية تعويض الحصص المعتذر عنها'
+          sessions: '١٢',
+          features: 'كل مزايا باقة الهمة\nحصة أسبوعية مخصصة لتثبيت الماضي\nتقرير أسبوعي مباشر عبر واتساب والمنصة\nشهادة إتمام إلكترونية عند إنجاز كل جزء\nمرونة عالية في تعديل وتعويض المواعيد'
         },
         pkg3: {
-          name: 'باقة التميز',
+          name: 'باقة التميز المكثفة',
           price: '800',
-          sessions: '١٦ حصة شهرياً',
-          features: '٤ حصص أسبوعياً لحفظ وتثبيت مكثف\nتأهيل للاختبارات القرآنية والمسابقات\nإعداد للحصول على الإجازة بالسند المتصل\nجلسات تسميع مع شيخ مجاز بالقراءات العشر'
+          sessions: '١٦',
+          features: 'أولوية كاملة في اختيار وتثبيت أفضل المواعيد\nمع معلم من كبار الحفظة المجازين بالسند\nخطة مكثفة مع تدريب عملي يومي\nاختبارات دورية بإشراف لجنة التقييم\nإمكانية تعويض غير محدودة بالتنسيق'
         }
       },
-      pathways: {
-        path1: {
-          title: 'نور البيان والتأسيس السليم',
-          desc: 'منهجية مبسطة للأطفال والمبتدئين لتعلم القراءة الصحيحة من المصحف مباشرة.'
-        },
-        path2: {
-          title: 'الحفظ والتثبيت الدوري',
-          desc: 'برنامج مخصص لحفظ القرآن الكريم كاملاً أو أجزاء منه، مع مراجعة تراكمية لضمان عدم النسيان.'
-        },
-        path3: {
-          title: 'تصحيح التلاوة وأحكام التجويد',
-          desc: 'دراسة نظرية وعملية لأحكام النون الساكنة والتنوين والمدود ومخارج وصفات الحروف.'
-        },
-        path4: {
-          title: 'الإجازة بالسند المتصل',
-          desc: 'ختمة كاملة غيباً على شيوخ مجازين للحصول على سند متصل إلى النبي ﷺ برواية حفص أو القراءات العشر.'
-        }
+      stories: {
+        s1_quote: 'ابني بقى بيحب حصة القرآن ومستني ميعادها، والمعلم بيتعامل معاه بصبر جميل.',
+        s1_name: 'و.أ (ولي أمر طالب)',
+        s1_prog: 'برنامج الأطفال',
+        s2_quote: 'كنت متردد إني أبدأ حفظ وأنا كبير، بس المرونة في المواعيد خلتني أكمل من غير ضغط.',
+        s2_name: 'ط.ك (طالب)',
+        s2_prog: 'برنامج الكبار',
+        s3_quote: 'حسّيت بفرق واضح في تلاوتي بعد شهرين بس، والتقييم المستمر ساعدني أعرف نقاط ضعفي.',
+        s3_name: 'م.س (طالبة)',
+        s3_prog: 'برنامج الكبار'
       },
-      stats: {
-        students: '+1,200',
-        teachers: '+45',
-        hours: '+18,000',
-        rating: '99.4%'
+      faq: {
+        f1_q: 'إزاي بتتم الحصص أونلاين؟',
+        f1_a: 'الحصص بتتم بالصوت والصورة عن طريق برنامج مكالمات مرئية، حصة فردية مباشرة بين الطالب والمعلم في الميعاد المتفق عليه.',
+        f2_q: 'من أي سن ممكن الطفل يبدأ؟',
+        f2_a: 'برنامج الأطفال متاح من سن ٤ سنوات، وبنراعي في أسلوب التدريس الفروق بين كل مرحلة عمرية.',
+        f3_q: 'فيه حصة تجريبية قبل الاشتراك؟',
+        f3_a: 'أيوه، بنبدأ بحصة تجريبية لتقييم المستوى وتحديد الخطة المناسبة قبل ما تقرر الاشتراك.',
+        f4_q: 'إزاي بيتم تحديد خطة الطالب؟',
+        f4_a: 'بعد الحصة التجريبية، بيحدد المعلم نقطة البداية المناسبة، ومعاها عدد الحصص الأسبوعية اللي تناسب هدفك.',
+        f5_q: 'إزاي هيتم التواصل بخصوص الاشتراك والدفع؟',
+        f5_a: 'بعد إرسال بيانات التسجيل، هيتواصل معاك فريقنا على واتساب لتفاصيل الباقات وطرق الدفع المتاحة.'
+      },
+      register: {
+        title: 'احجز حصتك التجريبية المجانية',
+        sub: 'املأ البيانات وهيتم تجهيز رسالة جاهزة تبعتها لينا على واتساب في خطوة واحدة.',
+        side_title: 'خطوات بسيطة بعد التسجيل',
+        btn_text: 'إرسال البيانات عبر واتساب',
+        steps: 'تأكيد البيانات خلال ٢٤ ساعة\nحصة تجريبية مجانية لتقييم المستوى\nاقتراح الخطة والمواعيد المناسبة'
       }
     };
 
     let CURRENT_DATA = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
 
     /* =====================================================================
-       2. AUTH GATE LOGIC
+       2. AUTH GATE
        ===================================================================== */
     const authGate = document.getElementById('authGate');
     const authForm = document.getElementById('authForm');
     const authPass = document.getElementById('authPass');
 
-    // Check session login
     if (sessionStorage.getItem('kortoba_manage_auth') === 'true') {
       authGate.style.display = 'none';
     }
@@ -842,21 +1349,24 @@ create policy "Allow all site_settings" on public.site_settings for all using (t
     });
 
     /* =====================================================================
-       4. DATA POPULATION & FORM MAPPING
+       4. FORM POPULATION & EXTRACTION
        ===================================================================== */
     function populateForm(data) {
-      if(!data) return;
+      if (!data) return;
+
       // Contact
-      if(data.contact){
+      if (data.contact) {
         document.getElementById('contact_whatsapp').value = data.contact.whatsapp || '';
         document.getElementById('contact_phone_display').value = data.contact.phone_display || '';
-        document.getElementById('contact_email').value = data.contact.email || '';
-        document.getElementById('contact_location').value = data.contact.location || '';
+        document.getElementById('contact_fb').value = data.contact.fb || '';
+        document.getElementById('contact_insta').value = data.contact.insta || '';
+        document.getElementById('contact_yt').value = data.contact.yt || '';
+        document.getElementById('contact_copyright').value = data.contact.copyright || '';
         document.getElementById('contact_wa_default_msg').value = data.contact.wa_default_msg || '';
       }
 
       // Banner
-      if(data.banner){
+      if (data.banner) {
         document.getElementById('banner_enabled').checked = !!data.banner.enabled;
         document.getElementById('banner_badge').value = data.banner.badge || '';
         document.getElementById('banner_text').value = data.banner.text || '';
@@ -864,7 +1374,7 @@ create policy "Allow all site_settings" on public.site_settings for all using (t
       }
 
       // Hero
-      if(data.hero){
+      if (data.hero) {
         document.getElementById('hero_badge').value = data.hero.badge || '';
         document.getElementById('hero_title_1').value = data.hero.title_1 || '';
         document.getElementById('hero_title_highlight').value = data.hero.title_highlight || '';
@@ -872,24 +1382,99 @@ create policy "Allow all site_settings" on public.site_settings for all using (t
         document.getElementById('hero_lead').value = data.hero.lead || '';
         document.getElementById('hero_cta_primary').value = data.hero.cta_primary || '';
         document.getElementById('hero_cta_wa').value = data.hero.cta_wa || '';
+        document.getElementById('hero_trust_1').value = data.hero.trust_1 || '';
+        document.getElementById('hero_trust_2').value = data.hero.trust_2 || '';
+        document.getElementById('hero_trust_3').value = data.hero.trust_3 || '';
+      }
+
+      // Why Us
+      if (data.why) {
+        document.getElementById('why_title').value = data.why.title || '';
+        document.getElementById('why_sub').value = data.why.sub || '';
+        document.getElementById('why1_title').value = data.why.why1_title || '';
+        document.getElementById('why1_desc').value = data.why.why1_desc || '';
+        document.getElementById('why2_title').value = data.why.why2_title || '';
+        document.getElementById('why2_desc').value = data.why.why2_desc || '';
+        document.getElementById('why3_title').value = data.why.why3_title || '';
+        document.getElementById('why3_desc').value = data.why.why3_desc || '';
+        document.getElementById('why4_title').value = data.why.why4_title || '';
+        document.getElementById('why4_desc').value = data.why.why4_desc || '';
+      }
+
+      // Pathways
+      if (data.pathways) {
+        if (data.pathways.path1) {
+          document.getElementById('path1_title').value = data.pathways.path1.title || '';
+          document.getElementById('path1_desc').value = data.pathways.path1.desc || '';
+        }
+        if (data.pathways.path2) {
+          document.getElementById('path2_title').value = data.pathways.path2.title || '';
+          document.getElementById('path2_desc').value = data.pathways.path2.desc || '';
+        }
+        if (data.pathways.path3) {
+          document.getElementById('path3_title').value = data.pathways.path3.title || '';
+          document.getElementById('path3_desc').value = data.pathways.path3.desc || '';
+        }
+        if (data.pathways.path4) {
+          document.getElementById('path4_title').value = data.pathways.path4.title || '';
+          document.getElementById('path4_desc').value = data.pathways.path4.desc || '';
+        }
+      }
+
+      // Programs
+      if (data.programs) {
+        document.getElementById('prog_kids_age').value = data.programs.kids_age || '';
+        document.getElementById('prog_kids_title').value = data.programs.kids_title || '';
+        document.getElementById('prog_kids_points').value = data.programs.kids_points || '';
+        document.getElementById('prog_kids_btn').value = data.programs.kids_btn || '';
+        document.getElementById('prog_adults_age').value = data.programs.adults_age || '';
+        document.getElementById('prog_adults_title').value = data.programs.adults_title || '';
+        document.getElementById('prog_adults_points').value = data.programs.adults_points || '';
+        document.getElementById('prog_adults_btn').value = data.programs.adults_btn || '';
+      }
+
+      // Showcase
+      if (data.showcase) {
+        document.getElementById('audio1_name').value = data.showcase.audio1_name || '';
+        document.getElementById('audio1_track').value = data.showcase.audio1_track || '';
+        document.getElementById('audio1_surah').value = data.showcase.audio1_surah || '';
+        document.getElementById('audio2_name').value = data.showcase.audio2_name || '';
+        document.getElementById('audio2_track').value = data.showcase.audio2_track || '';
+        document.getElementById('audio2_surah').value = data.showcase.audio2_surah || '';
+        document.getElementById('audio3_name').value = data.showcase.audio3_name || '';
+        document.getElementById('audio3_track').value = data.showcase.audio3_track || '';
+        document.getElementById('audio3_surah').value = data.showcase.audio3_surah || '';
+      }
+
+      // Quality
+      if (data.quality) {
+        document.getElementById('qual1_tag').value = data.quality.q1_tag || '';
+        document.getElementById('qual1_title').value = data.quality.q1_title || '';
+        document.getElementById('qual1_desc').value = data.quality.q1_desc || '';
+        document.getElementById('qual2_tag').value = data.quality.q2_tag || '';
+        document.getElementById('qual2_title').value = data.quality.q2_title || '';
+        document.getElementById('qual2_desc').value = data.quality.q2_desc || '';
+        document.getElementById('qual3_tag').value = data.quality.q3_tag || '';
+        document.getElementById('qual3_title').value = data.quality.q3_title || '';
+        document.getElementById('qual3_desc').value = data.quality.q3_desc || '';
       }
 
       // Pricing
-      if(data.pricing){
+      if (data.pricing) {
         document.getElementById('pricing_currency').value = data.pricing.currency || 'ج.م';
-        if(data.pricing.pkg1){
+        if (data.pricing.pkg1) {
           document.getElementById('pkg1_name').value = data.pricing.pkg1.name || '';
           document.getElementById('pkg1_price').value = data.pricing.pkg1.price || '';
           document.getElementById('pkg1_sessions').value = data.pricing.pkg1.sessions || '';
           document.getElementById('pkg1_features').value = data.pricing.pkg1.features || '';
         }
-        if(data.pricing.pkg2){
+        if (data.pricing.pkg2) {
           document.getElementById('pkg2_name').value = data.pricing.pkg2.name || '';
           document.getElementById('pkg2_price').value = data.pricing.pkg2.price || '';
           document.getElementById('pkg2_sessions').value = data.pricing.pkg2.sessions || '';
           document.getElementById('pkg2_features').value = data.pricing.pkg2.features || '';
         }
-        if(data.pricing.pkg3){
+        if (data.pricing.pkg3) {
           document.getElementById('pkg3_name').value = data.pricing.pkg3.name || '';
           document.getElementById('pkg3_price').value = data.pricing.pkg3.price || '';
           document.getElementById('pkg3_sessions').value = data.pricing.pkg3.sessions || '';
@@ -897,32 +1482,40 @@ create policy "Allow all site_settings" on public.site_settings for all using (t
         }
       }
 
-      // Pathways
-      if(data.pathways){
-        if(data.pathways.path1){
-          document.getElementById('path1_title').value = data.pathways.path1.title || '';
-          document.getElementById('path1_desc').value = data.pathways.path1.desc || '';
-        }
-        if(data.pathways.path2){
-          document.getElementById('path2_title').value = data.pathways.path2.title || '';
-          document.getElementById('path2_desc').value = data.pathways.path2.desc || '';
-        }
-        if(data.pathways.path3){
-          document.getElementById('path3_title').value = data.pathways.path3.title || '';
-          document.getElementById('path3_desc').value = data.pathways.path3.desc || '';
-        }
-        if(data.pathways.path4){
-          document.getElementById('path4_title').value = data.pathways.path4.title || '';
-          document.getElementById('path4_desc').value = data.pathways.path4.desc || '';
-        }
+      // Stories
+      if (data.stories) {
+        document.getElementById('story1_quote').value = data.stories.s1_quote || '';
+        document.getElementById('story1_name').value = data.stories.s1_name || '';
+        document.getElementById('story1_prog').value = data.stories.s1_prog || '';
+        document.getElementById('story2_quote').value = data.stories.s2_quote || '';
+        document.getElementById('story2_name').value = data.stories.s2_name || '';
+        document.getElementById('story2_prog').value = data.stories.s2_prog || '';
+        document.getElementById('story3_quote').value = data.stories.s3_quote || '';
+        document.getElementById('story3_name').value = data.stories.s3_name || '';
+        document.getElementById('story3_prog').value = data.stories.s3_prog || '';
       }
 
-      // Stats
-      if(data.stats){
-        document.getElementById('stat_students').value = data.stats.students || '';
-        document.getElementById('stat_teachers').value = data.stats.teachers || '';
-        document.getElementById('stat_hours').value = data.stats.hours || '';
-        document.getElementById('stat_rating').value = data.stats.rating || '';
+      // FAQ
+      if (data.faq) {
+        document.getElementById('faq1_q').value = data.faq.f1_q || '';
+        document.getElementById('faq1_a').value = data.faq.f1_a || '';
+        document.getElementById('faq2_q').value = data.faq.f2_q || '';
+        document.getElementById('faq2_a').value = data.faq.f2_a || '';
+        document.getElementById('faq3_q').value = data.faq.f3_q || '';
+        document.getElementById('faq3_a').value = data.faq.f3_a || '';
+        document.getElementById('faq4_q').value = data.faq.f4_q || '';
+        document.getElementById('faq4_a').value = data.faq.f4_a || '';
+        document.getElementById('faq5_q').value = data.faq.f5_q || '';
+        document.getElementById('faq5_a').value = data.faq.f5_a || '';
+      }
+
+      // Register
+      if (data.register) {
+        document.getElementById('reg_title').value = data.register.title || '';
+        document.getElementById('reg_sub').value = data.register.sub || '';
+        document.getElementById('reg_side_title').value = data.register.side_title || '';
+        document.getElementById('reg_btn_text').value = data.register.btn_text || '';
+        document.getElementById('reg_steps').value = data.register.steps || '';
       }
     }
 
@@ -931,8 +1524,10 @@ create policy "Allow all site_settings" on public.site_settings for all using (t
         contact: {
           whatsapp: document.getElementById('contact_whatsapp').value.trim() || DEFAULT_SETTINGS.contact.whatsapp,
           phone_display: document.getElementById('contact_phone_display').value.trim(),
-          email: document.getElementById('contact_email').value.trim(),
-          location: document.getElementById('contact_location').value.trim(),
+          fb: document.getElementById('contact_fb').value.trim(),
+          insta: document.getElementById('contact_insta').value.trim(),
+          yt: document.getElementById('contact_yt').value.trim(),
+          copyright: document.getElementById('contact_copyright').value.trim(),
           wa_default_msg: document.getElementById('contact_wa_default_msg').value.trim()
         },
         banner: {
@@ -948,7 +1543,72 @@ create policy "Allow all site_settings" on public.site_settings for all using (t
           title_2: document.getElementById('hero_title_2').value.trim(),
           lead: document.getElementById('hero_lead').value.trim(),
           cta_primary: document.getElementById('hero_cta_primary').value.trim(),
-          cta_wa: document.getElementById('hero_cta_wa').value.trim()
+          cta_wa: document.getElementById('hero_cta_wa').value.trim(),
+          trust_1: document.getElementById('hero_trust_1').value.trim(),
+          trust_2: document.getElementById('hero_trust_2').value.trim(),
+          trust_3: document.getElementById('hero_trust_3').value.trim()
+        },
+        why: {
+          title: document.getElementById('why_title').value.trim(),
+          sub: document.getElementById('why_sub').value.trim(),
+          why1_title: document.getElementById('why1_title').value.trim(),
+          why1_desc: document.getElementById('why1_desc').value.trim(),
+          why2_title: document.getElementById('why2_title').value.trim(),
+          why2_desc: document.getElementById('why2_desc').value.trim(),
+          why3_title: document.getElementById('why3_title').value.trim(),
+          why3_desc: document.getElementById('why3_desc').value.trim(),
+          why4_title: document.getElementById('why4_title').value.trim(),
+          why4_desc: document.getElementById('why4_desc').value.trim()
+        },
+        pathways: {
+          path1: {
+            title: document.getElementById('path1_title').value.trim(),
+            desc: document.getElementById('path1_desc').value.trim()
+          },
+          path2: {
+            title: document.getElementById('path2_title').value.trim(),
+            desc: document.getElementById('path2_desc').value.trim()
+          },
+          path3: {
+            title: document.getElementById('path3_title').value.trim(),
+            desc: document.getElementById('path3_desc').value.trim()
+          },
+          path4: {
+            title: document.getElementById('path4_title').value.trim(),
+            desc: document.getElementById('path4_desc').value.trim()
+          }
+        },
+        programs: {
+          kids_age: document.getElementById('prog_kids_age').value.trim(),
+          kids_title: document.getElementById('prog_kids_title').value.trim(),
+          kids_points: document.getElementById('prog_kids_points').value.trim(),
+          kids_btn: document.getElementById('prog_kids_btn').value.trim(),
+          adults_age: document.getElementById('prog_adults_age').value.trim(),
+          adults_title: document.getElementById('prog_adults_title').value.trim(),
+          adults_points: document.getElementById('prog_adults_points').value.trim(),
+          adults_btn: document.getElementById('prog_adults_btn').value.trim()
+        },
+        showcase: {
+          audio1_name: document.getElementById('audio1_name').value.trim(),
+          audio1_track: document.getElementById('audio1_track').value.trim(),
+          audio1_surah: document.getElementById('audio1_surah').value.trim(),
+          audio2_name: document.getElementById('audio2_name').value.trim(),
+          audio2_track: document.getElementById('audio2_track').value.trim(),
+          audio2_surah: document.getElementById('audio2_surah').value.trim(),
+          audio3_name: document.getElementById('audio3_name').value.trim(),
+          audio3_track: document.getElementById('audio3_track').value.trim(),
+          audio3_surah: document.getElementById('audio3_surah').value.trim()
+        },
+        quality: {
+          q1_tag: document.getElementById('qual1_tag').value.trim(),
+          q1_title: document.getElementById('qual1_title').value.trim(),
+          q1_desc: document.getElementById('qual1_desc').value.trim(),
+          q2_tag: document.getElementById('qual2_tag').value.trim(),
+          q2_title: document.getElementById('qual2_title').value.trim(),
+          q2_desc: document.getElementById('qual2_desc').value.trim(),
+          q3_tag: document.getElementById('qual3_tag').value.trim(),
+          q3_title: document.getElementById('qual3_title').value.trim(),
+          q3_desc: document.getElementById('qual3_desc').value.trim()
         },
         pricing: {
           currency: document.getElementById('pricing_currency').value.trim() || 'ج.م',
@@ -971,29 +1631,35 @@ create policy "Allow all site_settings" on public.site_settings for all using (t
             features: document.getElementById('pkg3_features').value.trim()
           }
         },
-        pathways: {
-          path1: {
-            title: document.getElementById('path1_title').value.trim(),
-            desc: document.getElementById('path1_desc').value.trim()
-          },
-          path2: {
-            title: document.getElementById('path2_title').value.trim(),
-            desc: document.getElementById('path2_desc').value.trim()
-          },
-          path3: {
-            title: document.getElementById('path3_title').value.trim(),
-            desc: document.getElementById('path3_desc').value.trim()
-          },
-          path4: {
-            title: document.getElementById('path4_title').value.trim(),
-            desc: document.getElementById('path4_desc').value.trim()
-          }
+        stories: {
+          s1_quote: document.getElementById('story1_quote').value.trim(),
+          s1_name: document.getElementById('story1_name').value.trim(),
+          s1_prog: document.getElementById('story1_prog').value.trim(),
+          s2_quote: document.getElementById('story2_quote').value.trim(),
+          s2_name: document.getElementById('story2_name').value.trim(),
+          s2_prog: document.getElementById('story2_prog').value.trim(),
+          s3_quote: document.getElementById('story3_quote').value.trim(),
+          s3_name: document.getElementById('story3_name').value.trim(),
+          s3_prog: document.getElementById('story3_prog').value.trim()
         },
-        stats: {
-          students: document.getElementById('stat_students').value.trim(),
-          teachers: document.getElementById('stat_teachers').value.trim(),
-          hours: document.getElementById('stat_hours').value.trim(),
-          rating: document.getElementById('stat_rating').value.trim()
+        faq: {
+          f1_q: document.getElementById('faq1_q').value.trim(),
+          f1_a: document.getElementById('faq1_a').value.trim(),
+          f2_q: document.getElementById('faq2_q').value.trim(),
+          f2_a: document.getElementById('faq2_a').value.trim(),
+          f3_q: document.getElementById('faq3_q').value.trim(),
+          f3_a: document.getElementById('faq3_a').value.trim(),
+          f4_q: document.getElementById('faq4_q').value.trim(),
+          f4_a: document.getElementById('faq4_a').value.trim(),
+          f5_q: document.getElementById('faq5_q').value.trim(),
+          f5_a: document.getElementById('faq5_a').value.trim()
+        },
+        register: {
+          title: document.getElementById('reg_title').value.trim(),
+          sub: document.getElementById('reg_sub').value.trim(),
+          side_title: document.getElementById('reg_side_title').value.trim(),
+          btn_text: document.getElementById('reg_btn_text').value.trim(),
+          steps: document.getElementById('reg_steps').value.trim()
         }
       };
     }
@@ -1040,10 +1706,10 @@ create policy "Allow all site_settings" on public.site_settings for all using (t
       const data = readForm();
       CURRENT_DATA = data;
 
-      // Always save to LocalStorage for immediate local sync
+      // Save to LocalStorage
       localStorage.setItem('kortoba_site_settings', JSON.stringify(data));
 
-      // Save to Supabase if available
+      // Save to Supabase
       let cloudSaved = false;
       if (supabaseClient) {
         try {
@@ -1072,7 +1738,7 @@ create policy "Allow all site_settings" on public.site_settings for all using (t
 
     // Reset Defaults
     document.getElementById('resetDefaultsBtn').addEventListener('click', ()=>{
-      if (confirm('هل أنت متأكد من رغبتك في استعادة الإعدادات الأصلية للموقع؟')) {
+      if (confirm('هل أنت متأكد من رغبتك في استعادة الإعدادات الأصلية لكافة تفاصيل الموقع؟')) {
         CURRENT_DATA = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
         populateForm(CURRENT_DATA);
         saveData();
