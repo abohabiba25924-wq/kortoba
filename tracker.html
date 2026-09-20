@@ -93,6 +93,24 @@
     display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:13px;border:none;cursor:pointer;
   }
   .btn-wa-share:hover{background:#176040;}
+  .btn-danger{background:var(--danger);color:#fff;}
+  .btn-danger:hover{background:#91271C;transform:translateY(-1px);box-shadow:0 6px 16px rgba(178,59,46,0.25);}
+  .btn-sm{padding:5px 11px;font-size:12px;border-radius:8px;}
+  .btn-icon-danger{
+    background:var(--danger-bg);color:var(--danger);border:1px solid rgba(178,59,46,0.25);
+    padding:5px 9px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;
+    display:inline-flex;align-items:center;gap:4px;transition:all .15s ease;
+  }
+  .btn-icon-danger:hover{background:var(--danger);color:#fff;border-color:var(--danger);}
+  .table-actions{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;}
+  .search-filter-bar{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap;
+  }
+  .search-input{
+    padding:9px 14px;border:1px solid var(--line);border-radius:10px;font-size:13px;
+    outline:none;background:#fff;min-width:240px;flex:1;
+  }
+  .search-input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(15,61,40,0.1);}
 
   /* ---------------- APP SHELL ---------------- */
   #app{display:none;min-height:100vh;}
@@ -1178,19 +1196,22 @@ let currentPage = null;
 
 const NAV = {
   admin: [
-    { id:'overview', label:'نظرة عامة', icon:'grid' },
-    { id:'admin-students', label:'إدارة الطلاب', icon:'users' },
-    { id:'admin-teachers', label:'إدارة المعلمين', icon:'book' },
-    { id:'admin-moderators', label:'المشرفين', icon:'shield' },
+    { id:'overview', label:'نظرة عامة والتحليلات', icon:'grid' },
+    { id:'admin-students', label:'إدارة الطلاب والتسكين', icon:'users' },
+    { id:'admin-teachers', label:'إدارة المعلمين والمعلمات', icon:'book' },
+    { id:'admin-moderators', label:'إدارة المشرفين التربويين', icon:'shield' },
+    { id:'admin-sessions', label:'جدول الحصص الشامل', icon:'calendar' },
+    { id:'admin-makeups', label:'رادار الغياب والتعويضات', icon:'flag' },
     { id:'admin-users', label:'الحسابات وكلمات المرور', icon:'key' },
-    { id:'admin-reports', label:'التقارير وملخصات الشهور', icon:'chart' },
+    { id:'admin-backup', label:'النسخ الاحتياطي والضبط', icon:'chart' },
   ],
   moderator: [
-    { id:'overview', label:'نظرة عامة', icon:'grid' },
+    { id:'overview', label:'نظرة عامة ومتابعة', icon:'grid' },
     { id:'mod-students', label:'متابعة الطلاب', icon:'users' },
     { id:'mod-teachers', label:'متابعة المعلمين', icon:'book' },
-    { id:'mod-makeups', label:'حصص التعويض المعلقة', icon:'calendar' },
-    { id:'mod-alerts', label:'تنبيهات الحصص والشكاوى', icon:'flag' },
+    { id:'admin-sessions', label:'جدول الحصص الشامل', icon:'calendar' },
+    { id:'mod-makeups', label:'حصص التعويض المعلقة', icon:'flag' },
+    { id:'mod-alerts', label:'تنبيهات الحصص والشكاوى', icon:'edit' },
   ],
   teacher: [
     { id:'t-overview', label:'الرئيسية وحصص اليوم', icon:'grid' },
@@ -1346,52 +1367,405 @@ function initial(name){ return (name||'؟').trim().charAt(0); }
    5. PAGES TEMPLATES
    ===================================================================== */
 const PAGES = {
-  /* ---------- OVERVIEW (Admin / Moderator) ---------- */
+  /* ---------- OVERVIEW (Executive Admin Dashboard) ---------- */
   overview: ()=>{
     if (currentRole === 'moderator') return moderatorOverview();
+    const completedSessions = DB.sessions.filter(s => s.status === 'done' || s.attendance === 'present').length;
+    const totalSessions = DB.sessions.length;
+    const attendancePct = totalSessions > 0 ? Math.round((completedSessions / totalSessions) * 100) : 100;
+    const pendingMakeups = (DB.makeup_sessions || []).filter(m => m.status !== 'completed').length;
+    const todaySessions = DB.sessions.filter(s => s.date === 'اليوم' || (s.date && s.date.includes('اليوم')));
+
     return `
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
-      <span style="font-size:14px;color:var(--ink-soft);">ملخص الأداء العام ومؤشرات الأكاديمية والطلاب</span>
-      <button class="btn btn-primary" onclick="openAddUserModal()" style="padding:9px 18px;font-size:13px;">➕ إضافة حساب جديد</button>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+      <div>
+        <h3 style="font-family:'Amiri',serif;margin:0 0 4px;font-size:22px;color:var(--green-deep);">لوحة القيادة والمؤشرات العامة 📊</h3>
+        <span style="font-size:13px;color:var(--ink-soft);">متابعة حية وشاملة لكافة أنشطة أكاديمية قرطبة والطلاب والمعلمين</span>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="openAddUserModal()" style="padding:8px 16px;font-size:13px;">➕ إنشاء حساب</button>
+        <button class="btn btn-ghost" onclick="openModal('sessionModal')" style="padding:8px 16px;font-size:13px;">📅 جدولة حصة</button>
+        <button class="btn btn-ghost" onclick="syncFromCloud();showToast('تمت مزامنة البيانات السحابية');" style="padding:8px 14px;font-size:13px;" title="مزامنة مع السحابة">🔄 مزامنة</button>
+      </div>
     </div>
-    <div class="stat-grid">
+
+    <!-- 6 Executive KPI Cards -->
+    <div class="stat-grid" style="grid-template-columns:repeat(auto-fit, minmax(170px, 1fr));gap:14px;margin-bottom:24px;">
       ${statCard('users', DB.students.length, 'إجمالي الطلاب المقيدين')}
-      ${statCard('book', DB.teachers.length, 'المعلمين المعتمدين')}
-      ${statCard('shield', DB.moderators.length, 'المشرفين التعليميين')}
-      ${statCard('calendar', DB.sessions.filter(s=>s.status==='upcoming').length, 'حصص مجدولة قادمة')}
+      ${statCard('book', DB.teachers.length, 'المعلمون المعتمدون')}
+      ${statCard('shield', DB.moderators.length, 'المشرفون التربويون')}
+      ${statCard('calendar', DB.sessions.filter(s=>s.status==='upcoming').length, 'حصص قادمة مجدولة')}
+      <div class="stat-card">
+        <div class="icon" style="background:linear-gradient(145deg, #1F7A52, #10b981);">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <div class="num" style="color:var(--success);">${attendancePct}%</div>
+        <div class="lbl">نسبة التزام الحضور</div>
+      </div>
+      <div class="stat-card">
+        <div class="icon" style="background:linear-gradient(145deg, ${pendingMakeups>0?'#B23B2E':'#1F7A52'}, #e11d48);">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2"><path d="M4 21V4a1 1 0 0 1 1-1h11l-2 5 2 5H6"/></svg>
+        </div>
+        <div class="num" style="color:${pendingMakeups>0?'var(--danger)':'var(--success)'};">${pendingMakeups}</div>
+        <div class="lbl">التزامات تعويض معلقة</div>
+      </div>
     </div>
+
+    <!-- Quick Operations Bar -->
+    <div style="background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+      <div style="font-weight:700;font-size:13.5px;color:var(--green-deep);display:flex;align-items:center;gap:8px;">
+        <span>⚡ إجراءات سريعة:</span>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-ghost btn-sm" onclick="openAddUserModal('student')">➕ طالب جديد</button>
+        <button class="btn btn-ghost btn-sm" onclick="openAddUserModal('teacher')">➕ معلم جديد</button>
+        <button class="btn btn-ghost btn-sm" onclick="openAddUserModal('moderator')">➕ مشرف جديد</button>
+        <button class="btn btn-ghost btn-sm" onclick="renderPage('admin', 'admin-sessions')">📋 الجدول الشامل</button>
+        <button class="btn btn-ghost btn-sm" onclick="adminExportBackup()">💾 تصدير نسخة احتياطية</button>
+      </div>
+    </div>
+
+    <!-- 2 Column Executive Hub -->
     <div class="cols-2">
+      <!-- Live Schedule Monitor -->
       <div class="panel">
         <div class="panel-head">
-          <h3>أحدث الطلاب وسجل الحصص</h3>
-          <button class="btn btn-ghost" onclick="openAddUserModal('student')" style="padding:6px 14px;font-size:12px;">+ طالب جديد</button>
+          <h3>📅 رادار الحصص المباشر اليوم (${todaySessions.length})</h3>
+          <button class="btn btn-ghost btn-sm" onclick="openModal('sessionModal')">+ جدولة</button>
         </div>
-        <table>
-          <thead><tr><th>الطالب</th><th>المعلم</th><th>الباقة الشهرية</th><th>آخر تقييم</th></tr></thead>
+        ${todaySessions.length === 0 ? `
+          <p style="text-align:center;padding:30px;color:var(--ink-soft);margin:0;">لا توجد حصص مجدولة لليوم حتى الآن.</p>
+        ` : `
+          <div style="overflow-x:auto;">
+            <table>
+              <thead><tr><th>الطالب</th><th>المعلم</th><th>الموعد والمنصة</th><th>الحالة</th><th>رابط البث</th></tr></thead>
+              <tbody>
+                ${todaySessions.map(s => `
+                  <tr>
+                    <td class="cell-name"><span class="avatar-sm">${initial(s.student)}</span>${s.student}</td>
+                    <td><b>${s.teacher}</b></td>
+                    <td>${s.time} · <span style="color:var(--green-mid);font-size:12px;">${s.platform}</span></td>
+                    <td><span class="badge ${s.status==='done'?'badge-success':'badge-warn'}">${s.status==='done'?'تمت الحصة':'بانتظار البدء'}</span></td>
+                    <td>
+                      ${s.link && s.link !== '#' ? `<a href="${s.link}" target="_blank" class="session-join" style="padding:4px 10px;font-size:11.5px;">دخول 🔗</a>` : '—'}
+                    </td>
+                  </tr>`).join('')}
+              </tbody>
+            </table>
+          </div>
+        `}
+      </div>
+
+      <!-- Quality Radar & Makeups -->
+      <div class="panel">
+        <div class="panel-head">
+          <h3>⚠️ مركز جودة التدريس والتعويضات</h3>
+          <span class="badge ${pendingMakeups>0?'badge-danger':'badge-success'}">${pendingMakeups} تعويضات</span>
+        </div>
+        ${pendingMakeups === 0 ? `
+          <div style="text-align:center;padding:34px 20px;color:var(--ink-soft);">
+            <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" style="margin:0 auto 10px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <strong style="display:block;color:var(--green-deep);font-size:14.5px;">كل المعلمين ملتزمون بمواعيدهم!</strong>
+            <span style="font-size:12.5px;">لا توجد حصص تعويض معلقة في ذمة أي معلم.</span>
+          </div>
+        ` : `
+          <div style="overflow-x:auto;">
+            <table>
+              <thead><tr><th>الطالب</th><th>المعلم الملزم</th><th>السبب</th><th>إجراء</th></tr></thead>
+              <tbody>
+                ${(DB.makeup_sessions||[]).filter(m => m.status !== 'completed').slice(0, 4).map((m, idx) => `
+                  <tr>
+                    <td class="cell-name">${m.student_name}</td>
+                    <td><b>${m.teacher_name}</b></td>
+                    <td style="color:var(--danger);font-size:12px;">${m.reason||'غياب المعلم'}</td>
+                    <td>
+                      <button class="btn btn-primary btn-sm" onclick="markMakeupDone(${idx})">اعتماد التعويض</button>
+                    </td>
+                  </tr>`).join('')}
+              </tbody>
+            </table>
+          </div>
+        `}
+        <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:12px;color:var(--ink-soft);">تنبيهات تأخر المعلمين المسجلة: <b>${(DB.teacher_alerts||[]).length}</b></span>
+          <button class="btn btn-ghost btn-sm" onclick="renderPage('admin', 'admin-makeups')">فتح المركز الكامل ➔</button>
+        </div>
+      </div>
+    </div>`;
+  },
+
+  /* ---------- ADMIN: Students Management with Real-Time Search & Delete ---------- */
+  'admin-students': ()=>{
+    return `
+    <div class="panel">
+      <div class="panel-head" style="flex-wrap:wrap;gap:12px;">
+        <div>
+          <h3 style="margin:0;">إدارة وتسكين الطلاب (${DB.students.length} طالب)</h3>
+          <span style="font-size:12.5px;color:var(--ink-soft);">إدارة الحسابات، تسكين المعلمين، متابعة الإنجاز، وخيار الحذف النهائي</span>
+        </div>
+        <button class="btn btn-primary" onclick="openAddUserModal('student')">➕ تسجيل طالب جديد</button>
+      </div>
+
+      <!-- Search & Filter Bar -->
+      <div class="search-filter-bar">
+        <input type="text" id="studentSearchInput" class="search-input" placeholder="🔍 ابحث بالاسم أو اسم المستخدم أو الهاتف..." oninput="filterAdminStudents()">
+        <select id="studentTeacherFilter" class="search-input" style="max-width:200px;" onchange="filterAdminStudents()">
+          <option value="">جميع المعلمين</option>
+          ${DB.teachers.map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}
+        </select>
+        <select id="studentProgramFilter" class="search-input" style="max-width:160px;" onchange="filterAdminStudents()">
+          <option value="">جميع البرامج</option>
+          <option value="أطفال">أطفال</option>
+          <option value="كبار">كبار</option>
+          <option value="إجازات">إجازات</option>
+        </select>
+      </div>
+
+      <div style="overflow-x:auto;">
+        <table id="studentsTable">
+          <thead>
+            <tr>
+              <th>الطالب</th>
+              <th>اسم المستخدم</th>
+              <th>كلمة المرور</th>
+              <th>المعلم المخصص</th>
+              <th>البرنامج والباقة</th>
+              <th>المواعيد الأسبوعية</th>
+              <th>آخر تقييم</th>
+              <th style="text-align:center;">إجراءات الإدارة</th>
+            </tr>
+          </thead>
           <tbody>
-            ${DB.students.slice(0,5).map(s=>`
-              <tr>
-                <td class="cell-name"><span class="avatar-sm">${initial(s.name)}</span>${s.name}</td>
-                <td>${s.teacher}</td>
-                <td><b>${s.monthlySessions||8}</b> حصص</td>
+            ${DB.students.map(s => {
+              const u = DB.users.find(x => x.name === s.name || x.username === s.username);
+              const pass = u ? u.password : '••••••';
+              return `
+              <tr class="student-row" data-name="${s.name}" data-username="${s.username||''}" data-phone="${s.phone||''}" data-teacher="${s.teacher}" data-program="${s.program||''}">
+                <td class="cell-name">
+                  <span class="avatar-sm">${initial(s.name)}</span>
+                  <div>
+                    <strong>${s.name}</strong>
+                    <span style="font-size:11.5px;color:var(--ink-soft);">${s.phone||'بدون هاتف'}</span>
+                  </div>
+                </td>
+                <td style="font-family:monospace;font-weight:700;color:var(--green-mid);">${s.username||'—'}</td>
+                <td><span style="background:var(--bg);padding:3px 7px;border-radius:6px;font-family:monospace;color:var(--gold);font-size:12px;">${pass}</span></td>
+                <td><b>${s.teacher}</b></td>
+                <td>
+                  <span class="badge badge-warn" style="font-size:11px;">${s.program||'عام'}</span>
+                  <div style="font-size:11.5px;color:var(--ink-soft);margin-top:2px;"><b>${s.monthlySessions||8}</b> حصص/شهر</div>
+                </td>
+                <td style="font-size:12px;color:var(--ink-soft);">${s.schedule||'مرن'}</td>
                 <td>${ratingBadge(s.lastRating)}</td>
-              </tr>`).join('')}
+                <td>
+                  <div class="table-actions" style="justify-content:center;">
+                    <button class="btn btn-ghost btn-sm" onclick="viewStudentMonthlySummary('${s.name}')" title="عرض ملخص الشهر">
+                      📜 السمري
+                    </button>
+                    <button class="btn btn-ghost btn-sm" onclick="adminResetUserPass('${s.username}')" title="تعديل كلمة المرور">
+                      🔑 الباسورد
+                    </button>
+                    <button class="btn-icon-danger" onclick="adminDeleteStudent('${s.name}')" title="حذف الطالب نهائياً من الأكاديمية">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                      حذف
+                    </button>
+                  </div>
+                </td>
+              </tr>`;
+            }).join('')}
           </tbody>
         </table>
       </div>
-      <div class="panel">
-        <div class="panel-head">
-          <h3>المعلمون وحصصهم</h3>
-          <button class="btn btn-ghost" onclick="openAddUserModal('teacher')" style="padding:6px 14px;font-size:12px;">+ معلم جديد</button>
+    </div>`;
+  },
+
+  /* ---------- ADMIN: Teachers Management with Delete & Student Assignment ---------- */
+  'admin-teachers': ()=>{
+    return `
+    <div class="panel">
+      <div class="panel-head" style="flex-wrap:wrap;gap:12px;">
+        <div>
+          <h3 style="margin:0;">إدارة طاقم المعلمين والمعلمات (${DB.teachers.length} معلم)</h3>
+          <span style="font-size:12.5px;color:var(--ink-soft);">متابعة بيانات المعلمين، الإجازات، أعداد الطلاب، وتعديل كلمات المرور أو الحذف</span>
         </div>
-        <table>
-          <thead><tr><th>المعلم</th><th>عدد الطلاب</th><th>التقييم العام</th></tr></thead>
+        <button class="btn btn-primary" onclick="openAddUserModal('teacher')">➕ إضافة معلم جديد</button>
+      </div>
+
+      <div class="search-filter-bar">
+        <input type="text" id="teacherSearchInput" class="search-input" placeholder="🔍 ابحث بالاسم أو التخصص..." oninput="filterAdminTeachers()">
+      </div>
+
+      <div style="overflow-x:auto;">
+        <table id="teachersTable">
+          <thead>
+            <tr>
+              <th>المعلم</th>
+              <th>اسم المستخدم</th>
+              <th>كلمة المرور</th>
+              <th>التخصص والإجازة القرآنية</th>
+              <th>الطلاب المسندين</th>
+              <th>التقييم</th>
+              <th>الحالة</th>
+              <th style="text-align:center;">إجراءات الإدارة</th>
+            </tr>
+          </thead>
           <tbody>
-            ${DB.teachers.map(t=>`
-              <tr>
-                <td class="cell-name"><span class="avatar-sm">${initial(t.name)}</span>${t.name}</td>
-                <td><b>${t.students}</b> طلاب</td>
+            ${DB.teachers.map(t => {
+              const u = DB.users.find(x => x.name === t.name || x.username === t.username);
+              const pass = u ? u.password : '••••••';
+              const assignedStudents = DB.students.filter(s => s.teacher === t.name);
+              return `
+              <tr class="teacher-row" data-name="${t.name}" data-area="${t.area}">
+                <td class="cell-name">
+                  <span class="avatar-sm">${initial(t.name)}</span>
+                  <div>
+                    <strong>${t.name}</strong>
+                    <span style="font-size:11.5px;color:var(--ink-soft);">${t.phone||'بدون هاتف'}</span>
+                  </div>
+                </td>
+                <td style="font-family:monospace;font-weight:700;color:var(--green-mid);">${t.username||'—'}</td>
+                <td><span style="background:var(--bg);padding:3px 7px;border-radius:6px;font-family:monospace;color:var(--gold);font-size:12px;">${pass}</span></td>
+                <td style="font-size:12.5px;color:var(--ink-soft);">${t.area}</td>
+                <td>
+                  <span class="badge badge-warn">${assignedStudents.length} طلاب</span>
+                </td>
                 <td>${ratingBadge(t.rating)}</td>
+                <td><span class="badge badge-success">${t.status||'نشط'}</span></td>
+                <td>
+                  <div class="table-actions" style="justify-content:center;">
+                    <button class="btn btn-ghost btn-sm" onclick="showTeacherStudentsModal('${t.name}')" title="عرض طلاب هذا المعلم">
+                      👥 الطلاب
+                    </button>
+                    <button class="btn btn-ghost btn-sm" onclick="adminResetUserPass('${t.username}')" title="تعديل كلمة المرور">
+                      🔑 الباسورد
+                    </button>
+                    <button class="btn-icon-danger" onclick="adminDeleteTeacher('${t.name}')" title="حذف المعلم وإلغاء تسكينه">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                      حذف
+                    </button>
+                  </div>
+                </td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+  },
+
+  /* ---------- ADMIN: Moderators Management with Delete ---------- */
+  'admin-moderators': ()=>{
+    return `
+    <div class="panel">
+      <div class="panel-head" style="flex-wrap:wrap;gap:12px;">
+        <div>
+          <h3 style="margin:0;">إدارة المشرفين التربويين (${DB.moderators.length} مشرف)</h3>
+          <span style="font-size:12.5px;color:var(--ink-soft);">إسناد ومتابعة صلاحيات المشرفين التعليميين مع إمكانية حذفهم</span>
+        </div>
+        <button class="btn btn-primary" onclick="openAddUserModal('moderator')">➕ إضافة مشرف جديد</button>
+      </div>
+
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>المشرف</th>
+              <th>اسم المستخدم</th>
+              <th>كلمة المرور</th>
+              <th>الهاتف والواتساب</th>
+              <th>مجال المتابعة والصلاحيات</th>
+              <th>الحالة</th>
+              <th style="text-align:center;">إجراءات</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${DB.moderators.map(m => {
+              const u = DB.users.find(x => x.name === m.name || x.username === m.username);
+              const pass = u ? u.password : '••••••';
+              return `
+              <tr>
+                <td class="cell-name">
+                  <span class="avatar-sm">${initial(m.name)}</span>
+                  <div>
+                    <strong>${m.name}</strong>
+                  </div>
+                </td>
+                <td style="font-family:monospace;font-weight:700;color:var(--green-mid);">${m.username||'—'}</td>
+                <td><span style="background:var(--bg);padding:3px 7px;border-radius:6px;font-family:monospace;color:var(--gold);font-size:12px;">${pass}</span></td>
+                <td>${m.phone||'—'}</td>
+                <td style="font-size:13px;color:var(--ink-soft);">${m.area}</td>
+                <td><span class="badge badge-success">نشط</span></td>
+                <td>
+                  <div class="table-actions" style="justify-content:center;">
+                    <button class="btn btn-ghost btn-sm" onclick="adminResetUserPass('${m.username}')" title="تعديل كلمة المرور">
+                      🔑 الباسورد
+                    </button>
+                    <button class="btn-icon-danger" onclick="adminDeleteModerator('${m.name}')" title="حذف المشرف">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+                      حذف
+                    </button>
+                  </div>
+                </td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+  },
+
+  /* ---------- ADMIN: Master Academy Sessions Hub ---------- */
+  'admin-sessions': ()=>{
+    return `
+    <div class="panel">
+      <div class="panel-head" style="flex-wrap:wrap;gap:12px;">
+        <div>
+          <h3 style="margin:0;">جدول وسجل الحصص الشامل للأكاديمية (${DB.sessions.length} حصة)</h3>
+          <span style="font-size:12.5px;color:var(--ink-soft);">متابعة جميع حصص الطلاب والمعلمين وجدولتها أو تعديلها وحذفها</span>
+        </div>
+        <button class="btn btn-primary" onclick="openModal('sessionModal')">➕ جدولة حصة جديدة</button>
+      </div>
+
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>الطالب</th>
+              <th>المعلم</th>
+              <th>التاريخ والوقت</th>
+              <th>المنصة والرابط</th>
+              <th>حالة الحصة</th>
+              <th>حالة الحضور</th>
+              <th style="text-align:center;">إجراء</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${DB.sessions.map((s, idx) => `
+              <tr>
+                <td class="cell-name"><span class="avatar-sm">${initial(s.student)}</span>${s.student}</td>
+                <td><b>${s.teacher}</b></td>
+                <td>${s.date} · <b>${s.time}</b></td>
+                <td>
+                  <span style="font-size:12px;color:var(--green-mid);font-weight:700;">${s.platform}</span>
+                  ${s.link && s.link !== '#' ? `<a href="${s.link}" target="_blank" style="margin-right:6px;font-size:11.5px;color:var(--green);">رابط 🔗</a>` : ''}
+                </td>
+                <td>
+                  <span class="badge ${s.status==='done'?'badge-success':'badge-warn'}">${s.status==='done'?'منجزة':'قادمة'}</span>
+                </td>
+                <td>
+                  ${s.attendance === 'present' ? '<span class="badge badge-success">حاضر</span>' :
+                    s.attendance === 'absent_student' ? '<span class="badge badge-warn">غياب طالب</span>' :
+                    s.attendance === 'absent_teacher' ? '<span class="badge badge-danger">غياب معلم</span>' :
+                    '<span style="color:var(--ink-soft);font-size:12px;">لم ترصد بعد</span>'}
+                </td>
+                <td>
+                  <div class="table-actions" style="justify-content:center;">
+                    <button class="btn-icon-danger" onclick="adminDeleteSession(${idx})" title="حذف هذه الحصة">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+                      حذف
+                    </button>
+                  </div>
+                </td>
               </tr>`).join('')}
           </tbody>
         </table>
@@ -1399,101 +1773,196 @@ const PAGES = {
     </div>`;
   },
 
-  /* ---------- ADMIN PAGES ---------- */
-  'admin-students': ()=>`
-    <div class="panel">
-      <div class="panel-head">
-        <h3>إدارة وتسكين الطلاب</h3>
-        <button class="btn btn-primary" onclick="openAddUserModal('student')">➕ تسجيل طالب جديد</button>
+  /* ---------- ADMIN: Makeup Obligations & Live Alerts Center ---------- */
+  'admin-makeups': ()=>{
+    const makeups = DB.makeup_sessions || [];
+    const alerts = DB.teacher_alerts || [];
+    return `
+    <div style="display:flex;flex-direction:column;gap:20px;">
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <h3 style="margin:0;">رادار حصص التعويض المستحقة على المعلمين (${makeups.length})</h3>
+            <span style="font-size:12.5px;color:var(--ink-soft);">الحصص الواجب تعويضها بسبب غياب المعلم أو الاعتذار الفني</span>
+          </div>
+        </div>
+        ${makeups.length === 0 ? `
+          <p style="text-align:center;padding:30px;color:var(--ink-soft);margin:0;">لا توجد أي حصص تعويض معلقة في ذمة طاقم التدريس! 🎉</p>
+        ` : `
+          <div style="overflow-x:auto;">
+            <table>
+              <thead><tr><th>الطالب</th><th>المعلم الملزم بالتعويض</th><th>السبب</th><th>الحالة</th><th>إجراء الإدارة</th></tr></thead>
+              <tbody>
+                ${makeups.map((m, idx)=>`
+                  <tr>
+                    <td class="cell-name">${m.student_name}</td>
+                    <td><b>${m.teacher_name}</b></td>
+                    <td style="color:var(--danger);font-size:12.5px;">${m.reason||'غياب المعلم'}</td>
+                    <td><span class="badge ${m.status==='completed'?'badge-success':m.status==='waived'?'badge-warn':'badge-danger'}">${m.status==='completed'?'تم إنجاز التعويض':m.status==='waived'?'عفا الطالب عنها':'معلقة ملزمة'}</span></td>
+                    <td>
+                      ${m.status==='pending'?`
+                        <button class="btn btn-primary btn-sm" onclick="markMakeupDone(${idx})">اعتماد إنجازها</button>
+                      `: '—'}
+                    </td>
+                  </tr>`).join('')}
+              </tbody>
+            </table>
+          </div>
+        `}
       </div>
-      <table>
-        <thead><tr><th>الطالب</th><th>اسم المستخدم</th><th>المعلم</th><th>الحصص الشهرية</th><th>المواعيد</th><th>آخر تقييم</th><th>ملخص الشهر</th></tr></thead>
-        <tbody>
-          ${DB.students.map(s=>`
-            <tr>
-              <td class="cell-name"><span class="avatar-sm">${initial(s.name)}</span>${s.name}</td>
-              <td style="font-family:monospace;font-size:13px;color:var(--green-mid);">${s.username||'—'}</td>
-              <td>${s.teacher}</td>
-              <td><b>${s.monthlySessions||8}</b> حصص</td>
-              <td style="font-size:12.5px;color:var(--ink-soft);">${s.schedule||'مرن'}</td>
-              <td>${ratingBadge(s.lastRating)}</td>
-              <td>
-                <button class="btn btn-ghost" onclick="viewStudentMonthlySummary('${s.name}')" style="padding:5px 10px;font-size:12px;">
-                  📜 عرض السمري
-                </button>
-              </td>
-            </tr>`).join('')}
-        </tbody>
-      </table>
-    </div>`,
 
-  'admin-teachers': ()=>`
-    <div class="panel">
-      <div class="panel-head">
-        <h3>إدارة طاقم المعلمين</h3>
-        <button class="btn btn-primary" onclick="openAddUserModal('teacher')">➕ إضافة معلم جديد</button>
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <h3 style="margin:0;">تنبيهات واستغاثات الطلاب المباشرة ("المعلم لم يحضر")</h3>
+            <span style="font-size:12.5px;color:var(--ink-soft);">إشعارات فورية ترسلها واجهة الطالب عند تأخر المعلم عن الموعد</span>
+          </div>
+        </div>
+        ${alerts.length === 0 ? `
+          <p style="text-align:center;padding:24px;color:var(--ink-soft);margin:0;">لا توجد شكاوى أو تنبيهات تأخر مسجلة حالياً.</p>
+        ` : `
+          <div style="overflow-x:auto;">
+            <table>
+              <thead><tr><th>الطالب المُبلّغ</th><th>المعلم المستهدف</th><th>التوقيت</th><th>ملاحظة الطالب</th><th>الإجراء السريع</th></tr></thead>
+              <tbody>
+                ${alerts.map((a, idx)=>`
+                  <tr>
+                    <td class="cell-name">${a.student_name}</td>
+                    <td><b>${a.teacher_name}</b></td>
+                    <td>${a.time_text||'اليوم'}</td>
+                    <td style="color:var(--danger);font-size:13px;">${a.note||'المعلم لم يدخل الحصة بعد'}</td>
+                    <td>
+                      <a href="https://wa.me/?text=السلام عليكم يا فضيلة الشيخ، الطالب في انتظاركم بالحصة" target="_blank" class="btn-wa-share" style="padding:5px 10px;font-size:11.5px;">
+                        واتساب للمعلم 💬
+                      </a>
+                    </td>
+                  </tr>`).join('')}
+              </tbody>
+            </table>
+          </div>
+        `}
       </div>
-      <table>
-        <thead><tr><th>المعلم</th><th>اسم المستخدم</th><th>التخصص / الإجازة</th><th>الطلاب</th><th>التقييم</th><th>الحالة</th></tr></thead>
-        <tbody>
-          ${DB.teachers.map(t=>`
-            <tr>
-              <td class="cell-name"><span class="avatar-sm">${initial(t.name)}</span>${t.name}</td>
-              <td style="font-family:monospace;font-size:13px;color:var(--green-mid);">${t.username||'—'}</td>
-              <td style="font-size:12.5px;color:var(--ink-soft);">${t.area}</td>
-              <td><b>${t.students}</b> طلاب</td>
-              <td>${ratingBadge(t.rating)}</td>
-              <td><span class="badge badge-success">${t.status||'نشط'}</span></td>
-            </tr>`).join('')}
-        </tbody>
-      </table>
-    </div>`,
+    </div>`;
+  },
 
-  'admin-moderators': ()=>`
+  /* ---------- ADMIN: Users Accounts & Security ---------- */
+  'admin-users': ()=>{
+    return `
     <div class="panel">
-      <div class="panel-head">
-        <h3>المشرفون التعليميون (Moderators)</h3>
-        <button class="btn btn-primary" onclick="openAddUserModal('moderator')">➕ إضافة مشرف جديد</button>
-      </div>
-      <table>
-        <thead><tr><th>المشرف</th><th>اسم المستخدم</th><th>الهاتف</th><th>مجال المتابعة</th></tr></thead>
-        <tbody>
-          ${DB.moderators.map(m=>`
-            <tr>
-              <td class="cell-name"><span class="avatar-sm">${initial(m.name)}</span>${m.name}</td>
-              <td style="font-family:monospace;font-size:13px;color:var(--green-mid);">${m.username||'—'}</td>
-              <td>${m.phone||'—'}</td>
-              <td style="font-size:13px;color:var(--ink-soft);">${m.area}</td>
-            </tr>`).join('')}
-        </tbody>
-      </table>
-    </div>`,
-
-  'admin-users': ()=>`
-    <div class="panel">
-      <div class="panel-head">
-        <h3>إدارة حسابات المنصة وكلمات المرور</h3>
+      <div class="panel-head" style="flex-wrap:wrap;gap:12px;">
+        <div>
+          <h3 style="margin:0;">إدارة الحسابات وكلمات المرور (${DB.users.length} حساب)</h3>
+          <span style="font-size:12.5px;color:var(--ink-soft);">كشف شامل لكافة الحسابات بكلمات المرور وإمكانية التعديل والحذف الفوري</span>
+        </div>
         <button class="btn btn-primary" onclick="openAddUserModal()">➕ إنشاء حساب جديد</button>
       </div>
-      <table>
-        <thead><tr><th>الاسم</th><th>اسم المستخدم</th><th>كلمة المرور</th><th>نوع الحساب</th><th>الهاتف</th><th>إجراء</th></tr></thead>
-        <tbody>
-          ${DB.users.map(u=>`
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
             <tr>
-              <td class="cell-name"><span class="avatar-sm">${initial(u.name)}</span>${u.name}</td>
-              <td style="font-family:monospace;font-weight:700;color:var(--green-deep);">${u.username}</td>
-              <td style="font-family:monospace;color:var(--gold);"><span style="background:var(--bg);padding:3px 8px;border-radius:6px;">${u.password}</span></td>
-              <td><span class="badge ${u.role==='admin'?'badge-danger':u.role==='moderator'?'badge-warn':'badge-success'}">${u.role}</span></td>
-              <td>${u.phone||'—'}</td>
-              <td>
-                <button class="btn btn-ghost" onclick="adminResetUserPass('${u.username}')" style="padding:4px 10px;font-size:11.5px;">تعديل الكلمة</button>
-              </td>
-            </tr>`).join('')}
-        </tbody>
-      </table>
-    </div>`,
+              <th>الاسم</th>
+              <th>اسم المستخدم</th>
+              <th>كلمة المرور</th>
+              <th>نوع الحساب (الدور)</th>
+              <th>الهاتف</th>
+              <th style="text-align:center;">إجراءات</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${DB.users.map(u => `
+              <tr>
+                <td class="cell-name"><span class="avatar-sm">${initial(u.name)}</span>${u.name}</td>
+                <td style="font-family:monospace;font-weight:700;color:var(--green-deep);">${u.username}</td>
+                <td><span style="background:var(--bg);padding:3px 8px;border-radius:6px;font-family:monospace;color:var(--gold);font-weight:700;">${u.password}</span></td>
+                <td>
+                  <span class="badge ${u.role==='admin'?'badge-danger':u.role==='moderator'?'badge-warn':u.role==='teacher'?'badge-success':'badge-warn'}">
+                    ${u.role==='admin'?'مشرف عام':u.role==='moderator'?'مشرف/منسق':u.role==='teacher'?'معلم':'طالب'}
+                  </span>
+                </td>
+                <td>${u.phone||'—'}</td>
+                <td>
+                  <div class="table-actions" style="justify-content:center;">
+                    <button class="btn btn-ghost btn-sm" onclick="adminResetUserPass('${u.username}')">تعديل الباسورد</button>
+                    ${u.username !== 'admin' && u.username !== currentUser?.username ? `
+                      <button class="btn-icon-danger" onclick="adminDeleteUser('${u.username}')" title="حذف هذا الحساب نهائياً">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+                        حذف
+                      </button>
+                    `: ''}
+                  </div>
+                </td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+  },
 
-  'admin-reports': ()=> PAGES['mod-reports'](),
+  /* ---------- ADMIN: Database Backup, Restore & Cloud Sync Settings ---------- */
+  'admin-backup': ()=>{
+    const isCloudConnected = Boolean(supabaseClient);
+    return `
+    <div style="display:flex;flex-direction:column;gap:20px;">
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <h3 style="margin:0;">النسخ الاحتياطي وإدارة بيانات الأكاديمية 💾</h3>
+            <span style="font-size:12.5px;color:var(--ink-soft);">تصدير واستيراد وحفظ كافة بيانات الطلاب والمعلمين والحصص</span>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:16px;margin:16px 0;">
+          <!-- Export Backup Card -->
+          <div style="background:#FAFAF7;border:1px solid var(--line);border-radius:14px;padding:20px;">
+            <div style="font-size:24px;margin-bottom:8px;">📥</div>
+            <strong style="font-size:16px;color:var(--green-deep);display:block;margin-bottom:6px;">تنزيل نسخة احتياطية كاملة (Backup)</strong>
+            <p style="font-size:12.5px;color:var(--ink-soft);margin-bottom:16px;">قم بتحميل ملف JSON يحتوي على كامل سجلات الأكاديمية (الطلاب، المعلمين، الحصص، والتقييمات) للرجوع إليها في أي وقت.</p>
+            <button class="btn btn-primary" onclick="adminExportBackup()" style="width:100%;">
+              💾 تنزيل ملف kortoba_backup.json
+            </button>
+          </div>
+
+          <!-- Import Restore Card -->
+          <div style="background:#FAFAF7;border:1px solid var(--line);border-radius:14px;padding:20px;">
+            <div style="font-size:24px;margin-bottom:8px;">📤</div>
+            <strong style="font-size:16px;color:var(--green-deep);display:block;margin-bottom:6px;">استعادة نسخة احتياطية (Restore)</strong>
+            <p style="font-size:12.5px;color:var(--ink-soft);margin-bottom:16px;">استرجاع قاعدة البيانات من ملف نسخة احتياطية سابق تم حفظه على جهازك.</p>
+            <input type="file" id="backupFileInput" accept=".json" style="display:none;" onchange="adminImportBackup(event)">
+            <button class="btn btn-ghost" onclick="document.getElementById('backupFileInput').click()" style="width:100%;border-color:var(--green);color:var(--green);font-weight:700;">
+              📂 اختيار ملف النسخة واستعادتها
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cloud Sync & Status -->
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <h3 style="margin:0;">حالة الاتصال السحابي (Supabase Cloud Sync) ⚡</h3>
+            <span style="font-size:12.5px;color:var(--ink-soft);">مزامنة البيانات الحية بين جميع أجهزة المعلمين والطلاب</span>
+          </div>
+          <span class="badge ${isCloudConnected?'badge-success':'badge-warn'}">
+            ${isCloudConnected ? '🟢 متصل بالسحابة' : '🟡 وضع التخزين المحلي فقط'}
+          </span>
+        </div>
+
+        <div style="padding:10px 0;">
+          <p style="font-size:13.5px;color:var(--ink);line-height:1.7;margin:0 0 16px;">
+            تعتمد المنصة على قاعدة بيانات سحابية مركزية تضمن أن أي تقييم يسجله المعلم أو حساب يضيفه المشرف ينعكس فوراً ولحظياً لدى كافة المستخدمين.
+          </p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn btn-primary btn-sm" onclick="syncFromCloud();showToast('تمت المزامنة مع السحابة بنجاح!');">
+              🔄 إجراء مزامنة فورية الآن
+            </button>
+            <button class="btn btn-ghost btn-sm" style="color:var(--danger);border-color:rgba(178,59,46,0.3);" onclick="adminResetToDefaultDB()">
+              ⚠️ استعادة البيانات الافتراضية الأولية
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  },
 
   /* ---------- MODERATOR PAGES ---------- */
   'mod-students': ()=> PAGES['admin-students'](),
@@ -2508,6 +2977,207 @@ function adminResetUserPass(username){
       supabaseClient.from('users_accounts').update({ password_hash: u.password }).eq('username', username).catch(console.warn);
     }
     showToast(`تم تحديث كلمة مرور (${u.name}) إلى: ${u.password}`);
+    renderPage(currentRole, currentPage);
+  }
+}
+
+/* =====================================================================
+   ADMIN DELETION & REAL-TIME MANAGEMENT CONTROLS
+   ===================================================================== */
+function adminDeleteStudent(studentName){
+  if (!confirm(`⚠️ تحذير: هل أنت متأكد من حذف الطالب (${studentName}) نهائياً؟\nسيتم مسح حسابه وسجل حصصه وتسميعه وكافة بياناته من المنصة.`)) {
+    return;
+  }
+  DB.students = DB.students.filter(s => s.name !== studentName);
+  DB.users = DB.users.filter(u => !(u.name === studentName && u.role === 'student') && u.name !== studentName);
+  DB.sessions = DB.sessions.filter(s => s.student !== studentName);
+  if (DB.evaluations) DB.evaluations = DB.evaluations.filter(e => e.student !== studentName);
+  if (DB.makeup_sessions) DB.makeup_sessions = DB.makeup_sessions.filter(m => m.student_name !== studentName);
+  if (DB.teacher_alerts) DB.teacher_alerts = DB.teacher_alerts.filter(a => a.student_name !== studentName);
+
+  saveDB();
+
+  if (supabaseClient) {
+    supabaseClient.from('students').delete().eq('name', studentName).catch(console.warn);
+    supabaseClient.from('users_accounts').delete().eq('name', studentName).catch(console.warn);
+    supabaseClient.from('sessions').delete().eq('student_name', studentName).catch(console.warn);
+    supabaseClient.from('evaluations').delete().eq('student_name', studentName).catch(console.warn);
+  }
+
+  showToast(`تم حذف الطالب (${studentName}) بنجاح.`);
+  renderPage(currentRole, currentPage);
+}
+
+function adminDeleteTeacher(teacherName){
+  if (!confirm(`⚠️ تحذير: هل أنت متأكد من حذف المعلم (${teacherName}) نهائياً؟\nسيتم فك ارتباط الطلاب المسندين إليه ليتسنى إعادة تسكينهم على معلم آخر.`)) {
+    return;
+  }
+  DB.teachers = DB.teachers.filter(t => t.name !== teacherName);
+  DB.users = DB.users.filter(u => !(u.name === teacherName && u.role === 'teacher') && u.name !== teacherName);
+  
+  // Reassign / mark students
+  DB.students.forEach(s => {
+    if (s.teacher === teacherName) {
+      s.teacher = 'غير معيّن (يحتاج تسكين)';
+    }
+  });
+
+  saveDB();
+
+  if (supabaseClient) {
+    supabaseClient.from('teachers').delete().eq('name', teacherName).catch(console.warn);
+    supabaseClient.from('users_accounts').delete().eq('name', teacherName).catch(console.warn);
+  }
+
+  showToast(`تم حذف المعلم (${teacherName}) وتحديث الطلاب المسندين إليه.`);
+  renderPage(currentRole, currentPage);
+}
+
+function adminDeleteModerator(modName){
+  if (currentRole !== 'admin') {
+    alert('صلاحية حذف المشرفين قاصرة على المدير العام فقط.');
+    return;
+  }
+  if (!confirm(`⚠️ هل أنت متأكد من حذف المشرف (${modName})؟`)) {
+    return;
+  }
+  DB.moderators = DB.moderators.filter(m => m.name !== modName);
+  DB.users = DB.users.filter(u => !(u.name === modName && u.role === 'moderator') && u.name !== modName);
+
+  saveDB();
+
+  if (supabaseClient) {
+    supabaseClient.from('moderators').delete().eq('name', modName).catch(console.warn);
+    supabaseClient.from('users_accounts').delete().eq('name', modName).catch(console.warn);
+  }
+
+  showToast(`تم حذف المشرف (${modName}) بنجاح.`);
+  renderPage(currentRole, currentPage);
+}
+
+function adminDeleteUser(username){
+  if (username === 'admin' || (currentUser && username === currentUser.username)) {
+    alert('لا يمكن حذف حساب المدير العام المسجل به حالياً!');
+    return;
+  }
+  const u = DB.users.find(x => x.username === username);
+  if (!u) return;
+
+  if (u.role === 'student') {
+    adminDeleteStudent(u.name);
+    return;
+  } else if (u.role === 'teacher') {
+    adminDeleteTeacher(u.name);
+    return;
+  } else if (u.role === 'moderator') {
+    adminDeleteModerator(u.name);
+    return;
+  }
+
+  if (confirm(`هل أنت متأكد من حذف الحساب "${username}"؟`)) {
+    DB.users = DB.users.filter(x => x.username !== username);
+    saveDB();
+    if (supabaseClient) {
+      supabaseClient.from('users_accounts').delete().eq('username', username).catch(console.warn);
+    }
+    showToast(`تم حذف المستخدم ${username} بنجاح.`);
+    renderPage(currentRole, currentPage);
+  }
+}
+
+function adminDeleteSession(sessionIdx){
+  if (confirm('هل ترغب في حذف هذه الحصة من الجدول نهائياً؟')) {
+    const deleted = DB.sessions.splice(sessionIdx, 1)[0];
+    saveDB();
+    if (supabaseClient && deleted && deleted.id) {
+      supabaseClient.from('sessions').delete().eq('id', deleted.id).catch(console.warn);
+    }
+    showToast('تم حذف الحصة من الجدول بنجاح.');
+    renderPage(currentRole, currentPage);
+  }
+}
+
+function filterAdminStudents(){
+  const search = (document.getElementById('studentSearchInput')?.value || '').toLowerCase().trim();
+  const teacherFilter = document.getElementById('studentTeacherFilter')?.value || '';
+  const programFilter = document.getElementById('studentProgramFilter')?.value || '';
+
+  document.querySelectorAll('#studentsTable .student-row').forEach(row => {
+    const name = (row.dataset.name || '').toLowerCase();
+    const uname = (row.dataset.username || '').toLowerCase();
+    const phone = (row.dataset.phone || '').toLowerCase();
+    const teacher = row.dataset.teacher || '';
+    const prog = row.dataset.program || '';
+
+    const matchSearch = !search || name.includes(search) || uname.includes(search) || phone.includes(search);
+    const matchTeacher = !teacherFilter || teacher === teacherFilter;
+    const matchProgram = !programFilter || prog === programFilter;
+
+    row.style.display = (matchSearch && matchTeacher && matchProgram) ? '' : 'none';
+  });
+}
+
+function filterAdminTeachers(){
+  const search = (document.getElementById('teacherSearchInput')?.value || '').toLowerCase().trim();
+  document.querySelectorAll('#teachersTable .teacher-row').forEach(row => {
+    const name = (row.dataset.name || '').toLowerCase();
+    const area = (row.dataset.area || '').toLowerCase();
+    const match = !search || name.includes(search) || area.includes(search);
+    row.style.display = match ? '' : 'none';
+  });
+}
+
+function showTeacherStudentsModal(teacherName){
+  const myStudents = DB.students.filter(s => s.teacher === teacherName);
+  if (myStudents.length === 0) {
+    alert(`المعلم (${teacherName}) ليس مسنداً إليه أي طلاب حالياً.`);
+  } else {
+    const list = myStudents.map((s, i) => `${i+1}. ${s.name} (${s.program||'عام'}) — ${s.schedule||'مرن'}`).join('\n');
+    alert(`الطلاب المسندون للمعلم (${teacherName}):\n\n` + list);
+  }
+}
+
+function adminExportBackup(){
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(DB, null, 2));
+  const downloadAnchor = document.createElement('a');
+  const today = new Date().toISOString().split('T')[0];
+  downloadAnchor.setAttribute("href", dataStr);
+  downloadAnchor.setAttribute("download", `kortoba_backup_${today}.json`);
+  document.body.appendChild(downloadAnchor);
+  downloadAnchor.click();
+  downloadAnchor.remove();
+  showToast('تم تنزيل النسخة الاحتياطية بنجاح! 💾');
+}
+
+function adminImportBackup(e){
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(evt){
+    try {
+      const imported = JSON.parse(evt.target.result);
+      if (imported.users && imported.students && imported.teachers) {
+        if (confirm('⚠️ هل أنت متأكد من استعادة هذه النسخة؟ سيتم استبدال البيانات الحالية بالكامل بالنسخة المستوردة.')) {
+          DB = imported;
+          saveDB();
+          showToast('تم استيراد واستعادة قاعدة البيانات بنجاح! 🎉');
+          renderPage(currentRole, currentPage);
+        }
+      } else {
+        alert('الملف المرفوع لا يحتوي على بنية بيانات أكاديمية قرطبة الصحيحة.');
+      }
+    } catch(err) {
+      alert('حدث خطأ أثناء قراءة ملف النسخة الاحتياطية: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+function adminResetToDefaultDB(){
+  if (confirm('⚠️ تحذير شديد: هل أنت متأكد من إعادة ضبط قاعدة البيانات للحالة الافتراضية الأولية؟\nسيتم مسح أي حسابات مضافة والعودة للحسابات الأساسية.')) {
+    DB = JSON.parse(JSON.stringify(DEFAULT_DB));
+    saveDB();
+    showToast('تمت إعادة تعيين البيانات للافتراضي.');
     renderPage(currentRole, currentPage);
   }
 }
