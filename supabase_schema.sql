@@ -1,68 +1,144 @@
 -- =====================================================================
--- أكاديمية قرطبة لتعليم القرآن الكريم
--- كود إنشاء جداول قاعدة بيانات Supabase (SQL Schema)
+-- أكاديمية قرطبة لتعليم القرآن الكريم — منصة قاف لمتابعة الحفظ
+-- كود إنشاء وتحديث جداول قاعدة بيانات Supabase (SQL Schema)
 -- انسخ هذا الكود بالكامل وضعه في: Supabase Dashboard -> SQL Editor -> New query -> RUN
 -- =====================================================================
 
--- 1. جدول الحسابات والملفات الشخصية (مرتبط بـ auth.users)
-create table if not exists public.profiles (
-  id uuid references auth.users on delete cascade primary key,
-  email text,
+-- 1. جدول حسابات المستخدمين الموحد (Users Accounts)
+create table if not exists public.users_accounts (
+  id uuid default gen_random_uuid() primary key,
+  username text unique not null,
+  password_hash text not null,
   name text not null,
   role text not null check (role in ('admin', 'moderator', 'teacher', 'student')),
   phone text,
+  status text default 'نشط',
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
 -- 2. جدول المعلمين
 create table if not exists public.teachers (
   id uuid default gen_random_uuid() primary key,
-  user_id uuid references public.profiles(id) on delete set null,
+  user_id uuid references public.users_accounts(id) on delete cascade,
+  username text unique,
   name text not null,
-  area text default 'معلم قرآن وتجويد',
+  area text default 'معلم قرآن وتجويد بالقراءات',
   students_count integer default 0,
   rating text default 'ممتاز',
   status text default 'نشط',
+  phone text,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
--- 3. جدول الطلاب
+-- 3. جدول المشرفين (Moderators)
+create table if not exists public.moderators (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references public.users_accounts(id) on delete cascade,
+  username text unique,
+  name text not null,
+  area text default 'متابعة جودة التسميع والحصص',
+  phone text,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- 4. جدول الطلاب
 create table if not exists public.students (
   id uuid default gen_random_uuid() primary key,
-  user_id uuid references public.profiles(id) on delete set null,
+  user_id uuid references public.users_accounts(id) on delete cascade,
+  username text unique,
   name text not null,
   teacher_name text,
   program text default 'أطفال',
-  progress integer default 0,
+  monthly_sessions integer default 8,
+  session_schedule text default 'السبت والثلاثاء',
+  progress_juz integer default 0,
+  current_surah_new text,
+  current_surah_rev text,
   last_rating text default 'ممتاز',
+  phone text,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
--- 4. جدول الحصص والمواعيد
+-- 5. جدول الحصص والمواعيد (Sessions)
 create table if not exists public.sessions (
   id uuid default gen_random_uuid() primary key,
   student_name text not null,
+  teacher_name text not null,
   date_text text not null,
   time_text text not null,
   platform text default 'Zoom',
   link text default 'https://meet.google.com/new',
   status text default 'upcoming',
   attendance text default '',
+  makeup_required boolean default false,
+  makeup_status text default '',
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
--- 5. جدول التقييمات والتسميع
+-- 6. جدول التقييمات التخصصي الثلاثي (Triple Evaluations)
 create table if not exists public.evaluations (
   id uuid default gen_random_uuid() primary key,
+  session_id uuid references public.sessions(id) on delete set null,
   student_name text not null,
-  ward text not null,
-  rating text default 'ممتاز',
-  notes text,
+  teacher_name text not null,
   date_text text not null,
+  month_key text not null, -- e.g. '2026-09'
+
+  -- الحفظ الجديد
+  new_surah_from integer,
+  new_ayah_from integer,
+  new_surah_to integer,
+  new_ayah_to integer,
+  new_ayahs_count integer default 0,
+  new_pages_count numeric(4,1) default 0,
+  new_score numeric(5,2) default 100,
+  new_notes jsonb default '[]'::jsonb,
+
+  -- المراجعة
+  rev_surah_from integer,
+  rev_ayah_from integer,
+  rev_surah_to integer,
+  rev_ayah_to integer,
+  rev_ayahs_count integer default 0,
+  rev_pages_count numeric(4,1) default 0,
+  rev_score numeric(5,2) default 100,
+  rev_notes jsonb default '[]'::jsonb,
+
+  -- التجويد
+  tajweed_score numeric(5,2) default 100,
+  tajweed_notes jsonb default '[]'::jsonb,
+
+  -- التقييم العام (متوسط حسابي متساوٍ)
+  overall_score numeric(5,2) default 100,
+  overall_rating text default 'ممتاز',
+  general_notes text,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
--- 6. جدول الشكاوى والملاحظات
+-- 7. جدول حصص التعويض (Make-up Sessions)
+create table if not exists public.makeup_sessions (
+  id uuid default gen_random_uuid() primary key,
+  session_id uuid references public.sessions(id) on delete cascade,
+  student_name text not null,
+  teacher_name text not null,
+  reason text default 'غياب المعلم',
+  status text default 'pending', -- pending, scheduled, completed, waived_by_student
+  scheduled_date text,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- 8. جدول تنبيهات الطلاب عن تأخر المعلمين (Live Teacher Alerts)
+create table if not exists public.teacher_alerts (
+  id uuid default gen_random_uuid() primary key,
+  session_id uuid references public.sessions(id) on delete set null,
+  student_name text not null,
+  teacher_name text not null,
+  reported_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  status text default 'open',
+  notes text
+);
+
+-- 9. جدول الشكاوى والملاحظات
 create table if not exists public.complaints (
   id uuid default gen_random_uuid() primary key,
   from_user text not null,
@@ -71,66 +147,23 @@ create table if not exists public.complaints (
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
--- 7. جدول إعدادات ومحتوى الموقع (Content Management)
-create table if not exists public.site_settings (
-  key text primary key,
-  value jsonb not null,
-  updated_at timestamp with time zone default timezone('utc'::text, now()) not null
-);
-
--- تفعيل الحماية والصلاحيات (Row Level Security)
-alter table public.profiles enable row level security;
+-- تفعيل الحماية والصلاحيات العامة
+alter table public.users_accounts enable row level security;
 alter table public.teachers enable row level security;
+alter table public.moderators enable row level security;
 alter table public.students enable row level security;
 alter table public.sessions enable row level security;
 alter table public.evaluations enable row level security;
+alter table public.makeup_sessions enable row level security;
+alter table public.teacher_alerts enable row level security;
 alter table public.complaints enable row level security;
-alter table public.site_settings enable row level security;
 
--- السماح بالوصول للبيانات (Policies)
-create policy "Allow read for all users" on public.profiles for select using (true);
-create policy "Allow all actions for profiles" on public.profiles for all using (true);
-
-create policy "Allow read for site_settings" on public.site_settings for select using (true);
-create policy "Allow all for site_settings" on public.site_settings for all using (true);
-
-create policy "Allow read for teachers" on public.teachers for select using (true);
+create policy "Allow all for users_accounts" on public.users_accounts for all using (true);
 create policy "Allow all for teachers" on public.teachers for all using (true);
-
-create policy "Allow read for students" on public.students for select using (true);
+create policy "Allow all for moderators" on public.moderators for all using (true);
 create policy "Allow all for students" on public.students for all using (true);
-
-create policy "Allow read for sessions" on public.sessions for select using (true);
 create policy "Allow all for sessions" on public.sessions for all using (true);
-
-create policy "Allow read for evaluations" on public.evaluations for select using (true);
 create policy "Allow all for evaluations" on public.evaluations for all using (true);
-
-create policy "Allow read for complaints" on public.complaints for select using (true);
+create policy "Allow all for makeup_sessions" on public.makeup_sessions for all using (true);
+create policy "Allow all for teacher_alerts" on public.teacher_alerts for all using (true);
 create policy "Allow all for complaints" on public.complaints for all using (true);
-
--- بيانات أولية تجريبية (Initial Seed Data)
-insert into public.teachers (name, area, students_count, rating, status) values
-  ('الشيخ أحمد فتحي', 'مجاز بالقراءات العشر الصغرى', 3, 'ممتاز', 'نشط'),
-  ('الشيخة سارة عبد الله', 'مجازة برواية حفص وشعبة', 2, 'جيد', 'نشط')
-on conflict do nothing;
-
-insert into public.students (name, teacher_name, program, progress, last_rating) values
-  ('يوسف أحمد', 'الشيخ أحمد فتحي', 'أطفال', 6, 'ممتاز'),
-  ('مريم خالد', 'الشيخة سارة عبد الله', 'كبار', 14, 'جيد'),
-  ('عبد الرحمن سعيد', 'الشيخ أحمد فتحي', 'أطفال', 3, 'يحتاج مراجعة'),
-  ('نور محمد', 'الشيخ أحمد فتحي', 'أطفال', 9, 'ممتاز'),
-  ('خالد إبراهيم', 'الشيخة سارة عبد الله', 'كبار', 20, 'ممتاز')
-on conflict do nothing;
-
-insert into public.sessions (student_name, date_text, time_text, platform, link, status, attendance) values
-  ('يوسف أحمد', 'اليوم', '٥:٠٠ م', 'Zoom', 'https://zoom.us/j/demo', 'upcoming', ''),
-  ('مريم خالد', 'غداً', '٧:٣٠ م', 'Google Meet', 'https://meet.google.com/demo', 'upcoming', ''),
-  ('عبد الرحمن سعيد', 'أمس', '٦:٠٠ م', 'Zoom', '#', 'done', 'present')
-on conflict do nothing;
-
-insert into public.evaluations (student_name, date_text, ward, rating, notes) values
-  ('يوسف أحمد', '٢٦ أغسطس', 'سورة الفاتحة كاملة', 'ممتاز', 'حفظ متقن وتلاوة سليمة.'),
-  ('يوسف أحمد', '١٩ أغسطس', 'أواخر سورة الناس والفلق', 'جيد', 'يحتاج تثبيت أكثر على المخارج.'),
-  ('مريم خالد', '٢٥ أغسطس', 'سورة مريم من آية ١ إلى ٣٠', 'جيد', 'مستوى طيب وأداء هادئ.')
-on conflict do nothing;
