@@ -1,0 +1,49 @@
+{
+  "name": "منصة قاف قرطبة — لتعليم القرآن الكريم",
+  "short_name": "قاف قرطبة",
+  "description": "المنصة الذكية لمتابعة وتقييم حفظ وتجويد القرآن الكريم — أكاديمية قرطبة",
+  "start_url": "./tracker.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#082A1C",
+  "theme_color": "#0F3D28",
+  "lang": "ar",
+  "dir": "rtl",
+  "categories": [
+    "education",
+    "lifestyle"
+  ],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
