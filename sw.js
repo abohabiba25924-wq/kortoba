@@ -1,4 +1,4 @@
-const CACHE_NAME = 'qaf-kortoba-v4';
+const CACHE_NAME = 'qaf-kortoba-v5';
 const STATIC_ASSETS = [
   './tracker.html',
   './manifest.json',
