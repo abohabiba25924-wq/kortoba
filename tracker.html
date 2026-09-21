@@ -1759,11 +1759,11 @@ document.getElementById('loginForm').addEventListener('submit', (e)=>{
 
   currentUser = found;
   currentRole = found.role;
-  setupAppForUser(found);
+  setupAppForUser(found, NAV[found.role][0].id);
   showToast(`مرحباً بك يا ${found.name} 🟢`);
 });
 
-function setupAppForUser(user){
+function setupAppForUser(user, targetPage = null){
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('app').classList.add('active');
   document.getElementById('userName').textContent = user.name;
@@ -1776,11 +1776,18 @@ function setupAppForUser(user){
   document.getElementById('userAvatar').textContent = user.name.trim().charAt(0) || 'ق';
   document.getElementById('sideRoleLabel').textContent = 'لوحة ' + (roleMap[user.role] || user.role);
 
+  // Determine target page: explicit argument, or stored in localStorage, or role's default first page
+  const savedPage = localStorage.getItem('kortoba_current_page');
+  const pageToLoad = (targetPage && PAGES[targetPage]) 
+    ? targetPage 
+    : (savedPage && PAGES[savedPage]) 
+      ? savedPage 
+      : NAV[user.role][0].id;
+
   buildSidebar(user.role);
   buildBottomNav(user.role);
-  const firstPage = NAV[user.role][0].id;
-  renderPage(user.role, firstPage);
-  syncBottomNavActive(firstPage);
+  renderPage(user.role, pageToLoad);
+
   document.getElementById('todayDate').textContent = new Date().toLocaleDateString('ar-EG', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
   syncFromCloud();
 }
@@ -2080,26 +2087,39 @@ function saveEditUserData(){
   if (currentRole && currentPage) renderPage(currentRole, currentPage);
 }
 
+/* ---------------- ACTIVE NAV STATE SYNCHRONIZATION ---------------- */
+function updateActiveNavState(role, pageId){
+  if (!pageId) return;
+  // Update sidebar links
+  document.querySelectorAll('.side-link').forEach(l => {
+    l.classList.toggle('active', l.dataset.page === pageId);
+  });
+  // Update bottom nav
+  syncBottomNavActive(pageId);
+  // Update topbar title
+  const navItem = (NAV[role] || []).find(n => n.id === pageId);
+  if (navItem) {
+    const pt = document.getElementById('pageTitle');
+    if (pt) pt.textContent = navItem.label;
+  }
+}
+
 /* ---------------- SIDEBAR NAVIGATION ---------------- */
 function buildSidebar(role){
   const nav = document.getElementById('sideNav');
   nav.innerHTML = '';
-  NAV[role].forEach((item, i)=>{
+  const currentP = currentPage || localStorage.getItem('kortoba_current_page') || NAV[role][0].id;
+  NAV[role].forEach((item)=>{
     const a = document.createElement('div');
-    a.className = 'side-link' + (i===0 ? ' active' : '');
+    a.className = 'side-link' + (item.id === currentP ? ' active' : '');
     a.dataset.page = item.id;
     a.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[item.icon]||ICONS.grid}</svg><span>${item.label}</span>`;
     a.addEventListener('click', ()=>{
-      document.querySelectorAll('.side-link').forEach(l=>l.classList.remove('active'));
-      a.classList.add('active');
       renderPage(role, item.id);
-      document.getElementById('pageTitle').textContent = item.label;
-      syncBottomNavActive(item.id);
       closeMobileSidebar();
     });
     nav.appendChild(a);
   });
-  document.getElementById('pageTitle').textContent = NAV[role][0].label;
 }
 
 /* =====================================================================
@@ -2107,9 +2127,13 @@ function buildSidebar(role){
    ===================================================================== */
 function renderPage(role, pageId){
   currentPage = pageId;
+  if (pageId && PAGES[pageId]) {
+    localStorage.setItem('kortoba_current_page', pageId);
+  }
   window.scrollTo({ top: 0, behavior: 'smooth' });
   const c = document.getElementById('content');
   c.innerHTML = PAGES[pageId] ? PAGES[pageId]() : '<p>الصفحة قيد الإنشاء.</p>';
+  updateActiveNavState(role, pageId);
 }
 
 function ratingBadge(r){
@@ -4219,17 +4243,8 @@ function restoreSavedSession(){
   if (user) {
     currentUser = user;
     currentRole = user.role;
-    setupAppForUser(user);
     const savedPage = localStorage.getItem('kortoba_current_page');
-    if (savedPage && PAGES[savedPage]) {
-      renderPage(user.role, savedPage);
-      document.querySelectorAll('.side-link').forEach(l => {
-        l.classList.toggle('active', l.dataset.page === savedPage);
-      });
-      syncBottomNavActive(savedPage);
-      const navItem = (NAV[user.role] || []).find(n => n.id === savedPage);
-      if (navItem) document.getElementById('pageTitle').textContent = navItem.label;
-    }
+    setupAppForUser(user, savedPage);
   }
 }
 restoreSavedSession();
