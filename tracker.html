@@ -6,17 +6,17 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>منصة قرطبة لمتابعة الحفظ — منصة قاف</title>
+<title>قرطبة | منصة إدارة الحلقات القرآنية</title>
 <!-- PWA & Mobile App Support -->
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0F3D28">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="قاف قرطبة">
+<meta name="apple-mobile-web-app-title" content="قرطبة">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="icon" type="image/svg+xml" href="icon.svg">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -630,6 +630,236 @@
   @keyframes pulseGold{
     0%,100%{box-shadow:0 0 0 0 rgba(216,149,24,0.4);}
     50%{box-shadow:0 0 0 8px rgba(216,149,24,0);}
+  /* ============ ROYAL CERTIFICATE STYLING ============ */
+  .cert-modal{
+    max-width:840px !important;
+    padding:0 !important;
+    border-radius:24px !important;
+    overflow:hidden !important;
+    background:#0b271b !important;
+    border:2px solid var(--gold) !important;
+    box-shadow:0 24px 70px rgba(0,0,0,0.6) !important;
+  }
+  .cert-paper{
+    position:relative;
+    padding:40px 36px;
+    background:#FFFDF7;
+    background-image:radial-gradient(rgba(216,149,24,0.08) 1.5px, transparent 1.5px);
+    background-size:24px 24px;
+    border:3px double #D89518;
+    margin:14px;
+    border-radius:18px;
+    box-shadow:inset 0 0 50px rgba(216,149,24,0.08), 0 0 0 6px #FFFDF7, 0 0 0 8px #0F3D28;
+    text-align:center;
+    color:var(--ink);
+  }
+  .cert-paper::before, .cert-paper::after{
+    content:'❖';
+    position:absolute;
+    font-size:22px;
+    color:var(--gold);
+    line-height:1;
+  }
+  .cert-paper::before{top:12px;right:14px;}
+  .cert-paper::after{bottom:12px;left:14px;}
+  .cert-logo{
+    width:78px;
+    height:78px;
+    object-fit:contain;
+    margin:0 auto 10px;
+    display:block;
+    filter:drop-shadow(0 4px 10px rgba(15,61,40,0.25));
+  }
+  .cert-title{
+    font-family:'Amiri',serif;
+    font-size:32px;
+    font-weight:700;
+    color:var(--green-deep);
+    letter-spacing:1px;
+    margin-bottom:2px;
+  }
+  .cert-subtitle{
+    font-size:13.5px;
+    font-weight:700;
+    color:var(--gold);
+    letter-spacing:2px;
+    margin-bottom:12px;
+    text-transform:uppercase;
+  }
+  .cert-ayah{
+    display:inline-block;
+    padding:4px 18px;
+    background:rgba(15,61,40,0.04);
+    border:1px dashed rgba(216,149,24,0.4);
+    border-radius:100px;
+    font-family:'Amiri',serif;
+    font-size:15px;
+    color:var(--green);
+    margin-bottom:18px;
+  }
+  .cert-body{
+    font-size:15px;
+    line-height:2.1;
+    color:#2C3E35;
+    max-width:680px;
+    margin:0 auto 22px;
+  }
+  .cert-student{
+    display:block;
+    font-family:'Amiri',serif;
+    font-size:34px;
+    font-weight:700;
+    color:#0A2D1E;
+    margin:6px 0;
+    text-shadow:0 1px 2px rgba(0,0,0,0.08);
+  }
+  .cert-achievement{
+    display:inline-block;
+    font-weight:700;
+    font-size:16.5px;
+    color:var(--green-deep);
+    border-bottom:2px solid var(--gold);
+    padding:0 8px;
+  }
+  .cert-footer{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    margin-top:24px;
+    padding-top:18px;
+    border-top:1px solid rgba(216,149,24,0.25);
+  }
+  .cert-sign{
+    flex:1;
+    text-align:center;
+  }
+  .cert-sign span{
+    display:block;
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-bottom:4px;
+  }
+  .cert-sign strong{
+    font-size:14px;
+    color:var(--ink);
+  }
+  .cert-stamp{
+    width:92px;
+    height:92px;
+    border-radius:50%;
+    border:2.5px dashed var(--gold);
+    background:radial-gradient(circle, rgba(216,149,24,0.12) 0%, rgba(15,61,40,0.05) 100%);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    font-size:10px;
+    font-weight:700;
+    color:var(--green-deep);
+    line-height:1.2;
+    transform:rotate(-7deg);
+    box-shadow:0 4px 14px rgba(216,149,24,0.15);
+  }
+  .cert-stamp span:nth-child(2){
+    font-size:13.5px;
+    font-family:'Amiri',serif;
+    color:var(--gold);
+    font-weight:700;
+  }
+
+  @media print{
+    body * { visibility: hidden !important; }
+    #certModal, #certModal * { visibility: visible !important; }
+    #certModal {
+      position: absolute !important;
+      left: 0 !important;
+      top: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      background: #fff !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding: 0 !important;
+      box-shadow: none !important;
+    }
+    .modal.cert-modal {
+      box-shadow: none !important;
+      border: none !important;
+      max-width: 100% !important;
+      width: 100% !important;
+    }
+    .cert-paper {
+      box-shadow: none !important;
+      margin: 0 !important;
+      border-width: 2px !important;
+    }
+    .modal-actions { display: none !important; }
+  }
+
+  /* ============ 30-JUZ QURAN PROGRESS GRID ============ */
+  .juz-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(130px, 1fr));
+    gap:12px;
+    margin-top:18px;
+  }
+  .juz-card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:14px 10px;
+    text-align:center;
+    transition:all .2s ease;
+    position:relative;
+    overflow:hidden;
+  }
+  .juz-card:hover{
+    transform:translateY(-2px);
+    box-shadow:0 6px 16px rgba(15,61,40,0.08);
+  }
+  .juz-card.completed{
+    background:linear-gradient(180deg, #F4F8F5 0%, #E8F2EC 100%);
+    border-color:rgba(15,61,40,0.3);
+  }
+  .juz-card.in-progress{
+    background:linear-gradient(180deg, #FFFDF7 0%, #FFF8E6 100%);
+    border-color:var(--gold);
+    box-shadow:0 0 0 2px rgba(216,149,24,0.25);
+  }
+  .juz-num{
+    font-family:'Amiri',serif;
+    font-size:20px;
+    font-weight:700;
+    color:var(--green-deep);
+    line-height:1.2;
+  }
+  .juz-surah{
+    font-size:11.5px;
+    color:var(--ink-soft);
+    margin:4px 0 8px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .juz-badge{
+    font-size:10.5px;
+    font-weight:700;
+    padding:3px 7px;
+    border-radius:6px;
+    display:inline-block;
+  }
+  .juz-card.completed .juz-badge{
+    background:var(--success-bg);
+    color:var(--success);
+  }
+  .juz-card.in-progress .juz-badge{
+    background:var(--gold-bg);
+    color:var(--gold);
+  }
+  .juz-card.locked .juz-badge{
+    background:var(--bg);
+    color:var(--ink-soft);
   }
 </style>
 </head>
@@ -1094,7 +1324,7 @@
   </div>
 </div>
 
-<!-- ============ MODAL: Schedule Session ============ -->
+<!-- ============ MODAL: Schedule Session (Smart Picker) ============ -->
 <div class="modal-overlay" id="sessionModal">
   <div class="modal">
     <h3>جدولة حصة جديدة</h3>
@@ -1103,12 +1333,32 @@
       <select id="newSessionStudent"></select>
     </div>
     <div class="field">
-      <label>التاريخ</label>
-      <input type="text" id="newSessionDate" placeholder="مثال: الأربعاء، ٢٣ سبتمبر">
+      <label>تاريخ الحصة</label>
+      <div style="display:flex;gap:6px;margin-bottom:8px;">
+        <button type="button" class="btn btn-ghost btn-sm" onclick="setQuickDate('newSessionDatePicker', 0)">اليوم</button>
+        <button type="button" class="btn btn-ghost btn-sm" onclick="setQuickDate('newSessionDatePicker', 1)">غداً</button>
+        <button type="button" class="btn btn-ghost btn-sm" onclick="setQuickDate('newSessionDatePicker', 2)">بعد غد</button>
+      </div>
+      <input type="date" id="newSessionDatePicker" onchange="syncDateFromPicker('newSessionDatePicker', 'newSessionDate')">
+      <input type="hidden" id="newSessionDate" value="اليوم">
     </div>
     <div class="field">
-      <label>الوقت</label>
-      <input type="text" id="newSessionTime" placeholder="مثال: ٦:٠٠ م">
+      <label>وقت الحصة</label>
+      <select id="newSessionTimeSelect" onchange="handleTimeSelectChange('newSessionTimeSelect', 'newSessionTime')">
+        <option value="٤:٠٠ م">٤:٠٠ م</option>
+        <option value="٤:٣٠ م">٤:٣٠ م</option>
+        <option value="٥:٠٠ م">٥:٠٠ م</option>
+        <option value="٥:٣٠ م">٥:٣٠ م</option>
+        <option value="٦:٠٠ م" selected>٦:٠٠ م</option>
+        <option value="٦:٣٠ م">٦:٣٠ م</option>
+        <option value="٧:٠٠ م">٧:٠٠ م</option>
+        <option value="٧:٣٠ م">٧:٣٠ م</option>
+        <option value="٨:٠٠ م">٨:٠٠ م</option>
+        <option value="٨:٣٠ م">٨:٣٠ م</option>
+        <option value="٩:٠٠ م">٩:٠٠ م</option>
+        <option value="custom">وقت مخصص...</option>
+      </select>
+      <input type="text" id="newSessionTime" placeholder="مثال: ٦:٠٠ م" style="display:none;margin-top:6px;">
     </div>
     <div class="field">
       <label>المنصة</label>
@@ -1129,31 +1379,218 @@
   </div>
 </div>
 
-<!-- ============ MODAL: Certificate of Achievement ============ -->
+<!-- ============ MODAL: Auto-Schedule Student Sessions ============ -->
+<div class="modal-overlay" id="autoScheduleModal">
+  <div class="modal" style="max-width:540px;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+      <span style="font-size:32px;">📅</span>
+      <div>
+        <h3 style="margin:0;color:var(--green-deep);">تسكين وتوليد حصص الطالب آلياً</h3>
+        <span style="font-size:12.5px;color:var(--ink-soft);">توليد جدول حصص الشهر بالتاريخ والساعة ومزامنتها سحابياً لجميع الأطراف</span>
+      </div>
+    </div>
+
+    <input type="hidden" id="autoSchedStudentName">
+
+    <div class="field">
+      <label>الطالب المستهدف</label>
+      <input type="text" id="autoSchedStudentDisplay" readonly style="background:var(--bg);font-weight:700;">
+    </div>
+
+    <div class="field">
+      <label>المعلم المشرف على الحصص</label>
+      <select id="autoSchedTeacher"></select>
+    </div>
+
+    <div class="field">
+      <label style="margin-bottom:6px;display:block;">أيام الحصص الأسبوعية (اختر أيام الاشتراك)</label>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(65px, 1fr));gap:6px;background:var(--bg);padding:10px;border-radius:10px;border:1px solid var(--line);" id="autoSchedDaysWrap">
+        <label style="display:flex;flex-direction:column;align-items:center;font-size:12px;font-weight:700;cursor:pointer;">
+          <input type="checkbox" value="Saturday" class="auto-sched-day" checked> السبت
+        </label>
+        <label style="display:flex;flex-direction:column;align-items:center;font-size:12px;font-weight:700;cursor:pointer;">
+          <input type="checkbox" value="Sunday" class="auto-sched-day"> الأحد
+        </label>
+        <label style="display:flex;flex-direction:column;align-items:center;font-size:12px;font-weight:700;cursor:pointer;">
+          <input type="checkbox" value="Monday" class="auto-sched-day"> الإثنين
+        </label>
+        <label style="display:flex;flex-direction:column;align-items:center;font-size:12px;font-weight:700;cursor:pointer;">
+          <input type="checkbox" value="Tuesday" class="auto-sched-day" checked> الثلاثاء
+        </label>
+        <label style="display:flex;flex-direction:column;align-items:center;font-size:12px;font-weight:700;cursor:pointer;">
+          <input type="checkbox" value="Wednesday" class="auto-sched-day"> الأربعاء
+        </label>
+        <label style="display:flex;flex-direction:column;align-items:center;font-size:12px;font-weight:700;cursor:pointer;">
+          <input type="checkbox" value="Thursday" class="auto-sched-day"> الخميس
+        </label>
+        <label style="display:flex;flex-direction:column;align-items:center;font-size:12px;font-weight:700;cursor:pointer;">
+          <input type="checkbox" value="Friday" class="auto-sched-day"> الجمعة
+        </label>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div class="field">
+        <label>توقيت الحصة (الساعة)</label>
+        <select id="autoSchedTimeSelect" onchange="handleTimeSelectChange('autoSchedTimeSelect', 'autoSchedTimeCustom')">
+          <option value="٤:٠٠ م">٤:٠٠ م</option>
+          <option value="٤:٣٠ م">٤:٣٠ م</option>
+          <option value="٥:٠٠ م" selected>٥:٠٠ م</option>
+          <option value="٥:٣٠ م">٥:٣٠ م</option>
+          <option value="٦:٠٠ م">٦:٠٠ م</option>
+          <option value="٦:٣٠ م">٦:٣٠ م</option>
+          <option value="٧:٠٠ م">٧:٠٠ م</option>
+          <option value="٧:٣٠ م">٧:٣٠ م</option>
+          <option value="٨:٠٠ م">٨:٠٠ م</option>
+          <option value="٨:٣٠ م">٨:٣٠ م</option>
+          <option value="٩:٠٠ م">٩:٠٠ م</option>
+          <option value="custom">وقت مخصص...</option>
+        </select>
+        <input type="text" id="autoSchedTimeCustom" placeholder="مثال: ٥:١٥ م" style="display:none;margin-top:6px;">
+      </div>
+
+      <div class="field">
+        <label>عدد الحصص للتوليد (الباقة)</label>
+        <select id="autoSchedQuota">
+          <option value="4">٤ حصص (حصة أسبوعياً)</option>
+          <option value="8" selected>٨ حصص (حصتان أسبوعياً)</option>
+          <option value="12">١٢ حصة (٣ حصص أسبوعياً)</option>
+          <option value="16">١٦ حصة (٤ حصص أسبوعياً)</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div class="field">
+        <label>المنصة</label>
+        <select id="autoSchedPlatform">
+          <option value="Zoom" selected>Zoom</option>
+          <option value="Google Meet">Google Meet</option>
+          <option value="Microsoft Teams">Microsoft Teams</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>تاريخ أول حصة</label>
+        <input type="date" id="autoSchedStartDate">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>رابط الحصة (Meeting Link)</label>
+      <input type="url" id="autoSchedLink" value="https://meet.google.com/new" placeholder="https://...">
+    </div>
+
+    <div class="modal-actions" style="margin-top:16px;">
+      <button type="button" class="btn btn-ghost" onclick="closeModal('autoScheduleModal')">إلغاء</button>
+      <button type="button" class="btn btn-primary" onclick="executeAutoSchedule()" style="flex:1;">⚡ تسكين وتوليد الحصص الآن</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: Edit Session (تعديل موعد وحالة الحصة) ============ -->
+<div class="modal-overlay" id="editSessionModal">
+  <div class="modal">
+    <h3>تعديل بيانات الحصة ✏️</h3>
+    <input type="hidden" id="editSessionId">
+
+    <div class="field">
+      <label>الطالب</label>
+      <select id="editSessionStudent"></select>
+    </div>
+
+    <div class="field">
+      <label>المعلم</label>
+      <select id="editSessionTeacher"></select>
+    </div>
+
+    <div class="field">
+      <label>تاريخ الحصة</label>
+      <div style="display:flex;gap:6px;margin-bottom:8px;">
+        <button type="button" class="btn btn-ghost btn-sm" onclick="setQuickDate('editSessionDatePicker', 0)">اليوم</button>
+        <button type="button" class="btn btn-ghost btn-sm" onclick="setQuickDate('editSessionDatePicker', 1)">غداً</button>
+        <button type="button" class="btn btn-ghost btn-sm" onclick="setQuickDate('editSessionDatePicker', 2)">بعد غد</button>
+      </div>
+      <input type="date" id="editSessionDatePicker" onchange="syncDateFromPicker('editSessionDatePicker', 'editSessionDate')">
+      <input type="text" id="editSessionDate" placeholder="مثال: الأربعاء، ٢٣ سبتمبر" style="margin-top:6px;">
+    </div>
+
+    <div class="field">
+      <label>وقت الحصة</label>
+      <select id="editSessionTimeSelect" onchange="handleTimeSelectChange('editSessionTimeSelect', 'editSessionTime')">
+        <option value="٤:٠٠ م">٤:٠٠ م</option>
+        <option value="٤:٣٠ م">٤:٣٠ م</option>
+        <option value="٥:٠٠ م">٥:٠٠ م</option>
+        <option value="٥:٣٠ م">٥:٣٠ م</option>
+        <option value="٦:٠٠ م">٦:٠٠ م</option>
+        <option value="٦:٣٠ م">٦:٣٠ م</option>
+        <option value="٧:٠٠ م">٧:٠٠ م</option>
+        <option value="٧:٣٠ م">٧:٣٠ م</option>
+        <option value="٨:٠٠ م">٨:٠٠ م</option>
+        <option value="٨:٣٠ م">٨:٣٠ م</option>
+        <option value="٩:٠٠ م">٩:٠٠ م</option>
+        <option value="custom">وقت مخصص...</option>
+      </select>
+      <input type="text" id="editSessionTime" placeholder="مثال: ٦:٠٠ م" style="display:none;margin-top:6px;">
+    </div>
+
+    <div class="field">
+      <label>المنصة</label>
+      <select id="editSessionPlatform">
+        <option value="Zoom">Zoom</option>
+        <option value="Google Meet">Google Meet</option>
+        <option value="Microsoft Teams">Microsoft Teams</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>رابط الحصة</label>
+      <input type="url" id="editSessionLink">
+    </div>
+
+    <div class="field">
+      <label>حالة الحضور والإنجاز</label>
+      <select id="editSessionAttendance">
+        <option value="">لم ترصد بعد (حصة قادمة)</option>
+        <option value="present">حاضر وتم التسميع 📖</option>
+        <option value="absent_student">غياب الطالب 👤❌</option>
+        <option value="absent_teacher">غياب المعلم (يلزم تعويض) 👨‍🏫⚠️</option>
+      </select>
+    </div>
+
+    <div class="modal-actions">
+      <button type="button" class="btn btn-ghost" onclick="closeModal('editSessionModal')">إلغاء</button>
+      <button type="button" class="btn btn-primary" onclick="saveEditedSession()" style="flex:1;">حفظ التعديلات</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: Certificate of Achievement (الشهادة الملكية) ============ -->
 <div class="modal-overlay" id="certModal">
   <div class="modal cert-modal">
     <div class="cert-paper">
       <div class="cert-header">
         <img src="https://res.cloudinary.com/dvfx83gns/image/upload/v1787795512/%D9%82%D8%B1%D8%B7%D8%A8%D8%A9_gbn7xe.png" class="cert-logo" alt="قرطبة">
-        <div class="cert-title">شَهَادَةُ تَقْدِيرٍ وَإِنْجَازٍ</div>
-        <div class="cert-subtitle">أَكَادِيمِيَّةُ قُرْطُبَةَ لِتَعْلِيمِ الْقُرْآنِ الْكَرِيمِ</div>
+        <div class="cert-title">شَهَادَةُ تَقْدِيرٍ وَإِتْقَانٍ</div>
+        <div class="cert-subtitle">أَكَادِيمِيَّةُ قُرْطُبَةَ لِتَعْلِيمِ الْقُرْآنِ الْكَرِيمِ وَالْقِرَاءَاتِ</div>
+        <div class="cert-ayah">﴿ وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا ﴾</div>
       </div>
       <div class="cert-body">
         تَشْهَدُ إِدَارَةُ الأَكَادِيمِيَّةِ بِأَنَّ الطَّالِبَ / الطَّالِبَةَ:
         <strong class="cert-student" id="certStudentName">يوسف أحمد</strong>
-        قَدْ أَتَمَّ بَفَضْلِ اللهِ وَتَوْفِيقِهِ حِفْظَ وَإِتْقَانَ:
+        قَدْ أَتَمَّ بَفَضْلِ اللهِ تَعَالَى وَتَوْفِيقِهِ حِفْظَ وَإِتْقَانَ:
         <span class="cert-achievement" id="certAchievement">الجزء الثلاثين (جزء عمّ) كاملاً</span>
-        بِتَقْدِيرِ: <b style="color:var(--success);">مُمْتَاز</b> وَأَظْهَرَ حِرْصًا وَتَفَوُّقًا فِي مَخَارِجِ الْحُرُوفِ وَأَحْكَامِ التَّجْوِيدِ.
+        بِتَقْدِيرِ: <b style="color:var(--success);">مُمْتَاز ★★★★★</b> وَأَظْهَرَ حِرْصًا بَالِغًا وَتَفَوُّقًا مُبَارَكًا فِي ضَبْطِ مَخَارِجِ الْحُرُوفِ وَأَحْكَامِ التَّجْوِيدِ.
       </div>
       <div class="cert-footer">
         <div class="cert-sign">
           <span>المعلم المشرف</span>
-          <strong id="certTeacherName">الشيخ أحمد فتحي</strong>
+          <strong id="certTeacherName">الشيخ المشرف</strong>
         </div>
         <div class="cert-stamp">
           <span>أكاديمية</span>
           <span>قرطبة</span>
-          <span>معتمد ★</span>
+          <span>معتمد رسمي ★</span>
         </div>
         <div class="cert-sign">
           <span>التاريخ</span>
@@ -1161,11 +1598,11 @@
         </div>
       </div>
     </div>
-    <div class="modal-actions" style="margin-top:20px;">
-      <button class="btn btn-ghost" id="certClose">إغلاق</button>
+    <div class="modal-actions" style="margin:16px 20px 20px;">
+      <button class="btn btn-ghost" id="certClose" onclick="closeModal('certModal')">إغلاق</button>
       <button class="btn btn-primary" onclick="window.print()" style="flex:1;">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-        طباعة / تنزيل الشهادة
+        طباعة / تنزيل الشهادة 📜
       </button>
     </div>
   </div>
@@ -1175,8 +1612,8 @@
 <div class="modal-overlay" id="pwaModal">
   <div class="modal" style="max-width:500px;">
     <div style="text-align:center;margin-bottom:18px;">
-      <img src="icon.svg" alt="قاف قرطبة" style="width:72px;height:72px;margin:0 auto 10px;border-radius:18px;box-shadow:0 6px 16px rgba(15,61,40,0.25);">
-      <h3 style="margin:0 0 6px;color:var(--green-deep);">تثبيت تطبيق قاف قرطبة 📲</h3>
+      <img src="apple-touch-icon.png" alt="قرطبة" style="width:72px;height:72px;margin:0 auto 10px;border-radius:18px;box-shadow:0 6px 16px rgba(15,61,40,0.25);">
+      <h3 style="margin:0 0 6px;color:var(--green-deep);">تثبيت تطبيق قرطبة 📲</h3>
       <p style="font-size:13px;color:var(--ink-soft);margin:0;">احصل على تجربة تطبيق موبايل سريع ومستقل على شاشة هاتفك</p>
     </div>
 
@@ -1429,65 +1866,34 @@ async function safeCloudOp(queryPromise) {
 const DEFAULT_DB = {
   deleted_records: { students: [], teachers: [], moderators: [], users: [], sessions: [] },
   users: [
-    { id:'u_admin', username:'admin', password:'admin123', name:'محمد جمال (المدير العام)', role:'admin', phone:'01000000000' },
-    { id:'u_mod', username:'mod_heba', password:'mod123', name:'أ. هبة السيد', role:'moderator', phone:'01011111111' },
-    { id:'u_t1', username:'sheikh_ahmed', password:'sheikh123', name:'الشيخ أحمد فتحي', role:'teacher', phone:'01022222222', area:'مجاز بالقراءات العشر الصغرى' },
-    { id:'u_t2', username:'sheikha_sara', password:'sheikha123', name:'الشيخة سارة عبد الله', role:'teacher', phone:'01033333333', area:'مجازة برواية حفص وشعبة' },
-    { id:'u_s1', username:'youssef_ahmed', password:'student123', name:'يوسف أحمد', role:'student', phone:'01044444444', teacher:'الشيخ أحمد فتحي', program:'أطفال', monthlySessions:8, schedule:'السبت والثلاثاء ٥:٠٠ م', progress:6, lastRating:'ممتاز' },
-    { id:'u_s2', username:'mariam_khaled', password:'student123', name:'مريم خالد', role:'student', phone:'01055555555', teacher:'الشيخة سارة عبد الله', program:'كبار', monthlySessions:8, schedule:'الأحد والأربعاء ٧:٣٠ م', progress:14, lastRating:'جيد' },
-    { id:'u_s3', username:'abdelrahman_saeed', password:'student123', name:'عبد الرحمن سعيد', role:'student', phone:'01066666666', teacher:'الشيخ أحمد فتحي', program:'أطفال', monthlySessions:12, schedule:'السبت والإثنين والأربعاء ٦:٠٠ م', progress:3, lastRating:'يحتاج مراجعة' },
+    { id:'u_admin', username:'admin', password:'admin123', name:'محمد جمال (المدير العام)', role:'admin', phone:'01000000000' }
   ],
-  teachers: [
-    { id:'t1', username:'sheikh_ahmed', name:'الشيخ أحمد فتحي', area:'مجاز بالقراءات العشر الصغرى', students:2, rating:'ممتاز', status:'نشط', phone:'01022222222' },
-    { id:'t2', username:'sheikha_sara', name:'الشيخة سارة عبد الله', area:'مجازة برواية حفص وشعبة', students:1, rating:'جيد', status:'نشط', phone:'01033333333' },
-  ],
-  moderators: [
-    { id:'m1', username:'mod_heba', name:'أ. هبة السيد', area:'متابعة جودة التسميع والحصص', phone:'01011111111' },
-  ],
-  students: [
-    { id:'s1', username:'youssef_ahmed', name:'يوسف أحمد', teacher:'الشيخ أحمد فتحي', program:'أطفال', monthlySessions:8, schedule:'السبت والثلاثاء ٥:٠٠ م', progress:6, lastRating:'ممتاز', phone:'01044444444' },
-    { id:'s2', username:'mariam_khaled', name:'مريم خالد', teacher:'الشيخة سارة عبد الله', program:'كبار', monthlySessions:8, schedule:'الأحد والأربعاء ٧:٣٠ م', progress:14, lastRating:'جيد', phone:'01055555555' },
-    { id:'s3', username:'abdelrahman_saeed', name:'عبد الرحمن سعيد', teacher:'الشيخ أحمد فتحي', program:'أطفال', monthlySessions:12, schedule:'السبت والإثنين والأربعاء ٦:٠٠ م', progress:3, lastRating:'يحتاج مراجعة', phone:'01066666666' },
-  ],
-  sessions: [
-    { id:1, student:'يوسف أحمد', teacher:'الشيخ أحمد فتحي', date:'اليوم', time:'٥:٠٠ م', platform:'Zoom', link:'https://zoom.us/j/demo', status:'upcoming', attendance:'', makeupRequired:false },
-    { id:2, student:'مريم خالد', teacher:'الشيخة سارة عبد الله', date:'غداً', time:'٧:٣٠ م', platform:'Google Meet', link:'https://meet.google.com/demo', status:'upcoming', attendance:'', makeupRequired:false },
-    { id:3, student:'عبد الرحمن سعيد', teacher:'الشيخ أحمد فتحي', date:'أمس', time:'٦:٠٠ م', platform:'Zoom', link:'#', status:'done', attendance:'present', makeupRequired:false },
-  ],
-  evaluations: [
-    {
-      id: 'ev_1',
-      student: 'يوسف أحمد',
-      teacher: 'الشيخ أحمد فتحي',
-      date: '٢٠ سبتمبر ٢٠٢٦',
-      monthKey: '2026-09',
-      newSurahFrom: 2, newAyahFrom: 1, newSurahTo: 2, newAyahTo: 20,
-      newAyahsCount: 20, newPagesCount: 2.5, newScore: 95,
-      newNotes: [
-        { ayah: 10, note: 'التركيز على ضبط مد البدل والوقف السليم' },
-        { ayah: 18, note: 'كلمة (صمٌّ بكمٌ) مراعاة حكم الإقلاب بغنة حركتين' }
-      ],
-      revSurahFrom: 1, revAyahFrom: 1, revSurahTo: 1, revAyahTo: 7,
-      revAyahsCount: 7, revPagesCount: 1, revScore: 92,
-      revNotes: [
-        { ayah: 7, note: 'ضبط مخرج الضاد في (غير المغضوب ولا الضالين)' }
-      ],
-      tajweedScore: 90,
-      tajweedNotes: [
-        { ayah: 6, rule: 'همزة الوصل في (اهدنا)', note: 'البدء بهمزة مكسورة' },
-        { ayah: 10, rule: 'الإقلاب عند التنوين مع الباء', note: 'غنة حركتين دون كز الشفتين' }
-      ],
-      overallScore: 92,
-      overallRating: 'ممتاز',
-      generalNotes: 'ما شاء الله، أداء رائع وحفظ متقن ومخارج سليمة.'
-    }
-  ],
+  teachers: [],
+  moderators: [],
+  students: [],
+  sessions: [],
+  evaluations: [],
   makeup_sessions: [],
   teacher_alerts: [],
-  complaints: [
-    { from:'ولي أمر يوسف أحمد', about:'طلب تغيير موعد الحصة الأسبوعية', status:'قيد المتابعة' }
-  ]
+  complaints: []
 };
+
+function purgeAllDemoData(){
+  const DEMO_IDS = new Set(['u_mod', 'u_t1', 'u_t2', 'u_s1', 'u_s2', 'u_s3', 't1', 't2', 'm1', 's1', 's2', 's3', 'ev_1', 1, 2, 3, '1', '2', '3']);
+  const DEMO_NAMES = new Set(['يوسف أحمد', 'مريم خالد', 'عبد الرحمن سعيد', 'الشيخ أحمد فتحي', 'الشيخة سارة عبد الله', 'أ. هبة السيد']);
+  const DEMO_USERNAMES = new Set(['mod_heba', 'sheikh_ahmed', 'sheikha_sara', 'youssef_ahmed', 'mariam_khaled', 'abdelrahman_saeed']);
+
+  DB.users = (DB.users || []).filter(u => u.id === 'u_admin' || (!DEMO_IDS.has(u.id) && !DEMO_USERNAMES.has(u.username) && !DEMO_NAMES.has(u.name)));
+  DB.teachers = (DB.teachers || []).filter(t => !DEMO_IDS.has(t.id) && !DEMO_NAMES.has(t.name));
+  DB.moderators = (DB.moderators || []).filter(m => !DEMO_IDS.has(m.id) && !DEMO_NAMES.has(m.name));
+  DB.students = (DB.students || []).filter(s => !DEMO_IDS.has(s.id) && !DEMO_NAMES.has(s.name));
+  DB.sessions = (DB.sessions || []).filter(s => !DEMO_IDS.has(s.id) && !DEMO_NAMES.has(s.student));
+  if (DB.evaluations) DB.evaluations = DB.evaluations.filter(e => !DEMO_IDS.has(e.id) && !DEMO_NAMES.has(e.student));
+  if (DB.complaints) DB.complaints = DB.complaints.filter(c => !DEMO_NAMES.has(c.from) && !c.from?.includes('يوسف أحمد'));
+  saveDB();
+  showToast('تم تنظيف كافة البيانات الوهمية والتجريبية بنجاح 🧹');
+  if (currentRole && currentPage) renderPage(currentRole, currentPage);
+}
 
 function loadDB(){
   const raw = localStorage.getItem('kortoba_db');
@@ -1503,6 +1909,19 @@ function loadDB(){
       if(!parsed.sessions) parsed.sessions = DEFAULT_DB.sessions;
       if(!parsed.makeup_sessions) parsed.makeup_sessions = [];
       if(!parsed.teacher_alerts) parsed.teacher_alerts = [];
+
+      // Automatic purge of legacy dummy demo records while preserving all user-created records
+      const DEMO_IDS = new Set(['u_mod', 'u_t1', 'u_t2', 'u_s1', 'u_s2', 'u_s3', 't1', 't2', 'm1', 's1', 's2', 's3', 'ev_1', 1, 2, 3, '1', '2', '3']);
+      const DEMO_NAMES = new Set(['يوسف أحمد', 'مريم خالد', 'عبد الرحمن سعيد', 'الشيخ أحمد فتحي', 'الشيخة سارة عبد الله', 'أ. هبة السيد']);
+      const DEMO_USERNAMES = new Set(['mod_heba', 'sheikh_ahmed', 'sheikha_sara', 'youssef_ahmed', 'mariam_khaled', 'abdelrahman_saeed']);
+
+      parsed.users = (parsed.users || []).filter(u => u.id === 'u_admin' || (!DEMO_IDS.has(u.id) && !DEMO_USERNAMES.has(u.username) && !DEMO_NAMES.has(u.name)));
+      parsed.teachers = (parsed.teachers || []).filter(t => !DEMO_IDS.has(t.id) && !DEMO_NAMES.has(t.name));
+      parsed.moderators = (parsed.moderators || []).filter(m => !DEMO_IDS.has(m.id) && !DEMO_NAMES.has(m.name));
+      parsed.students = (parsed.students || []).filter(s => !DEMO_IDS.has(s.id) && !DEMO_NAMES.has(s.name));
+      parsed.sessions = (parsed.sessions || []).filter(s => !DEMO_IDS.has(s.id) && !DEMO_NAMES.has(s.student));
+      if (parsed.evaluations) parsed.evaluations = parsed.evaluations.filter(e => !DEMO_IDS.has(e.id) && !DEMO_NAMES.has(e.student));
+      if (parsed.complaints) parsed.complaints = parsed.complaints.filter(c => !DEMO_NAMES.has(c.from) && !c.from?.includes('يوسف أحمد'));
 
       // Filter out any tombstoned deleted records from state
       const delS = parsed.deleted_records.students || [];
@@ -2382,6 +2801,8 @@ const PAGES = {
             ${DB.students.map(s => {
               const u = DB.users.find(x => x.name === s.name || x.username === s.username);
               const pass = u ? u.password : '••••••';
+              const sSessions = (DB.sessions || []).filter(sess => sess.student === s.name && sess.status === 'upcoming');
+              const isScheduled = sSessions.length > 0;
               return `
               <tr class="student-row" data-name="${s.name}" data-username="${s.username||''}" data-phone="${s.phone||''}" data-teacher="${s.teacher}" data-program="${s.program||''}">
                 <td class="cell-name">
@@ -2398,7 +2819,18 @@ const PAGES = {
                   <span class="badge badge-warn" style="font-size:11px;">${s.program||'عام'}</span>
                   <div style="font-size:11.5px;color:var(--ink-soft);margin-top:2px;"><b>${s.monthlySessions||8}</b> حصص/شهر</div>
                 </td>
-                <td style="font-size:12px;color:var(--ink-soft);">${s.schedule||'مرن'}</td>
+                <td style="min-width:140px;">
+                  <div style="font-size:12px;color:var(--ink);font-weight:600;">${s.schedule||'مرن'}</div>
+                  <div style="margin-top:4px;">
+                    ${isScheduled ? `
+                      <span class="badge badge-success" style="font-size:10.5px;padding:2px 7px;">✓ مسكّن (${sSessions.length} حصة)</span>
+                      <button class="btn btn-ghost btn-sm" onclick="openAutoScheduleModal('${s.name}')" style="margin-top:4px;padding:2px 7px;font-size:11px;width:100%;" title="إعادة التسكين أو إضافة حصص جديدة">🔄 تعديل الحصص</button>
+                    ` : `
+                      <span class="badge badge-warn" style="font-size:10.5px;padding:2px 7px;">⚠️ لم يُسكن بعد</span>
+                      <button class="btn btn-primary btn-sm" onclick="openAutoScheduleModal('${s.name}')" style="margin-top:4px;padding:4px 9px;font-size:11.5px;font-weight:700;width:100%;" title="تسكين الطالب وتوليد جدول حصص الشهر آلياً">📅 تسكين الطالب</button>
+                    `}
+                  </div>
+                </td>
                 <td>${ratingBadge(s.lastRating)}</td>
                 <td>
                   <div class="table-actions" style="justify-content:center;">
@@ -2612,6 +3044,7 @@ const PAGES = {
                 </td>
                 <td>
                   <div class="table-actions" style="justify-content:center;">
+                    <button class="btn btn-ghost btn-sm" onclick="openEditSessionModal('${s.id}')" title="تعديل موعد وحالة الحصة">✏️ تعديل</button>
                     <button class="btn-icon-danger" onclick="adminDeleteSession('${s.id}', ${idx})" title="حذف هذه الحصة">
                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
                       حذف
@@ -2810,6 +3243,9 @@ const PAGES = {
             <button class="btn btn-primary btn-sm" onclick="syncFromCloud();showToast('تمت المزامنة مع السحابة بنجاح!');">
               🔄 إجراء مزامنة فورية الآن
             </button>
+            <button class="btn btn-ghost btn-sm" style="color:#d97706;border-color:rgba(217,119,6,0.4);" onclick="if(confirm('هل أنت متأكد من تنظيف كافة الحسابات والبيانات التجريبية القديمة من النظام وقاعدة البيانات؟')){ purgeAllDemoData(); showToast('تم تنظيف كافة البيانات التجريبية بنجاح 🧹'); }">
+              🧹 تنظيف البيانات التجريبية نهائياً
+            </button>
             <button class="btn btn-ghost btn-sm" style="color:var(--danger);border-color:rgba(178,59,46,0.3);" onclick="adminResetToDefaultDB()">
               ⚠️ استعادة البيانات الافتراضية الأولية
             </button>
@@ -2978,9 +3414,10 @@ const PAGES = {
               <td style="font-size:12.5px;color:var(--ink-soft);">${s.schedule||'—'}</td>
               <td>${ratingBadge(s.lastRating)}</td>
               <td>
-                <div style="display:flex;gap:8px;">
+                <div style="display:flex;gap:6px;flex-wrap:wrap;">
                   <button class="btn btn-primary" onclick="openTripleEvalModal('${s.name}')" style="padding:6px 12px;font-size:12px;">تسجيل تسميع 📖</button>
-                  <button class="btn btn-ghost" onclick="viewStudentMonthlySummary('${s.name}')" style="padding:6px 12px;font-size:12px;">📜 سمري الشهر</button>
+                  <button class="btn btn-ghost" onclick="openAddSessionModal('${s.name}')" style="padding:6px 10px;font-size:12px;" title="جدولة موعد حصة جديدة لهذا الطالب">📅 حصة</button>
+                  <button class="btn btn-ghost" onclick="viewStudentMonthlySummary('${s.name}')" style="padding:6px 12px;font-size:12px;">📜 سمري</button>
                 </div>
               </td>
             </tr>`).join('')}
@@ -3119,20 +3556,68 @@ const PAGES = {
   },
 
   's-progress': ()=>{
-    const myName = currentUser ? currentUser.name : 'يوسف أحمد';
-    const myProfile = DB.students.find(s=>s.name===myName) || { progress:6 };
+    const myName = currentUser ? currentUser.name : 'الطالب';
+    const myProfile = DB.students.find(s=>s.name===myName) || { progress:0, monthlySessions:8, lastRating:'ممتاز' };
+    const myEvals = DB.evaluations.filter(e=>e.student===myName);
+    const progressCount = parseInt(myProfile.progress) || 0;
+
+    const JUZ_NAMES = [
+      'الم (الفاتحة والبقرة)', 'سيقول (البقرة)', 'تلك الرسل (البقرة وآل عمران)', 'لن تنالوا (آل عمران والنساء)',
+      'والمحصنات (النساء)', 'لا يحب الله (النساء والمائدة)', 'وإذا سمعوا (المائدة والأنعام)', 'ولو أننا (الأنعام والأعراف)',
+      'قال الملأ (الأعراف والأنفال)', 'واعلموا (الأنفال والتوبة)', 'يعتذرون (التوبة ويونس وهود)', 'وما من دابة (هود ويوسف)',
+      'وما أبرئ (يوسف والرعد وإبراهيم)', 'ربما (الحجر والنحل)', 'سبحان الذي (الإسراء والكهف)', 'قال ألم (الكهف ومريم وطه)',
+      'اقترب للناس (الأنبياء والحج)', 'قد أفلح (المؤمنون والنور والفرقان)', 'وقال الذين (الفرقان والشعراء والنمل)', 'فما كان (النمل والقصص والعنكبوت)',
+      'ولا تجادلوا (العنكبوت والروم ولقمان)', 'ومن يقنت (الأحزاب وسبأ وفاطر ويس)', 'وما أنزلنا (يس والصافات وص والزمر)', 'فمن أظلم (الزمر وغافر وفصلت)',
+      'إليه يرد (فصلت والشورى والزخرف)', 'حم (الأحقاف إلى الذاريات)', 'قال فما خطبكم (الذاريات إلى الحديد)', 'قد سمع (المجادلة إلى التحريم)',
+      'تبارك (الملك إلى المرسلات)', 'عمّ (النبأ إلى الناس)'
+    ];
+
     return `
     <div class="panel">
-      <div class="panel-head"><h3>تقدّمك المبارك في حفظ كتاب الله</h3></div>
-      <div class="ring-wrap">
-        ${progressRing(myProfile.progress||6, 30)}
+      <div class="panel-head" style="flex-wrap:wrap;gap:12px;">
         <div>
-          <p style="margin:0 0 6px;font-size:16.5px;font-weight:700;color:var(--green-deep);">أتممت حفظ وتثبيت ${myProfile.progress||6} من ٣٠ جزءاً بحمد الله وتوفيقه</p>
-          <p style="margin:0 0 14px;font-size:13.5px;color:var(--ink-soft);">متبقي لك ${30 - (myProfile.progress||6)} جزءاً للوصول إلى الختمة المباركة ونيل السند والإجازة.</p>
-          <button class="btn btn-primary" onclick="openCertModal('${myName}')" style="padding:9px 18px;font-size:13px;">
-            📜 استخراج وطباعة شهادة الإنجاز
-          </button>
+          <h3 style="margin:0;">خريطة إتمام المصحف الشريف والأجزاء الثلاثين 📖</h3>
+          <span style="font-size:12.5px;color:var(--ink-soft);">متابعة تقدمك المبارك نحو الختمة الشريفة ونيل الإجازة والسند</span>
         </div>
+        <button class="btn btn-primary" onclick="openCertModal('${myName}')" style="padding:9px 18px;font-size:13px;">
+          📜 استخراج وطباعة شهادة الإنجاز
+        </button>
+      </div>
+
+      <div class="ring-wrap" style="background:linear-gradient(135deg, #F8FAF9 0%, #EFF5F1 100%);padding:22px;border-radius:18px;border:1px solid var(--line);margin-bottom:20px;">
+        ${progressRing(progressCount, 30)}
+        <div>
+          <div style="font-family:'Amiri',serif;font-size:24px;font-weight:700;color:var(--green-deep);margin-bottom:4px;">
+            أتممت بحمد الله (${progressCount}) من أصل ٣٠ جزءاً
+          </div>
+          <p style="margin:0 0 12px;font-size:13.5px;color:var(--ink-soft);">
+            متبقي لك <b>${Math.max(0, 30 - progressCount)} جزءاً</b> للوصول إلى الختمة المباركة. تقييمك العام: ${ratingBadge(myProfile.lastRating||'ممتاز')}
+          </p>
+          <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;">
+            <span style="display:inline-flex;align-items:center;gap:6px;"><span style="color:var(--success);font-size:16px;">●</span> مكتمل ومثبت: <b>${progressCount} أجزاء</b></span>
+            <span style="display:inline-flex;align-items:center;gap:6px;"><span style="color:var(--gold);font-size:16px;">●</span> قيد الحفظ: <b>${progressCount < 30 ? 1 : 0} جزء</b></span>
+            <span style="display:inline-flex;align-items:center;gap:6px;"><span style="color:var(--ink-soft);font-size:16px;">●</span> التسميعات المسجلة: <b>${myEvals.length} تسميعة</b></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 30 Juz Visual Grid -->
+      <h4 style="margin:20px 0 10px;font-size:15px;color:var(--green-deep);">فهرس ومحطات أجزاء القرآن الكريم (٣٠ جزءاً):</h4>
+      <div class="juz-grid">
+        ${Array.from({length:30}, (_, i)=>{
+          const jNum = i + 1;
+          const isDone = progressCount >= jNum;
+          const isCurrent = progressCount + 1 === jNum;
+          const cls = isDone ? 'completed' : isCurrent ? 'in-progress' : 'locked';
+          const badgeText = isDone ? 'مكتمل ومثبت ✅' : isCurrent ? 'قيد الحفظ 📖' : 'مستهدف ⚪';
+          return `
+            <div class="juz-card ${cls}">
+              <div class="juz-num">الجزء ${jNum}</div>
+              <div class="juz-surah" title="${JUZ_NAMES[i]}">${JUZ_NAMES[i]}</div>
+              <span class="juz-badge">${badgeText}</span>
+            </div>
+          `;
+        }).join('')}
       </div>
     </div>`;
   },
@@ -3190,16 +3675,29 @@ function moderatorOverview(){
         <button class="btn btn-primary" onclick="openAddUserModal('student')" style="padding:7px 16px;font-size:13px;">➕ تسجيل طالب</button>
       </div>
       <table>
-        <thead><tr><th>الطالب</th><th>المعلم المشرف</th><th>الحصص الشهرية</th><th>التقييم</th><th>السمري</th></tr></thead>
+        <thead><tr><th>الطالب</th><th>المعلم المشرف</th><th>الحصص الشهرية</th><th>حالة التسكين في الحصص</th><th>التقييم</th><th>السمري</th></tr></thead>
         <tbody>
-          ${DB.students.map(s=>`
+          ${DB.students.map(s=>{
+            const sSessions = (DB.sessions || []).filter(sess => sess.student === s.name && sess.status === 'upcoming');
+            const isScheduled = sSessions.length > 0;
+            return `
             <tr>
               <td class="cell-name">${s.name}</td>
               <td>${s.teacher}</td>
               <td><b>${s.monthlySessions||8}</b> حصص</td>
+              <td>
+                ${isScheduled ? `
+                  <span class="badge badge-success" style="font-size:11px;">✓ مسكّن (${sSessions.length} حصص)</span>
+                  <button class="btn btn-ghost btn-sm" onclick="openAutoScheduleModal('${s.name}')" style="margin-right:4px;padding:3px 7px;font-size:11px;">🔄 تعديل</button>
+                ` : `
+                  <span class="badge badge-warn" style="font-size:11px;">⚠️ لم يُسكن بعد</span>
+                  <button class="btn btn-primary btn-sm" onclick="openAutoScheduleModal('${s.name}')" style="margin-right:6px;padding:3px 9px;font-size:11.5px;font-weight:700;">📅 تسكين الطالب</button>
+                `}
+              </td>
               <td>${ratingBadge(s.lastRating)}</td>
               <td><button class="btn btn-ghost" onclick="viewStudentMonthlySummary('${s.name}')" style="padding:4px 10px;font-size:12px;">📜 سمري الشهر</button></td>
-            </tr>`).join('')}
+            </tr>`;
+          }).join('')}
         </tbody>
       </table>
     </div>`;
@@ -3231,6 +3729,7 @@ function sessionItemTeacher(s, idx){
       <button class="att-btn ${att==='absent_teacher'?'active-absent-t':''}" onclick="setAttendanceDetailed('${s.id}', 'absent_teacher')" title="غياب المعلم (يلزم تعويض للطالب)">غياب معلم 👨‍🏫⚠️</button>
     </div>
     <div style="display:flex;align-items:center;gap:8px;flex-wrap:nowrap;">
+      <button class="btn btn-ghost btn-sm" onclick="openEditSessionModal('${s.id}')" title="تعديل موعد أو تفاصيل الحصة" style="padding:6px 10px;font-size:12px;">✏️ تعديل</button>
       <a href="${s.link}" target="_blank" class="session-join ${isDone?'disabled':''}">${isDone?'تمت':'انضمام'}</a>
       <button class="btn-icon-danger" onclick="deleteSessionDirect('${s.id}')" title="حذف هذه الحصة نهائياً" style="padding:7px 11px;border-radius:100px;font-size:12px;">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
@@ -4170,25 +4669,328 @@ document.getElementById('alertTeacherConfirm').addEventListener('click', ()=>{
   alert('تم إرسال التنبيه للإدارة والمشرفين بنجاح. جاري التواصل مع المعلم لحضور الحصة فوراً.');
 });
 
+/* ---------------- HELPER: CLOSE MODALS & DATE/TIME PICKERS ---------------- */
+function closeModal(modalId){
+  const el = document.getElementById(modalId);
+  if (el) el.classList.remove('active');
+}
+
+function formatArabicDate(d){
+  if (!d || isNaN(d.getTime())) return '';
+  const days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+  const months = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+  const dayName = days[d.getDay()];
+  const dayNum = d.getDate().toLocaleString('ar-EG');
+  const monthName = months[d.getMonth()];
+  return `${dayName}، ${dayNum} ${monthName}`;
+}
+
+function setQuickDate(pickerId, offsetDays){
+  const d = new Date();
+  d.setDate(d.getDate() + offsetDays);
+  const iso = d.toISOString().split('T')[0];
+  const picker = document.getElementById(pickerId);
+  if (picker) {
+    picker.value = iso;
+    if (pickerId === 'newSessionDatePicker') {
+      syncDateFromPicker('newSessionDatePicker', 'newSessionDate');
+    } else if (pickerId === 'editSessionDatePicker') {
+      syncDateFromPicker('editSessionDatePicker', 'editSessionDate');
+    }
+  }
+}
+
+function syncDateFromPicker(pickerId, targetId){
+  const picker = document.getElementById(pickerId);
+  const target = document.getElementById(targetId);
+  if (!picker || !target || !picker.value) return;
+  const parts = picker.value.split('-');
+  if (parts.length === 3) {
+    const d = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+    target.value = formatArabicDate(d);
+  }
+}
+
+function handleTimeSelectChange(selectId, customInputId){
+  const sel = document.getElementById(selectId);
+  const custom = document.getElementById(customInputId);
+  if (!sel || !custom) return;
+  if (sel.value === 'custom') {
+    custom.style.display = 'block';
+    custom.focus();
+  } else {
+    custom.style.display = 'none';
+    custom.value = sel.value;
+  }
+}
+
+/* ---------------- AUTO-SCHEDULE & BULK ENROLLMENT ---------------- */
+function openAutoScheduleModal(studentName){
+  const s = DB.students.find(std => std.name === studentName);
+  const studentSel = document.getElementById('autoSchedStudent');
+  if (studentSel) {
+    studentSel.innerHTML = DB.students.map(std => `<option value="${std.name}" ${std.name===studentName?'selected':''}>${std.name}</option>`).join('');
+  }
+
+  const teacherSel = document.getElementById('autoSchedTeacher');
+  if (teacherSel) {
+    const studentTeacher = s ? s.teacher : (DB.teachers[0]?.name || 'الشيخ أحمد فتحي');
+    teacherSel.innerHTML = DB.teachers.map(t => `<option value="${t.name}" ${t.name===studentTeacher?'selected':''}>${t.name}</option>`).join('');
+  }
+
+  const quota = (s && s.monthlySessions) ? s.monthlySessions : 8;
+  const quotaSel = document.getElementById('autoSchedQuota');
+  if (quotaSel) quotaSel.value = String(quota);
+
+  const startPicker = document.getElementById('autoSchedStartDate');
+  if (startPicker) {
+    startPicker.value = new Date().toISOString().split('T')[0];
+  }
+
+  if (s && s.schedule) {
+    const schedStr = s.schedule.toLowerCase();
+    const dayCheckboxes = document.querySelectorAll('.auto-sched-day');
+    let anyChecked = false;
+    dayCheckboxes.forEach(cb => {
+      let match = false;
+      if (cb.value === 'Saturday') match = schedStr.includes('سبت');
+      else if (cb.value === 'Sunday') match = schedStr.includes('أحد') || schedStr.includes('احد');
+      else if (cb.value === 'Monday') match = schedStr.includes('إثنين') || schedStr.includes('اثنين');
+      else if (cb.value === 'Tuesday') match = schedStr.includes('ثلاثاء') || schedStr.includes('تلات');
+      else if (cb.value === 'Wednesday') match = schedStr.includes('أربعاء') || schedStr.includes('اربعاء');
+      else if (cb.value === 'Thursday') match = schedStr.includes('خميس');
+      else if (cb.value === 'Friday') match = schedStr.includes('جمعة');
+      cb.checked = match;
+      if (match) anyChecked = true;
+    });
+    if (!anyChecked) {
+      dayCheckboxes.forEach(cb => {
+        if (cb.value === 'Saturday' || cb.value === 'Tuesday') cb.checked = true;
+      });
+    }
+  }
+
+  document.getElementById('autoScheduleModal').classList.add('active');
+}
+
+function executeAutoSchedule(){
+  const student = document.getElementById('autoSchedStudent').value;
+  const teacher = document.getElementById('autoSchedTeacher').value;
+  const quota = parseInt(document.getElementById('autoSchedQuota').value) || 8;
+  const platform = document.getElementById('autoSchedPlatform').value;
+  const link = document.getElementById('autoSchedLink').value.trim() || 'https://meet.google.com/new';
+
+  let time = document.getElementById('autoSchedTimeSelect').value;
+  if (time === 'custom') {
+    time = document.getElementById('autoSchedTimeCustom').value.trim() || '٥:٠٠ م';
+  }
+
+  const dayMap = { 'Sunday':0, 'Monday':1, 'Tuesday':2, 'Wednesday':3, 'Thursday':4, 'Friday':5, 'Saturday':6 };
+  const selectedDayNames = [];
+  const selectedDayNums = new Set();
+  document.querySelectorAll('.auto-sched-day:checked').forEach(cb => {
+    selectedDayNums.add(dayMap[cb.value]);
+    if (cb.value === 'Saturday') selectedDayNames.push('السبت');
+    if (cb.value === 'Sunday') selectedDayNames.push('الأحد');
+    if (cb.value === 'Monday') selectedDayNames.push('الإثنين');
+    if (cb.value === 'Tuesday') selectedDayNames.push('الثلاثاء');
+    if (cb.value === 'Wednesday') selectedDayNames.push('الأربعاء');
+    if (cb.value === 'Thursday') selectedDayNames.push('الخميس');
+    if (cb.value === 'Friday') selectedDayNames.push('الجمعة');
+  });
+
+  if (selectedDayNums.size === 0) {
+    alert('يرجى تحديد يوم واحد على الأقل من أيام الحصص الأسبوعية.');
+    return;
+  }
+
+  const startVal = document.getElementById('autoSchedStartDate').value;
+  let cursorDate = startVal ? new Date(startVal + 'T00:00:00') : new Date();
+  if (isNaN(cursorDate.getTime())) cursorDate = new Date();
+
+  const generatedSessions = [];
+  let safetyLoop = 0;
+
+  while (generatedSessions.length < quota && safetyLoop < 120) {
+    safetyLoop++;
+    if (selectedDayNums.has(cursorDate.getDay())) {
+      const dateStr = formatArabicDate(cursorDate);
+      const newSess = {
+        id: 'sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
+        student: student,
+        teacher: teacher,
+        date: dateStr,
+        time: time,
+        platform: platform,
+        link: link,
+        status: 'upcoming',
+        attendance: '',
+        makeupRequired: false
+      };
+      generatedSessions.push(newSess);
+    }
+    cursorDate.setDate(cursorDate.getDate() + 1);
+  }
+
+  if (!DB.sessions) DB.sessions = [];
+  DB.sessions.unshift(...generatedSessions);
+
+  const studentRecord = DB.students.find(s => s.name === student);
+  if (studentRecord) {
+    studentRecord.teacher = teacher;
+    studentRecord.monthlySessions = quota;
+    studentRecord.schedule = `${selectedDayNames.join(' و ')} - ${time}`;
+  }
+
+  saveDB();
+
+  if (supabaseClient) {
+    const cloudPayload = generatedSessions.map(s => ({
+      student_name: s.student,
+      teacher_name: s.teacher,
+      date_text: s.date,
+      time_text: s.time,
+      platform: s.platform,
+      link: s.link,
+      status: 'upcoming',
+      attendance: ''
+    }));
+    safeCloudOp(supabaseClient.from('sessions').insert(cloudPayload));
+
+    if (studentRecord) {
+      safeCloudOp(supabaseClient.from('students').update({
+        teacher_name: teacher,
+        schedule_text: studentRecord.schedule,
+        monthly_sessions: quota
+      }).eq('name', student));
+    }
+  }
+
+  closeModal('autoScheduleModal');
+  showToast(`تم بنجاح تسكين الطالب ${student} وتوليد (${generatedSessions.length}) حصة مجدولة! ⚡`);
+  renderPage(currentRole, currentPage);
+}
+
+/* ---------------- EDIT SESSION MODAL ---------------- */
+function openEditSessionModal(sessionId){
+  const sess = DB.sessions.find(s => String(s.id) === String(sessionId));
+  if (!sess) return;
+
+  document.getElementById('editSessionId').value = sess.id;
+
+  const stdSel = document.getElementById('editSessionStudent');
+  stdSel.innerHTML = DB.students.map(s => `<option value="${s.name}" ${s.name===sess.student?'selected':''}>${s.name}</option>`).join('');
+
+  const tchSel = document.getElementById('editSessionTeacher');
+  tchSel.innerHTML = DB.teachers.map(t => `<option value="${t.name}" ${t.name===sess.teacher?'selected':''}>${t.name}</option>`).join('');
+
+  document.getElementById('editSessionDate').value = sess.date || '';
+
+  const timeSel = document.getElementById('editSessionTimeSelect');
+  const customTime = document.getElementById('editSessionTime');
+  const hasTimeOpt = Array.from(timeSel.options).some(o => o.value === sess.time);
+  if (hasTimeOpt) {
+    timeSel.value = sess.time;
+    customTime.style.display = 'none';
+  } else {
+    timeSel.value = 'custom';
+    customTime.style.display = 'block';
+    customTime.value = sess.time || '';
+  }
+
+  document.getElementById('editSessionPlatform').value = sess.platform || 'Zoom';
+  document.getElementById('editSessionLink').value = sess.link || 'https://meet.google.com/new';
+  document.getElementById('editSessionAttendance').value = sess.attendance || '';
+
+  document.getElementById('editSessionModal').classList.add('active');
+}
+
+function saveEditedSession(){
+  const id = document.getElementById('editSessionId').value;
+  const sess = DB.sessions.find(s => String(s.id) === String(id));
+  if (!sess) return;
+
+  sess.student = document.getElementById('editSessionStudent').value;
+  sess.teacher = document.getElementById('editSessionTeacher').value;
+  sess.date = document.getElementById('editSessionDate').value.trim() || sess.date;
+
+  const timeSel = document.getElementById('editSessionTimeSelect').value;
+  if (timeSel === 'custom') {
+    sess.time = document.getElementById('editSessionTime').value.trim() || '٦:٠٠ م';
+  } else {
+    sess.time = timeSel;
+  }
+
+  sess.platform = document.getElementById('editSessionPlatform').value;
+  sess.link = document.getElementById('editSessionLink').value.trim() || 'https://meet.google.com/new';
+  
+  const att = document.getElementById('editSessionAttendance').value;
+  sess.attendance = att;
+  if (att === 'present') {
+    sess.status = 'done';
+  } else if (!att) {
+    sess.status = 'upcoming';
+  }
+
+  saveDB();
+
+  if (supabaseClient && sess.id) {
+    safeCloudOp(supabaseClient.from('sessions').update({
+      student_name: sess.student,
+      teacher_name: sess.teacher,
+      date_text: sess.date,
+      time_text: sess.time,
+      platform: sess.platform,
+      link: sess.link,
+      status: sess.status,
+      attendance: sess.attendance
+    }).eq('id', sess.id));
+  }
+
+  closeModal('editSessionModal');
+  showToast('تم حفظ تعديلات الحصة بنجاح!');
+  renderPage(currentRole, currentPage);
+}
+
 /* ---------------- SESSION CREATION MODAL ---------------- */
 function openAddSessionModal(preselectStudent = ''){
   const sel = document.getElementById('newSessionStudent');
   sel.innerHTML = DB.students.map(s=>`<option value="${s.name}" ${s.name===preselectStudent?'selected':''}>${s.name}</option>`).join('');
-  document.getElementById('newSessionDate').value = 'اليوم';
-  document.getElementById('newSessionTime').value = '٦:٠٠ م';
+  
+  const todayIso = new Date().toISOString().split('T')[0];
+  const picker = document.getElementById('newSessionDatePicker');
+  if (picker) picker.value = todayIso;
+  syncDateFromPicker('newSessionDatePicker', 'newSessionDate');
+
+  const timeSel = document.getElementById('newSessionTimeSelect');
+  if (timeSel) timeSel.value = '٦:٠٠ م';
+  const customTime = document.getElementById('newSessionTime');
+  if (customTime) {
+    customTime.value = '٦:٠٠ م';
+    customTime.style.display = 'none';
+  }
+
   document.getElementById('sessionModal').classList.add('active');
 }
-document.getElementById('sessionCancel').addEventListener('click', ()=> document.getElementById('sessionModal').classList.remove('active'));
+document.getElementById('sessionCancel').addEventListener('click', ()=> closeModal('sessionModal'));
 document.getElementById('sessionSave').addEventListener('click', ()=>{
   const student = document.getElementById('newSessionStudent').value;
   const date = document.getElementById('newSessionDate').value.trim() || 'اليوم';
-  const time = document.getElementById('newSessionTime').value.trim() || '٦:٠٠ م';
+  
+  let time = document.getElementById('newSessionTimeSelect') ? document.getElementById('newSessionTimeSelect').value : '٦:٠٠ م';
+  if (time === 'custom') {
+    time = document.getElementById('newSessionTime').value.trim() || '٦:٠٠ م';
+  }
+
   const platform = document.getElementById('newSessionPlatform').value;
   const link = document.getElementById('newSessionLink').value.trim() || 'https://meet.google.com/new';
-  const teacher = currentUser?.name || 'الشيخ أحمد فتحي';
+  
+  const teacher = (currentUser?.role === 'teacher' && currentUser.name) ? currentUser.name :
+                  (DB.students.find(s=>s.name===student)?.teacher || currentUser?.name || 'الشيخ أحمد فتحي');
 
+  const newId = 'sess_' + Date.now();
   DB.sessions.unshift({
-    id: 'sess_' + Date.now(),
+    id: newId,
     student, teacher, date, time, platform, link, status:'upcoming', attendance:'', makeupRequired:false
   });
   saveDB();
@@ -4197,7 +4999,7 @@ document.getElementById('sessionSave').addEventListener('click', ()=>{
     safeCloudOp(supabaseClient.from('sessions').insert([{ student_name: student, teacher_name: teacher, date_text: date, time_text: time, platform, link, status: 'upcoming', attendance: '' }]));
   }
 
-  document.getElementById('sessionModal').classList.remove('active');
+  closeModal('sessionModal');
   showToast(`تمت جدولة الحصة للطالب ${student} بنجاح!`);
   renderPage(currentRole, currentPage);
 });
@@ -4261,7 +5063,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
 
 window.addEventListener('appinstalled', () => {
   deferredPrompt = null;
-  showToast('تم تثبيت تطبيق قاف قرطبة بنجاح! 🎉');
+  showToast('تم تثبيت تطبيق قرطبة بنجاح! 🎉');
   const pwaModal = document.getElementById('pwaModal');
   if (pwaModal) pwaModal.classList.remove('active');
 });
@@ -4271,7 +5073,7 @@ function triggerPwaInstall() {
     deferredPrompt.prompt();
     deferredPrompt.userChoice.then((choiceResult) => {
       if (choiceResult.outcome === 'accepted') {
-        showToast('جاري تثبيت تطبيق قاف قرطبة على جهازك... 📲');
+        showToast('جاري تثبيت تطبيق قرطبة على جهازك... 📲');
       }
       deferredPrompt = null;
     });
