@@ -321,16 +321,151 @@
   }
 
   /* Monthly Summary View */
-  .monthly-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
-  .monthly-stat{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:16px;text-align:center;}
-  .monthly-stat b{display:block;font-family:'Amiri',serif;font-size:24px;color:var(--green-deep);}
-  .monthly-stat span{font-size:12px;color:var(--ink-soft);}
+  .monthly-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(175px, 1fr));gap:12px;margin-bottom:24px;}
+  .monthly-stat{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:16px 12px;text-align:center;display:flex;flex-direction:column;justify-content:center;}
+  .monthly-stat b{display:block;font-family:'Amiri',serif;font-size:24px;color:var(--green-deep);line-height:1.2;margin-bottom:4px;}
+  .monthly-stat span{font-size:12px;color:var(--ink-soft);line-height:1.35;}
   .notes-list{display:flex;flex-direction:column;gap:8px;}
   .note-pill-item{
     background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 14px;display:flex;align-items:flex-start;gap:10px;
   }
   .note-pill-tag{
     background:rgba(185,131,42,0.12);color:var(--gold);padding:2px 8px;border-radius:6px;font-size:11.5px;font-weight:700;white-space:nowrap;
+  }
+
+  /* Summary Filters Bar (Month, Session, Total) */
+  .summary-filters-bar{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+    background:var(--bg);
+    border:1.5px solid var(--line);
+    border-radius:14px;
+    padding:12px 16px;
+    margin:14px 0 20px;
+  }
+  .summary-filter-chip{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:6px 14px;
+    border-radius:10px;
+    font-size:12.5px;
+    font-weight:700;
+    cursor:pointer;
+    border:1.5px solid var(--line);
+    background:#fff;
+    color:var(--ink);
+    transition:all .15s ease;
+  }
+  .summary-filter-chip:hover{
+    border-color:var(--green);
+  }
+  .summary-filter-chip.active{
+    background:var(--green);
+    color:#fff;
+    border-color:var(--green);
+    box-shadow:0 4px 12px rgba(15,61,40,0.2);
+  }
+
+  /* Interactive Month Cards Deck */
+  .month-deck{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(215px, 1fr));
+    gap:12px;
+    margin:14px 0 22px;
+  }
+  .month-card{
+    background:#ffffff;
+    border:2px solid var(--line);
+    border-radius:14px;
+    padding:13px 15px;
+    cursor:pointer;
+    transition:all .2s ease;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    position:relative;
+    user-select:none;
+    box-shadow:0 3px 10px rgba(15,61,40,0.04);
+  }
+  .month-card:hover{
+    transform:translateY(-2px);
+    border-color:var(--green);
+    box-shadow:0 8px 20px rgba(15,61,40,0.12);
+  }
+  .month-card.active{
+    background:linear-gradient(135deg, #ffffff 0%, #f4f8f5 100%);
+    border-color:var(--gold);
+    box-shadow:0 8px 24px -6px rgba(185,131,42,0.35);
+  }
+  .month-card.active::after{
+    content:'';
+    position:absolute;
+    bottom:0;
+    left:16px;
+    right:16px;
+    height:3.5px;
+    background:var(--gold);
+    border-radius:3px 3px 0 0;
+  }
+  .month-card-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:6px;
+  }
+  .month-card-title{
+    font-size:14px;
+    font-weight:700;
+    color:var(--green-deep);
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .month-badge-active{
+    background:var(--gold);
+    color:#fff;
+    padding:2px 8px;
+    border-radius:20px;
+    font-size:11px;
+    font-weight:700;
+    white-space:nowrap;
+  }
+  .month-badge-inactive{
+    background:var(--bg);
+    color:var(--ink-soft);
+    padding:2px 8px;
+    border-radius:20px;
+    font-size:11px;
+    font-weight:600;
+    white-space:nowrap;
+  }
+  .month-card-stats{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:7px;
+    background:var(--bg);
+    border-radius:10px;
+    padding:8px 10px;
+  }
+  .mc-stat{
+    display:flex;
+    flex-direction:column;
+    line-height:1.25;
+  }
+  .mc-stat b{
+    font-size:13.5px;
+    color:var(--green-deep);
+    font-weight:700;
+  }
+  .mc-stat span{
+    font-size:10.5px;
+    color:var(--ink-soft);
+  }
+  .mc-stat.highlight b{
+    color:var(--gold);
   }
 
   /* Toast notification */
@@ -654,197 +789,495 @@
     pointer-events: none !important;
   }
 
-  /* ============ LUXURY ROYAL CERTIFICATE STYLING ============ */
+  /* ============ LUXURY ROYAL ISLAMIC CERTIFICATE STYLING (قرطبة الملكية) ============ */
   .cert-modal{
-    max-width:960px !important;
-    width:95% !important;
+    max-width:1040px !important;
+    width:96% !important;
     padding:0 !important;
     border-radius:24px !important;
     overflow:hidden !important;
-    background:#082115 !important;
-    border:3px solid #D89518 !important;
-    box-shadow:0 30px 90px rgba(0,0,0,0.7) !important;
+    background:radial-gradient(circle at center, #0B291D 0%, #05160E 100%) !important;
+    border:2px solid #D4AF37 !important;
+    box-shadow:0 25px 80px rgba(0,0,0,0.8), 0 0 40px rgba(212,175,55,0.2) !important;
+    max-height:94vh !important;
+    display:flex;
+    flex-direction:column;
   }
-  .cert-paper{
-    position:relative;
-    padding:44px 48px;
-    background:radial-gradient(circle at center, #FFFDF8 0%, #FAF3E2 100%);
-    border:4px double #D89518;
-    margin:14px;
-    border-radius:18px;
-    box-shadow:inset 0 0 50px rgba(216,149,24,0.1), 0 0 0 6px #FAF3E2, 0 0 0 8px #082115;
-    text-align:center;
-    color:var(--ink);
+  .cert-toolbar{
+    background:#071E14;
+    padding:12px 18px;
+    border-bottom:1.5px solid rgba(212,175,55,0.4);
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    flex-shrink:0;
   }
-  .cert-paper::before, .cert-paper::after{
-    content:'❖';
-    position:absolute;
-    font-size:24px;
-    color:#D89518;
-    line-height:1;
-  }
-  .cert-paper::before{top:12px;right:14px;}
-  .cert-paper::after{bottom:12px;left:14px;}
-  .cert-corner-tl{position:absolute;top:12px;left:14px;font-size:24px;color:#D89518;line-height:1;}
-  .cert-corner-br{position:absolute;bottom:12px;right:14px;font-size:24px;color:#D89518;line-height:1;}
-
-  .cert-bismillah{
-    font-family:'Amiri',serif;
-    font-size:21px;
-    color:#8A611E;
-    letter-spacing:1px;
-    margin-bottom:8px;
-    font-weight:700;
-  }
-  .cert-header{
-    position:relative;
-    margin-bottom:18px;
-  }
-  .cert-logo{
-    width:76px;
-    height:76px;
-    object-fit:contain;
-    margin:0 auto 8px;
-    display:block;
-    filter:drop-shadow(0 4px 12px rgba(216,149,24,0.3));
-  }
-  .cert-subtitle{
-    font-size:13px;
-    font-weight:700;
-    color:#D89518;
-    letter-spacing:1.5px;
-    margin-bottom:8px;
-  }
-  .cert-title-badge{
-    display:inline-block;
-    background:linear-gradient(135deg, #0F3D28 0%, #17583B 100%);
-    color:#FFF7DC;
-    border:2px solid #D89518;
-    border-radius:100px;
-    padding:8px 36px;
-    box-shadow:0 6px 20px rgba(15,61,40,0.25);
-    margin-bottom:10px;
-  }
-  .cert-title{
-    font-family:'Amiri',serif;
-    font-size:32px;
-    font-weight:700;
-    letter-spacing:1px;
-    color:#FFF7DC;
-    margin:0;
-    line-height:1.2;
-    text-shadow:0 2px 4px rgba(0,0,0,0.3);
-  }
-  .cert-ayah{
-    display:inline-block;
-    padding:4px 20px;
-    background:rgba(15,61,40,0.05);
-    border:1px dashed rgba(216,149,24,0.5);
-    border-radius:100px;
-    font-family:'Amiri',serif;
-    font-size:16px;
-    color:#0F3D28;
-    margin-top:4px;
-  }
-  .cert-body{
-    font-size:15.5px;
-    line-height:2.2;
-    color:#1A2E25;
-    max-width:740px;
-    margin:0 auto 20px;
-  }
-  .cert-student-box{
-    margin:10px auto;
-    display:inline-block;
-    background:linear-gradient(180deg, #FFFFFF 0%, #FFF9EB 100%);
-    border:1.5px solid #D89518;
-    border-radius:14px;
-    padding:6px 32px;
-    box-shadow:0 4px 14px rgba(216,149,24,0.15);
-  }
-  .cert-student{
-    font-family:'Amiri',serif;
-    font-size:34px;
-    font-weight:700;
-    color:#0A2D1E;
-    display:block;
-  }
-  .cert-achievement{
-    display:inline-block;
-    font-weight:700;
-    font-size:17px;
-    color:#0F3D28;
-    border-bottom:2px solid #D89518;
-    padding:0 8px;
-  }
-  .cert-footer{
+  .cert-toolbar-row{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-top:24px;
-    padding-top:18px;
-    border-top:1.5px dashed rgba(216,149,24,0.35);
+    flex-wrap:wrap;
+    gap:10px;
   }
-  .cert-sign{
-    flex:1;
-    text-align:center;
-  }
-  .cert-sign span{
-    display:block;
+  .cert-tool-group{
+    display:flex;
+    align-items:center;
+    gap:8px;
     font-size:12.5px;
-    color:#64748B;
+    color:#F5E6C4;
+    font-weight:600;
+  }
+  .cert-tool-select{
+    padding:6px 12px;
+    border-radius:8px;
+    border:1px solid #D4AF37;
+    background:#0D3524;
+    color:#FFF9E6;
+    font-size:12px;
+    font-weight:600;
+    outline:none;
+    cursor:pointer;
+  }
+  .cert-tool-actions{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .cert-scroll-container{
+    overflow-y:auto;
+    padding:16px;
+    flex:1;
+    display:flex;
+    justify-content:center;
+  }
+  .cert-paper{
+    position:relative;
+    width:100%;
+    max-width:960px;
+    box-sizing:border-box;
+    padding:44px 50px 36px;
+    background:radial-gradient(ellipse at 50% 35%, #FFFDF7 0%, #FCF7EB 60%, #F5E8CB 100%);
+    border:4px double #C8963E;
+    outline:2.5px solid #08291A;
+    outline-offset:-14px;
+    border-radius:18px;
+    box-shadow:inset 0 0 60px rgba(200,150,62,0.12), 0 10px 40px rgba(0,0,0,0.5);
+    text-align:center;
+    color:#12251D;
+    overflow:hidden;
+  }
+
+  /* Islamic Arabesque Corners */
+  .cert-corner{
+    position:absolute;
+    width:70px;
+    height:70px;
+    pointer-events:none;
+    z-index:2;
+  }
+  .cert-corner-tr{ top:18px; right:18px; }
+  .cert-corner-tl{ top:18px; left:18px; transform:scaleX(-1); }
+  .cert-corner-br{ bottom:18px; right:18px; transform:scaleY(-1); }
+  .cert-corner-bl{ bottom:18px; left:18px; transform:scale(-1); }
+
+  /* Watermark 16-point Islamic Rosette */
+  .cert-watermark{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+    width:420px;
+    height:420px;
+    opacity:0.042;
+    pointer-events:none;
+    z-index:0;
+  }
+
+  /* Content elements relative to watermark */
+  .cert-header, .cert-body, .cert-footer, .cert-verify-strip{
+    position:relative;
+    z-index:1;
+  }
+
+  .cert-bismillah-wrap{
     margin-bottom:6px;
   }
-  .cert-sign strong{
-    font-size:15px;
-    color:#0A2D1E;
+  .cert-bismillah-calligraphy{
+    font-family:'Amiri',serif;
+    font-size:32px;
+    line-height:1.2;
+    color:#8A611E;
     font-weight:700;
+    letter-spacing:1px;
+    text-shadow:0 1px 2px rgba(138,97,30,0.2);
   }
-  .cert-stamp-wrap{
+  .cert-bismillah-sub{
+    font-size:12px;
+    color:#9A7432;
+    letter-spacing:3px;
+    font-weight:600;
+    margin-top:-2px;
+  }
+
+  .cert-brand-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    margin:10px 0 14px;
+  }
+  .cert-logo-royal{
+    width:68px;
+    height:68px;
+    object-fit:contain;
+    filter:drop-shadow(0 4px 10px rgba(184,134,11,0.35));
+    border-radius:50%;
+    padding:3px;
+    background:radial-gradient(circle, #FFFDF5 60%, #F5E5BE 100%);
+    border:1.5px solid #D4AF37;
+  }
+  .cert-academy-heading{
+    text-align:right;
+  }
+  .cert-academy-title{
+    font-family:'Amiri',serif;
+    font-size:24px;
+    font-weight:700;
+    color:#0A2B1D;
+    line-height:1.2;
+    margin:0;
+    letter-spacing:0.5px;
+  }
+  .cert-academy-subtitle{
+    font-size:13px;
+    font-weight:700;
+    color:#B3801D;
+    letter-spacing:0.5px;
+    margin:2px 0 0;
+  }
+  .cert-academy-en{
+    font-size:9.5px;
+    font-weight:600;
+    color:#536A60;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+  }
+
+  /* Cartouche Banner */
+  .cert-cartouche{
+    display:inline-block;
+    position:relative;
+    margin:6px auto 10px;
+    padding:8px 38px;
+    background:linear-gradient(135deg, #0A2F20 0%, #154D36 50%, #0A2F20 100%);
+    border:2px solid #D4AF37;
+    border-radius:100px;
+    box-shadow:0 6px 18px rgba(10,47,32,0.35), inset 0 1px 2px rgba(255,255,255,0.3);
+  }
+  .cert-cartouche-title{
+    font-family:'Amiri',serif;
+    font-size:28px;
+    font-weight:700;
+    color:#FFF9E6;
+    letter-spacing:1.5px;
+    margin:0;
+    line-height:1.2;
+    text-shadow:0 2px 4px rgba(0,0,0,0.4);
+  }
+  .cert-cartouche-sub{
+    font-size:9.5px;
+    color:#E0C179;
+    letter-spacing:2px;
+    font-weight:600;
+    text-transform:uppercase;
+  }
+
+  .cert-ayah-box{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:4px 18px;
+    background:rgba(212,175,55,0.08);
+    border:1px dashed rgba(184,134,11,0.45);
+    border-radius:100px;
+    font-family:'Amiri',serif;
+    font-size:15px;
+    color:#0A2B1D;
+    margin-top:2px;
+  }
+  .cert-ayah-ref{
+    font-family:'Cairo',sans-serif;
+    font-size:11px;
+    color:#8A611E;
+    font-weight:600;
+  }
+
+  /* Body */
+  .cert-body{
+    font-size:15px;
+    line-height:1.9;
+    color:#1C342A;
+    max-width:760px;
+    margin:12px auto 16px;
+  }
+  .cert-intro-txt{
+    font-size:15px;
+    color:#334E43;
+    font-weight:600;
+    margin-bottom:6px;
+  }
+  .cert-student-wrapper{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    margin:6px 0 10px;
+    padding:4px 28px;
+    background:linear-gradient(180deg, #FFFFFF 0%, #FFFDF2 50%, #FCF5DF 100%);
+    border:2px solid #C8963E;
+    border-radius:16px;
+    box-shadow:0 4px 16px rgba(200,150,62,0.2), inset 0 1px 0 #fff;
+  }
+  .cert-wing{
+    font-family:'Amiri',serif;
+    font-size:26px;
+    color:#C8963E;
+    line-height:1;
+  }
+  .cert-student-name{
+    font-family:'Amiri',serif;
+    font-size:36px;
+    font-weight:700;
+    color:#072418;
+    margin:0;
+    letter-spacing:0.5px;
+  }
+
+  .cert-achievement-lead{
+    font-size:14.5px;
+    color:#385247;
+    margin:4px 0;
+    font-weight:600;
+  }
+  .cert-achievement-highlight{
+    display:inline-block;
+    font-family:'Amiri',serif;
+    font-size:22px;
+    font-weight:700;
+    color:#092F20;
+    background:rgba(212,175,55,0.12);
+    border-bottom:2.5px solid #C8963E;
+    padding:2px 18px;
+    border-radius:6px 6px 0 0;
+    margin:4px 0 8px;
+  }
+
+  .cert-honors-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    flex-wrap:wrap;
+    margin:6px 0 8px;
+  }
+  .cert-honors-label{
+    font-size:13.5px;
+    font-weight:700;
+    color:#475569;
+  }
+  .cert-grade-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    background:linear-gradient(135deg, #15803D 0%, #166534 100%);
+    color:#FFF9E6;
+    font-weight:700;
+    font-size:14px;
+    padding:4px 16px;
+    border-radius:100px;
+    box-shadow:0 2px 8px rgba(22,101,52,0.25);
+    border:1px solid #D4AF37;
+  }
+  .cert-score-pill{
+    display:inline-flex;
+    align-items:center;
+    background:#FEF3C7;
+    color:#92400E;
+    font-weight:700;
+    font-size:12.5px;
+    padding:4px 12px;
+    border-radius:100px;
+    border:1px solid #F59E0B;
+  }
+
+  .cert-dua{
+    font-size:13.5px;
+    line-height:1.8;
+    color:#2A4438;
+    max-width:680px;
+    margin:8px auto 0;
+    font-style:normal;
+  }
+
+  /* Footer: 3 Columns (Teacher - 3D Royal Seal - Management & Date) */
+  .cert-footer{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    margin-top:20px;
+    padding-top:16px;
+    border-top:1.5px dashed rgba(200,150,62,0.4);
+    gap:14px;
+  }
+  .cert-foot-col{
+    flex:1;
+    text-align:center;
+    padding:0 6px;
+  }
+  .cert-sign-role{
+    display:block;
+    font-size:12px;
+    font-weight:700;
+    color:#5F746A;
+    margin-bottom:4px;
+  }
+  .cert-sign-name{
+    display:block;
+    font-family:'Amiri',serif;
+    font-size:18px;
+    font-weight:700;
+    color:#092F20;
+    line-height:1.2;
+  }
+  .cert-signature-draw{
+    margin:4px auto;
+    font-family:'Amiri',serif;
+    font-style:italic;
+    color:#C8963E;
+    font-size:13px;
+    letter-spacing:1px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+  }
+  .cert-sign-sub{
+    font-size:11px;
+    color:#84968D;
+  }
+
+  /* 3D Royal Scalloped Gold Seal */
+  .cert-foot-seal{
     flex:none;
+    position:relative;
+    width:116px;
     display:flex;
     flex-direction:column;
     align-items:center;
-    margin:0 18px;
+    margin:0 12px;
   }
-  .cert-stamp{
+  .cert-ribbon-tails{
+    position:absolute;
+    bottom:-16px;
+    width:80px;
+    height:36px;
+    display:flex;
+    justify-content:space-between;
+    z-index:0;
+    pointer-events:none;
+  }
+  .ribbon-tail-l, .ribbon-tail-r{
+    width:28px;
+    height:36px;
+    background:linear-gradient(180deg, #092B1D 0%, #051910 100%);
+    border:1px solid #D4AF37;
+    clip-path:polygon(0 0, 100% 0, 100% 100%, 50% 75%, 0 100%);
+    box-shadow:0 4px 8px rgba(0,0,0,0.3);
+  }
+  .ribbon-tail-l{ transform:rotate(-12deg); }
+  .ribbon-tail-r{ transform:rotate(12deg); }
+
+  .cert-royal-seal-body{
+    position:relative;
+    z-index:1;
     width:104px;
     height:104px;
     border-radius:50%;
-    border:3px dashed #D89518;
-    outline:2px solid #0F3D28;
-    outline-offset:3px;
-    background:radial-gradient(circle, #FFFBEB 0%, #FEF3C7 60%, rgba(216,149,24,0.2) 100%);
+    background:radial-gradient(circle at 35% 30%, #FFEBA3 0%, #E5BA53 45%, #B38321 80%, #7E580D 100%);
+    box-shadow:0 8px 24px rgba(179,131,33,0.4), inset 0 2px 4px rgba(255,255,255,0.7), inset 0 -3px 6px rgba(0,0,0,0.35);
+    border:2.5px solid #FFF5CC;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transform:rotate(-4deg);
+  }
+  .seal-inner-ring{
+    width:88px;
+    height:88px;
+    border-radius:50%;
+    border:1.5px dashed #6A4905;
+    outline:1.5px solid #8A611E;
+    outline-offset:2px;
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
-    font-size:10px;
-    font-weight:700;
-    color:#0F3D28;
-    line-height:1.2;
-    box-shadow:0 6px 20px rgba(216,149,24,0.25);
-    transform:rotate(-6deg);
+    text-align:center;
+    padding:4px;
+    background:radial-gradient(circle, rgba(255,253,245,0.3) 0%, rgba(229,186,83,0.15) 100%);
   }
-  .cert-stamp span:nth-child(1){ font-size:11px; color:#8A611E; }
-  .cert-stamp span:nth-child(2){ font-size:17px; font-family:'Amiri',serif; color:#0F3D28; font-weight:700; margin:2px 0; }
-  .cert-stamp span:nth-child(3){ font-size:9.5px; color:#15803D; letter-spacing:0.5px; }
+  .seal-stars{ font-size:8px; color:#553903; letter-spacing:2px; margin-bottom:1px; }
+  .seal-title{ font-family:'Amiri',serif; font-size:15px; font-weight:700; color:#221501; line-height:1; }
+  .seal-sub{ font-size:8.5px; font-weight:700; color:#4E3403; letter-spacing:0.5px; margin:2px 0 1px; }
+  .seal-en{ font-size:7px; font-weight:800; color:#5D4005; letter-spacing:0.8px; text-transform:uppercase; }
 
+  /* Digital Verification Strip */
+  .cert-verify-strip{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    font-size:10.5px;
+    color:#73887E;
+    margin-top:14px;
+    padding-top:8px;
+    border-top:1px solid rgba(200,150,62,0.2);
+    font-family:'Cairo',sans-serif;
+  }
+  .cert-verify-code{
+    font-weight:700;
+    color:#92671E;
+    font-family:monospace;
+    letter-spacing:1px;
+  }
+
+  /* PRINT MODE PERFECTION (A4 LANDSCAPE) */
   @media print{
-    @page { size: landscape; margin: 6mm; }
+    @page {
+      size: landscape A4;
+      margin: 0;
+    }
+    html, body {
+      background: #FFFFFF !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+    }
     body * { visibility: hidden !important; }
     #certModal, #certModal * { visibility: visible !important; }
     #certModal {
-      position: fixed !important;
+      position: absolute !important;
       left: 0 !important;
       top: 0 !important;
       width: 100% !important;
       height: 100% !important;
-      background: #fff !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      background: #FFFFFF !important;
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
-      padding: 0 !important;
       box-shadow: none !important;
       border: none !important;
     }
@@ -853,15 +1286,34 @@
       border: none !important;
       max-width: 100% !important;
       width: 100% !important;
-      background: #fff !important;
+      height: 100% !important;
+      background: #FFFFFF !important;
+      border-radius: 0 !important;
+      overflow: visible !important;
+    }
+    .cert-toolbar, .modal-actions, .no-print {
+      display: none !important;
+    }
+    .cert-scroll-container {
+      overflow: visible !important;
+      padding: 0 !important;
     }
     .cert-paper {
+      width: 297mm !important;
+      max-width: 297mm !important;
+      height: 208mm !important;
+      max-height: 208mm !important;
+      box-sizing: border-box !important;
+      margin: 0 auto !important;
+      border-radius: 0 !important;
+      border-width: 3.5px !important;
       box-shadow: none !important;
-      margin: 0 !important;
-      border-width: 3px !important;
       page-break-inside: avoid !important;
+      page-break-after: avoid !important;
+      page-break-before: avoid !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
     }
-    .modal-actions { display: none !important; }
   }
 
   /* ============ 30-JUZ QURAN PROGRESS MOSAIC & FILTER ============ */
@@ -1197,6 +1649,31 @@
       <button type="button" class="btn-wa-share" id="evalShareWaBtn" title="مشاركة التقرير فورا مع ولي الأمر">
         📱 إرسال لولي الأمر واتساب
       </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: Evaluation Full Details & Notes (عرض تفاصيل التقييم وملاحظات الحصة) ============ -->
+<div class="modal-overlay" id="evalDetailsModal">
+  <div class="modal modal-wide" style="max-height:92vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1.5px solid var(--line);padding-bottom:14px;margin-bottom:18px;">
+      <div>
+        <h3 id="evalDetailsModalTitle" style="margin:0;font-size:20px;color:var(--green-deep);">تفاصيل تقييم الحصة وملاحظات المعلم 📝</h3>
+        <span id="evalDetailsModalSub" style="font-size:13px;color:var(--ink-soft);"></span>
+      </div>
+      <button type="button" class="btn btn-ghost" onclick="closeEvalDetailsModal()" style="padding:4px 10px;font-size:16px;border-radius:8px;">✕</button>
+    </div>
+
+    <div id="evalDetailsModalContent">
+      <!-- Injected dynamically by openEvalDetailsModal(evalId) -->
+    </div>
+
+    <div class="modal-actions" style="margin-top:20px;padding-top:14px;border-top:1px solid var(--line);justify-content:space-between;align-items:center;">
+      <button type="button" class="btn btn-ghost" onclick="closeEvalDetailsModal()">إغلاق</button>
+      <div style="display:flex;gap:8px;">
+        <button type="button" class="btn btn-ghost" id="evalDetailsSummaryBtn">📜 عرض ملخص الشهر للطالب</button>
+        <button type="button" class="btn-wa-share" id="evalDetailsWaBtn">📱 إرسال لولي الأمر واتساب</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1665,62 +2142,233 @@
 <!-- ============ MODAL: Certificate of Achievement (الشهادة الملكية الفاخرة) ============ -->
 <div class="modal-overlay" id="certModal">
   <div class="modal cert-modal">
-    <div class="cert-paper">
-      <!-- Ornate Corners -->
-      <span class="cert-corner-tl">❖</span>
-      <span class="cert-corner-br">❖</span>
-
-      <div class="cert-header">
-        <div class="cert-bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
-        <img src="https://res.cloudinary.com/dvfx83gns/image/upload/v1787795512/%D9%82%D8%B1%D8%B7%D8%A8%D8%A9_gbn7xe.png" class="cert-logo" alt="قرطبة">
-        <div class="cert-subtitle">أَكَادِيمِيَّةُ قُرْطُبَةَ لِتَعْلِيمِ الْقُرْآنِ الْكَرِيمِ وَالْقِرَاءَاتِ</div>
-        <div class="cert-title-badge">
-          <h2 class="cert-title">شَهَادَةُ شَرَفٍ وَإِتْقَانٍ قُرْآنِيّ</h2>
+    <!-- Top Interactive Toolbar (خارج الطباعة) -->
+    <div class="cert-toolbar no-print">
+      <div class="cert-toolbar-row">
+        <div class="cert-tool-group">
+          <label>📜 نموذج الإنجاز:</label>
+          <select id="certPresetSelect" class="cert-tool-select" onchange="applyCertPreset(this.value)">
+            <option value="juz30">🌟 إتمام جزء عمّ (الجزء ٣٠)</option>
+            <option value="juz29">🌟 إتمام جزء تبارك (الجزء ٢٩)</option>
+            <option value="progress">📖 مسيرة الحفظ (الأجزاء المنجزة)</option>
+            <option value="khatma">👑 ختم القرآن الكريم كاملاً والإجازة</option>
+            <option value="monthly">🏆 التميز في الحصاد الشهري (طالب الشهر)</option>
+            <option value="custom">✏️ إنجاز مخصص (تعديل حر)</option>
+          </select>
         </div>
-        <br>
-        <div class="cert-ayah">﴿ وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا ﴾</div>
+
+        <div class="cert-tool-group">
+          <label>⭐ التقدير:</label>
+          <select id="certGradeSelect" class="cert-tool-select" onchange="applyCertGrade(this.value)">
+            <option value="مُمْتَاز مَعَ مَرْتَبَةِ الشَّرَفِ الأُولَى ★★★★★">ممتاز مع مرتبة الشرف الأولى ★★★★★</option>
+            <option value="مُمْتَاز مُرْتَفِع ★★★★★">ممتاز مرتفع ★★★★★</option>
+            <option value="جَيِّد جِدًّا مُرْتَفِع ★★★★☆">جيد جداً مرتفع ★★★★☆</option>
+          </select>
+        </div>
+
+        <div class="cert-tool-actions">
+          <button type="button" class="btn btn-ghost" onclick="toggleCertEditor()" id="btnToggleCertEdit" style="font-size:12.5px;color:#F5E6C4;border-color:rgba(212,175,55,0.5);">
+            ✏️ تخصيص النصوص
+          </button>
+          <button type="button" class="btn btn-ghost" onclick="shareCertViaWhatsApp()" style="color:#25D366;border-color:rgba(37,211,102,0.5);font-size:12.5px;font-weight:700;">
+            واتساب لولي الأمر 📱
+          </button>
+          <button type="button" class="btn btn-primary" onclick="window.print()" style="font-weight:700;font-size:13px;padding:7px 18px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:4px;"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            طباعة / حفظ PDF 📜
+          </button>
+          <button type="button" class="btn btn-ghost" id="certClose" onclick="closeModal('certModal')" style="padding:6px 12px;color:#F5E6C4;" title="إغلاق">✕</button>
+        </div>
       </div>
 
-      <div class="cert-body">
-        يَسُرُّ إِدَارَةَ أَكَادِيمِيَّةِ قُرْطُبَةَ أَنْ تَشْهَدَ بِأَنَّ الطَّالِبَ / الطَّالِبَةَ الْمُبَارَكَ:
-        <div class="cert-student-box">
-          <strong class="cert-student" id="certStudentName">يوسف أحمد</strong>
-        </div>
-        قَدْ أَتَمَّ بَفَضْلِ اللهِ تَعَالَى وَتَوْفِيقِهِ حِفْظَ وَإِتْقَانَ وَضَبْطَ:
-        <span class="cert-achievement" id="certAchievement">الجزء الثلاثين (جزء عمّ) كاملاً</span>
-        <br>
-        بِتَقْدِيرِ: <b style="color:#15803d;font-size:16px;">مُمْتَاز مَعَ مَرْتَبَةِ الشَّرَفِ ★★★★★</b>
-        <div style="font-size:14px;color:#2D4A3E;margin-top:8px;">
-          وَأَظْهَرَ حِرْصًا بَالِغًا وَتَفَوُّقًا مُبَارَكًا فِي ضَبْطِ مَخَارِجِ الْحُرُوفِ وَأَحْكَامِ التَّجْوِيدِ، سَائِلِينَ اللهَ أَنْ يَجْعَلَ الْقُرْآنَ رَبِيعَ قَلْبِهِ وَنُورَ دَرْبِهِ.
-        </div>
-      </div>
-
-      <div class="cert-footer">
-        <div class="cert-sign">
-          <span>المعلم المشرف المعتمد</span>
-          <strong id="certTeacherName">الشيخ المشرف</strong>
-          <div style="font-family:'Amiri',serif;color:var(--gold);font-size:14px;margin-top:2px;">(مُعتمد الإجازة)</div>
-        </div>
-        <div class="cert-stamp-wrap">
-          <div class="cert-stamp">
-            <span>أكاديمية</span>
-            <span>قرطبة</span>
-            <span>★ مُعتمد رسمي ★</span>
+      <!-- Quick Text Customizer Drawer (Collapsible) -->
+      <div id="certManualEditor" style="display:none;background:#092B1D;border-radius:12px;padding:12px 14px;border:1px solid rgba(212,175,55,0.4);margin-top:6px;">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(210px, 1fr));gap:10px;">
+          <div>
+            <label style="font-size:11px;font-weight:700;display:block;margin-bottom:3px;color:#F5E6C4;">اسم الطالب:</label>
+            <input type="text" id="certEditStudent" class="search-input" style="width:100%;font-size:12px;padding:5px 8px;background:#05160E;color:#FFF;border-color:rgba(212,175,55,0.5);" oninput="updateCertField('certStudentName', this.value)">
           </div>
-        </div>
-        <div class="cert-sign">
-          <span>التاريخ والاعتماد</span>
-          <strong id="certDate">—</strong>
-          <div style="font-family:'Amiri',serif;color:var(--gold);font-size:14px;margin-top:2px;">(إدارة الشؤون التعليمية)</div>
+          <div>
+            <label style="font-size:11px;font-weight:700;display:block;margin-bottom:3px;color:#F5E6C4;">نص الإنجاز والمحفوظ:</label>
+            <input type="text" id="certEditAchievement" class="search-input" style="width:100%;font-size:12px;padding:5px 8px;background:#05160E;color:#FFF;border-color:rgba(212,175,55,0.5);" oninput="updateCertField('certAchievement', this.value)">
+          </div>
+          <div>
+            <label style="font-size:11px;font-weight:700;display:block;margin-bottom:3px;color:#F5E6C4;">اسم المعلم / الشيخ المشرف:</label>
+            <input type="text" id="certEditTeacher" class="search-input" style="width:100%;font-size:12px;padding:5px 8px;background:#05160E;color:#FFF;border-color:rgba(212,175,55,0.5);" oninput="updateCertField('certTeacherName', this.value)">
+          </div>
+          <div>
+            <label style="font-size:11px;font-weight:700;display:block;margin-bottom:3px;color:#F5E6C4;">نسبة الإتقان (اختياري):</label>
+            <input type="text" id="certEditScore" class="search-input" style="width:100%;font-size:12px;padding:5px 8px;background:#05160E;color:#FFF;border-color:rgba(212,175,55,0.5);" placeholder="مثال: ٩٨٪" oninput="updateCertField('certScorePill', this.value ? 'نسبة الإتقان: ' + this.value : '')">
+          </div>
         </div>
       </div>
     </div>
-    <div class="modal-actions" style="margin:16px 24px 22px;">
-      <button class="btn btn-ghost" id="certClose" onclick="closeModal('certModal')">إغلاق</button>
-      <button class="btn btn-primary" onclick="window.print()" style="flex:1;font-weight:700;font-size:14.5px;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-        طباعة / تنزيل الشهادة الملكية (PDF) 📜
-      </button>
+
+    <!-- Certificate Body Container -->
+    <div class="cert-scroll-container">
+      <div class="cert-paper" id="royalCertPaper">
+        <!-- 4 Authentic SVG Islamic Arabesque Corners -->
+        <svg class="cert-corner cert-corner-tr" viewBox="0 0 80 80" fill="none">
+          <path d="M4 76 L4 24 C4 12.95 12.95 4 24 4 L76 4" stroke="#C8963E" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M10 70 L10 26 C10 17.16 17.16 10 26 10 L70 10" stroke="#08291A" stroke-width="1.2"/>
+          <circle cx="24" cy="24" r="8" fill="#FFFDF5" stroke="#C8963E" stroke-width="1.8"/>
+          <path d="M24 16 L24 32 M16 24 L32 24" stroke="#C8963E" stroke-width="1.5"/>
+          <circle cx="24" cy="24" r="3" fill="#D4AF37"/>
+          <path d="M24 4 L24 16 M4 24 L16 24" stroke="#C8963E" stroke-width="1.5"/>
+          <circle cx="48" cy="10" r="2.5" fill="#C8963E"/>
+          <circle cx="10" cy="48" r="2.5" fill="#C8963E"/>
+        </svg>
+        <svg class="cert-corner cert-corner-tl" viewBox="0 0 80 80" fill="none">
+          <path d="M4 76 L4 24 C4 12.95 12.95 4 24 4 L76 4" stroke="#C8963E" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M10 70 L10 26 C10 17.16 17.16 10 26 10 L70 10" stroke="#08291A" stroke-width="1.2"/>
+          <circle cx="24" cy="24" r="8" fill="#FFFDF5" stroke="#C8963E" stroke-width="1.8"/>
+          <path d="M24 16 L24 32 M16 24 L32 24" stroke="#C8963E" stroke-width="1.5"/>
+          <circle cx="24" cy="24" r="3" fill="#D4AF37"/>
+          <path d="M24 4 L24 16 M4 24 L16 24" stroke="#C8963E" stroke-width="1.5"/>
+          <circle cx="48" cy="10" r="2.5" fill="#C8963E"/>
+          <circle cx="10" cy="48" r="2.5" fill="#C8963E"/>
+        </svg>
+        <svg class="cert-corner cert-corner-br" viewBox="0 0 80 80" fill="none">
+          <path d="M4 76 L4 24 C4 12.95 12.95 4 24 4 L76 4" stroke="#C8963E" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M10 70 L10 26 C10 17.16 17.16 10 26 10 L70 10" stroke="#08291A" stroke-width="1.2"/>
+          <circle cx="24" cy="24" r="8" fill="#FFFDF5" stroke="#C8963E" stroke-width="1.8"/>
+          <path d="M24 16 L24 32 M16 24 L32 24" stroke="#C8963E" stroke-width="1.5"/>
+          <circle cx="24" cy="24" r="3" fill="#D4AF37"/>
+          <path d="M24 4 L24 16 M4 24 L16 24" stroke="#C8963E" stroke-width="1.5"/>
+          <circle cx="48" cy="10" r="2.5" fill="#C8963E"/>
+          <circle cx="10" cy="48" r="2.5" fill="#C8963E"/>
+        </svg>
+        <svg class="cert-corner cert-corner-bl" viewBox="0 0 80 80" fill="none">
+          <path d="M4 76 L4 24 C4 12.95 12.95 4 24 4 L76 4" stroke="#C8963E" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M10 70 L10 26 C10 17.16 17.16 10 26 10 L70 10" stroke="#08291A" stroke-width="1.2"/>
+          <circle cx="24" cy="24" r="8" fill="#FFFDF5" stroke="#C8963E" stroke-width="1.8"/>
+          <path d="M24 16 L24 32 M16 24 L32 24" stroke="#C8963E" stroke-width="1.5"/>
+          <circle cx="24" cy="24" r="3" fill="#D4AF37"/>
+          <path d="M24 4 L24 16 M4 24 L16 24" stroke="#C8963E" stroke-width="1.5"/>
+          <circle cx="48" cy="10" r="2.5" fill="#C8963E"/>
+          <circle cx="10" cy="48" r="2.5" fill="#C8963E"/>
+        </svg>
+
+        <!-- SVG Watermark Rosette (طُرّة إسلامية زخرفية) -->
+        <svg class="cert-watermark" viewBox="0 0 400 400" fill="none">
+          <circle cx="200" cy="200" r="180" stroke="#C8963E" stroke-width="2" stroke-dasharray="6 4"/>
+          <circle cx="200" cy="200" r="150" stroke="#08291A" stroke-width="1.5"/>
+          <circle cx="200" cy="200" r="110" stroke="#C8963E" stroke-width="2"/>
+          <rect x="110" y="110" width="180" height="180" stroke="#C8963E" stroke-width="1.5" fill="none"/>
+          <rect x="110" y="110" width="180" height="180" stroke="#C8963E" stroke-width="1.5" fill="none" transform="rotate(45 200 200)"/>
+          <rect x="125" y="125" width="150" height="150" stroke="#08291A" stroke-width="1" fill="none" transform="rotate(22.5 200 200)"/>
+          <rect x="125" y="125" width="150" height="150" stroke="#08291A" stroke-width="1" fill="none" transform="rotate(67.5 200 200)"/>
+          <circle cx="200" cy="200" r="50" stroke="#C8963E" stroke-width="2"/>
+          <circle cx="200" cy="200" r="20" fill="#C8963E"/>
+        </svg>
+
+        <!-- Header -->
+        <div class="cert-header">
+          <div class="cert-bismillah-wrap">
+            <div class="cert-bismillah-calligraphy">﷽</div>
+            <div class="cert-bismillah-sub">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+          </div>
+
+          <div class="cert-brand-row">
+            <img src="https://res.cloudinary.com/dvfx83gns/image/upload/v1787795512/%D9%82%D8%B1%D8%B7%D8%A8%D8%A9_gbn7xe.png" class="cert-logo-royal" alt="قرطبة">
+            <div class="cert-academy-heading">
+              <h2 class="cert-academy-title">أَكَادِيمِيَّةُ قُرْطُبَةَ الدَّوْلِيَّةِ</h2>
+              <div class="cert-academy-subtitle">لِتَعْلِيمِ الْقُرْآنِ الْكَرِيمِ وَالْقِرَاءَاتِ وَعُلُومِهِ</div>
+              <div class="cert-academy-en">Kortoba International Quranic Academy</div>
+            </div>
+          </div>
+
+          <div class="cert-cartouche">
+            <div class="cert-cartouche-title" id="certBannerTitle">شَهَادَةُ إِتْقَانٍ وَتَفَوُّقٍ قُرْآنِيّ</div>
+            <div class="cert-cartouche-sub">CERTIFICATE OF QURANIC EXCELLENCE & MASTERY</div>
+          </div>
+
+          <div>
+            <div class="cert-ayah-box">
+              <span class="cert-ayah-text" id="certAyahText">﴿ إِنَّ الَّذِينَ يَتْلُونَ كِتَابَ اللَّهِ وَأَقَامُوا الصَّلَاةَ وَأَنفَقُوا مِمَّا رَزَقْنَاهُمْ سِرًّا وَعَلَانِيَةً يَرْجُونَ تِجَارَةً لَّن تَبُورَ ﴾</span>
+              <span class="cert-ayah-ref" id="certAyahRef">[ سورة فاطر: ٢٩ ]</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Body -->
+        <div class="cert-body">
+          <div class="cert-intro-txt">
+            تَشْهَدُ إِدَارَةُ أَكَادِيمِيَّةِ قُرْطُبَةَ وَلَجْنَةُ الإِجَازَاتِ وَالشُّؤُونِ التَّعْلِيمِيَّةِ بِأَنَّ الطَّالِبَ / الطَّالِبَةَ الْمُبَارَكَ:
+          </div>
+
+          <div class="cert-student-wrapper">
+            <span class="cert-wing">༺</span>
+            <span class="cert-student-name" id="certStudentName">يوسف أحمد</span>
+            <span class="cert-wing">༻</span>
+          </div>
+
+          <div class="cert-achievement-lead">قَدْ أَتَمَّ بِفَضْلِ اللهِ تَعَالَى وَحُسْنِ تَوْفِيقِهِ حِفْظَ وَإِتْقَانَ وَتَثْبِيتَ:</div>
+          <div class="cert-achievement-highlight" id="certAchievement">الجزء الثلاثين (جزء عمّ) كاملاً مع ضبط أحكام التجويد</div>
+
+          <div class="cert-honors-row">
+            <span class="cert-honors-label">بِتَقْدِيرِ عَامٍّ:</span>
+            <span class="cert-grade-badge" id="certGradeBadge">مُمْتَاز مَعَ مَرْتَبَةِ الشَّرَفِ الأُولَى ★★★★★</span>
+            <span class="cert-score-pill" id="certScorePill">نسبة الإتقان: ٩٨٪</span>
+          </div>
+
+          <p class="cert-dua" id="certDuaText">
+            وَأَظْهَرَ حِرْصًا بَالِغًا وَتَفَوُّقًا مُبَارَكًا فِي حُسْنِ التَّرْتِيلِ وَضَبْطِ مَخَارِجِ الحُرُوفِ وَصِفَاتِهَا وَأَحْكَامِ التَّجْوِيدِ، سَائِلِينَ اللهَ العَلِيَّ القَدِيرَ أَنْ يَجْعَلَ القُرْآنَ العَظِيمَ رَبِيعَ قَلْبِهِ وَنُورَ دَرْبِهِ، وَأَنْ يُلْبِسَ وَالِدَيْهِ تَاجَ الكَرَامَةِ يَوْمَ القِيَامَةِ.
+          </p>
+        </div>
+
+        <!-- Footer: 3 Columns (Teacher - 3D Royal Seal - Management & Date) -->
+        <div class="cert-footer">
+          <!-- Teacher Pillar -->
+          <div class="cert-foot-col">
+            <span class="cert-sign-role">المُعَلِّمُ المُشْرِفُ وَالمُجِيزُ</span>
+            <strong class="cert-sign-name" id="certTeacherName">الشيخ المشرف</strong>
+            <div class="cert-signature-draw">
+              <span>معتمد الإجازة والتقييم ✓</span>
+            </div>
+            <div class="cert-sign-sub">(لجنة التحكيم القرآني)</div>
+          </div>
+
+          <!-- 3D Royal Scalloped Gold Seal -->
+          <div class="cert-foot-seal">
+            <div class="cert-ribbon-tails">
+              <span class="ribbon-tail-l"></span>
+              <span class="ribbon-tail-r"></span>
+            </div>
+            <div class="cert-royal-seal-body">
+              <div class="seal-inner-ring">
+                <div class="seal-stars">★ ★ ★</div>
+                <div class="seal-title">أكاديمية قرطبة</div>
+                <div class="seal-sub">خَتْمُ الِاعْتِمَادِ الرَّسْمِيّ</div>
+                <div class="seal-en">KORTOBA SEAL</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Management & Date Pillar -->
+          <div class="cert-foot-col">
+            <span class="cert-sign-role">إِدَارَةُ الشُّؤُونِ التَّعْلِيمِيَّةِ</span>
+            <strong class="cert-sign-name">أ.د. المشرف العام</strong>
+            <div class="cert-signature-draw">
+              <span>رئاسة الأكاديمية ✓</span>
+            </div>
+            <div style="font-size:11.5px;color:#475569;margin-top:2px;">
+              <b>التاريخ:</b> <span id="certDate">—</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Digital Verification Strip -->
+        <div class="cert-verify-strip">
+          <div>
+            <span>🔒 وثيقة رسمية معتمدة صادرة إلكترونياً عن أكاديمية قرطبة لتعليم القرآن الكريم</span>
+          </div>
+          <div>
+            <span>رقم القيد والاعتماد: </span>
+            <span class="cert-verify-code" id="certVerifyCode">KTB-2026-8491</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -1980,6 +2628,113 @@ async function safeCloudOp(queryPromise) {
   }
 }
 
+/* =====================================================================
+   NAME NORMALIZATION & DATA HELPERS
+   ===================================================================== */
+function cleanName(n) {
+  if (!n) return '';
+  return String(n)
+    .trim()
+    .replace(/[\u064B-\u065F\u0670]/g, '') // remove tashkeel
+    .replace(/^(مهندس|مهندسة|أستاذ|أستاذة|دكتور|دكتورة|الشيخ|الشيخة|الطالب|الطالبة)\s*[\/\\:\.\-]?\s*/i, '')
+    .replace(/^[مأد]\s*[\/\\:\.\-]\s*/i, '')
+    .replace(/[أإآ]/g, 'ا')
+    .replace(/ى/g, 'ي')
+    .replace(/ة/g, 'ه')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+}
+
+function isSameStudent(a, b) {
+  if (!a || !b) return false;
+  const sa = String(a).trim().toLowerCase();
+  const sb = String(b).trim().toLowerCase();
+  if (sa === sb) return true;
+  const ca = cleanName(a);
+  const cb = cleanName(b);
+  if (ca && cb && ca === cb) return true;
+  if (ca && cb && (ca.includes(cb) || cb.includes(ca)) && Math.abs(ca.length - cb.length) <= 5) return true;
+  return false;
+}
+
+function resolveSurahName(val) {
+  if (!val) return '';
+  if (typeof val === 'number' || /^\d+$/.test(String(val).trim())) {
+    const id = parseInt(val, 10);
+    return QURAN_SURAHS[id - 1]?.name || `سورة رقم ${id}`;
+  }
+  return String(val).replace(/^سورة\s+/, '').trim();
+}
+
+function safeParseArray(val) {
+  if (!val) return [];
+  if (Array.isArray(val)) return val;
+  if (typeof val === 'string') {
+    try {
+      const parsed = JSON.parse(val);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch(e) { return []; }
+  }
+  return [];
+}
+
+function extractMonthKeyFromDate(d) {
+  if (!d) return '';
+  // Match YYYY-MM
+  const m = String(d).match(/(\d{4})[-/](\d{1,2})/);
+  if (m) return `${m[1]}-${String(m[2]).padStart(2, '0')}`;
+  // Match Arabic month names
+  const arabicMonths = {
+    'يناير': '01', 'فبراير': '02', 'مارس': '03', 'أبريل': '04', 'ابريل': '04',
+    'مايو': '05', 'يونيو': '06', 'يوليو': '07', 'أغسطس': '08', 'اغسطس': '08',
+    'سبتمبر': '09', 'أكتوبر': '10', 'اكتوبر': '10', 'نوفمبر': '11', 'ديسمبر': '12'
+  };
+  for (const [name, num] of Object.entries(arabicMonths)) {
+    if (String(d).includes(name)) {
+      const yrMatch = String(d).replace(/[٠-٩]/g, x => '٠١٢٣٤٥٦٧٨٩'.indexOf(x)).match(/\b(20\d\d)\b/);
+      const yr = yrMatch ? yrMatch[1] : (new Date().getFullYear());
+      return `${yr}-${num}`;
+    }
+  }
+  return '';
+}
+
+function getEvalMonthKey(e) {
+  if (!e) return '';
+  if (e.monthKey && e.monthKey !== 'undefined' && e.monthKey !== 'null' && e.monthKey !== '') return e.monthKey;
+  const extracted = extractMonthKeyFromDate(e.date);
+  if (extracted) return extracted;
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+}
+
+function getSessionMonthKey(s) {
+  if (!s || !s.date) return '';
+  const extracted = extractMonthKeyFromDate(s.date);
+  if (extracted) return extracted;
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+}
+
+function isSameDate(d1, d2) {
+  if (!d1 || !d2) return false;
+  if (d1 === d2) return true;
+  const normalizeDigits = str => String(str).replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)).trim();
+  const s1 = normalizeDigits(d1);
+  const s2 = normalizeDigits(d2);
+  if (s1 === s2) return true;
+  if (s1.includes(s2) || s2.includes(s1)) return true;
+  const nums1 = s1.match(/\d+/g);
+  const nums2 = s2.match(/\d+/g);
+  if (nums1 && nums2 && nums1.length >= 2 && nums2.length >= 2) {
+    const set1 = new Set(nums1);
+    const common = nums2.filter(n => set1.has(n));
+    if (common.length >= 2) return true;
+  }
+  return false;
+}
+
 const DEFAULT_DB = {
   deleted_records: { students: [], teachers: [], moderators: [], users: [], sessions: [] },
   users: [
@@ -2026,6 +2781,8 @@ function loadDB(){
       if(!parsed.sessions) parsed.sessions = DEFAULT_DB.sessions;
       if(!parsed.makeup_sessions) parsed.makeup_sessions = [];
       if(!parsed.teacher_alerts) parsed.teacher_alerts = [];
+      if(!parsed.evaluations) parsed.evaluations = [];
+      if(!parsed.complaints) parsed.complaints = [];
 
       // Automatic purge of legacy dummy demo records while preserving all user-created records
       const DEMO_IDS = new Set(['u_mod', 'u_t1', 'u_t2', 'u_s1', 'u_s2', 'u_s3', 't1', 't2', 'm1', 's1', 's2', 's3', 'ev_1', 1, 2, 3, '1', '2', '3']);
@@ -2047,27 +2804,23 @@ function loadDB(){
       const delU = parsed.deleted_records.users || [];
       const delSess = parsed.deleted_records.sessions || [];
 
-      parsed.students = (parsed.students || []).filter(s => !delS.includes(s.name) && !delS.includes(s.username));
+      parsed.students = (parsed.students || []).filter(s => !delS.some(d => isSameStudent(d, s.name) || isSameStudent(d, s.username)));
       parsed.teachers = (parsed.teachers || []).filter(t => !delT.includes(t.name) && !delT.includes(t.username));
-      parsed.moderators = (parsed.moderators || []).filter(m => !delM.includes(m.name) && !delM.includes(m.username) && !delM.some(x => x && (m.name.includes(x) || x.includes(m.name))));
-      parsed.users = (parsed.users || []).filter(u => !delU.includes(u.username) && !delU.includes(u.name) && !delM.some(x => x && (u.name.includes(x) || x.includes(u.name))));
+      parsed.moderators = (parsed.moderators || []).filter(m => !delM.includes(m.name) && !delM.includes(m.username));
+      parsed.users = (parsed.users || []).filter(u => !delU.includes(u.username) && !delU.includes(u.name));
 
-      const validStudentNames = new Set((parsed.students || []).map(s => s.name));
-
-      // Filter sessions: remove tombstones and any ghost sessions whose student does not exist
+      // Filter sessions: remove tombstones only
       parsed.sessions = (parsed.sessions || []).filter(s => {
         if (!s) return false;
         if (delSess.includes(String(s.id)) || delSess.includes(Number(s.id))) return false;
-        if (delS.includes(s.student) || delT.includes(s.teacher)) return false;
-        if (s.student && !validStudentNames.has(s.student)) return false;
+        if (delS.some(d => isSameStudent(d, s.student)) || delT.includes(s.teacher)) return false;
         return true;
       });
 
       if (parsed.evaluations) {
         parsed.evaluations = parsed.evaluations.filter(e => {
           if (!e) return false;
-          if (delS.includes(e.student) || delT.includes(e.teacher)) return false;
-          if (e.student && !validStudentNames.has(e.student)) return false;
+          if (delS.some(d => isSameStudent(d, e.student)) || delT.includes(e.teacher)) return false;
           return true;
         });
       }
@@ -2075,14 +2828,19 @@ function loadDB(){
       if (parsed.makeup_sessions) {
         parsed.makeup_sessions = parsed.makeup_sessions.filter(m => {
           if (!m) return false;
-          if (delS.includes(m.student_name) || delT.includes(m.teacher_name)) return false;
-          if (m.student_name && !validStudentNames.has(m.student_name)) return false;
+          if (delS.some(d => isSameStudent(d, m.student_name)) || delT.includes(m.teacher_name)) return false;
           return true;
         });
       }
 
       return parsed;
-    }catch(e){}
+    } catch(err) {
+      console.warn('loadDB non-fatal warning:', err);
+      try {
+        const fallback = JSON.parse(raw);
+        if (fallback) return fallback;
+      } catch(e2) {}
+    }
   }
   localStorage.setItem('kortoba_db', JSON.stringify(DEFAULT_DB));
   return JSON.parse(JSON.stringify(DEFAULT_DB));
@@ -2122,45 +2880,107 @@ async function syncFromCloud(){
       changed = true;
     }
 
-    const validStudentNames = new Set((DB.students || []).map(s => s.name));
-
     if (sessRes && sessRes.data && sessRes.data.length > 0) {
       const liveSessions = sessRes.data.filter(s => 
-        !delS.includes(s.student_name) && 
+        !delS.some(d => isSameStudent(d, s.student_name)) && 
         !delT.includes(s.teacher_name) && 
         !delSess.includes(String(s.id)) && 
-        !delSess.includes(Number(s.id)) &&
-        (!s.student_name || validStudentNames.has(s.student_name))
+        !delSess.includes(Number(s.id))
       );
-      DB.sessions = liveSessions.map(s => ({ id: s.id, student: s.student_name, teacher: s.teacher_name, date: s.date_text, time: s.time_text, platform: s.platform, link: s.link, status: s.status, attendance: s.attendance || '', makeupRequired: s.makeup_required||false }));
+      const cloudMappedSessions = liveSessions.map(s => ({
+        id: s.id, student: s.student_name, teacher: s.teacher_name, date: s.date_text, time: s.time_text, platform: s.platform, link: s.link, status: s.status, attendance: s.attendance || '', makeupRequired: s.makeup_required||false
+      }));
+      // Safe merge local sessions with cloud sessions
+      const mergedSessions = [...cloudMappedSessions];
+      (DB.sessions || []).forEach(localSess => {
+        const alreadyInCloud = mergedSessions.some(c => String(c.id) === String(localSess.id) || (isSameStudent(c.student, localSess.student) && isSameDate(c.date, localSess.date) && c.time === localSess.time));
+        if (!alreadyInCloud && !delSess.includes(String(localSess.id)) && !delS.some(d => isSameStudent(d, localSess.student))) {
+          mergedSessions.push(localSess);
+        }
+      });
+      DB.sessions = mergedSessions;
       changed = true;
     }
 
     if (evalRes && evalRes.data && evalRes.data.length > 0) {
       const liveEvals = evalRes.data.filter(e => 
-        !delS.includes(e.student_name) && 
-        !delT.includes(e.teacher_name) &&
-        (!e.student_name || validStudentNames.has(e.student_name))
+        !delS.some(d => isSameStudent(d, e.student_name)) && 
+        !delT.includes(e.teacher_name)
       );
-      DB.evaluations = liveEvals.map(e => ({
-        id: e.id, student: e.student_name, teacher: e.teacher_name, date: e.date_text, monthKey: e.month_key||'2026-09',
+      const cloudMappedEvals = liveEvals.map(e => ({
+        id: e.id,
+        session_id: e.session_id || '',
+        student: e.student_name,
+        teacher: e.teacher_name,
+        date: e.date_text,
+        monthKey: e.month_key || extractMonthKeyFromDate(e.date_text) || '2026-09',
         newSurahFrom: e.new_surah_from, newAyahFrom: e.new_ayah_from, newSurahTo: e.new_surah_to, newAyahTo: e.new_ayah_to,
-        newAyahsCount: e.new_ayahs_count, newPagesCount: e.new_pages_count, newScore: e.new_score, newNotes: e.new_notes||[],
+        newAyahsCount: e.new_ayahs_count, newPagesCount: e.new_pages_count, newScore: e.new_score,
+        newNotes: safeParseArray(e.new_notes),
         revSurahFrom: e.rev_surah_from, revAyahFrom: e.rev_ayah_from, revSurahTo: e.rev_surah_to, revAyahTo: e.rev_ayah_to,
-        revAyahsCount: e.rev_ayahs_count, revPagesCount: e.rev_pages_count, revScore: e.rev_score, revNotes: e.rev_notes||[],
-        tajweedScore: e.tajweed_score, tajweedNotes: e.tajweed_notes||[],
+        revAyahsCount: e.rev_ayahs_count, revPagesCount: e.rev_pages_count, revScore: e.rev_score,
+        revNotes: safeParseArray(e.rev_notes),
+        tajweedScore: e.tajweed_score,
+        tajweedNotes: safeParseArray(e.tajweed_notes),
         overallScore: e.overall_score, overallRating: e.overall_rating, generalNotes: e.general_notes
       }));
+
+      // Safe merge with local DB.evaluations to ensure newly saved local evals are preserved
+      const mergedEvals = [...cloudMappedEvals];
+      (DB.evaluations || []).forEach(localEv => {
+        const alreadyInCloud = mergedEvals.some(c => String(c.id) === String(localEv.id) || (isSameStudent(c.student, localEv.student) && isSameDate(c.date, localEv.date) && c.newSurahFrom === localEv.newSurahFrom && c.newAyahFrom === localEv.newAyahFrom));
+        if (!alreadyInCloud && !delS.some(d => isSameStudent(d, localEv.student))) {
+          mergedEvals.push(localEv);
+        }
+      });
+      DB.evaluations = mergedEvals;
       changed = true;
     }
 
-    // Filter local DB.sessions against any orphans or tombstones
+    // Auto-upload any locally created evaluations to cloud in background
+    if (supabaseClient) {
+      (DB.evaluations || []).forEach(localEv => {
+        if (localEv.id && String(localEv.id).startsWith('ev_')) {
+          const cloudPayload = {
+            student_name: localEv.student,
+            teacher_name: localEv.teacher,
+            date_text: localEv.date,
+            month_key: localEv.monthKey,
+            new_surah_from: localEv.newSurahFrom, new_ayah_from: localEv.newAyahFrom, new_surah_to: localEv.newSurahTo, new_ayah_to: localEv.newAyahTo,
+            new_ayahs_count: localEv.newAyahsCount, new_pages_count: localEv.newPagesCount, new_score: localEv.newScore,
+            new_notes: localEv.newNotes,
+            rev_surah_from: localEv.revSurahFrom, rev_ayah_from: localEv.revAyahFrom, rev_surah_to: localEv.revSurahTo, rev_ayah_to: localEv.revAyahTo,
+            rev_ayahs_count: localEv.revAyahsCount, rev_pages_count: localEv.revPagesCount, rev_score: localEv.revScore,
+            rev_notes: localEv.revNotes,
+            tajweed_score: localEv.tajweedScore,
+            tajweed_notes: localEv.tajweedNotes,
+            overall_score: localEv.overallScore, overall_rating: localEv.overallRating, general_notes: localEv.generalNotes
+          };
+          if (localEv.session_id && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(localEv.session_id))) {
+            cloudPayload.session_id = localEv.session_id;
+          }
+          safeCloudOp(supabaseClient.from('evaluations').insert([cloudPayload]).select()).then(res => {
+            if (res && res.error && cloudPayload.session_id) {
+              delete cloudPayload.session_id;
+              return safeCloudOp(supabaseClient.from('evaluations').insert([cloudPayload]).select());
+            }
+            return res;
+          }).then(res => {
+            if (res && res.data && res.data[0] && res.data[0].id) {
+              localEv.id = res.data[0].id;
+              saveDB();
+            }
+          }).catch(() => {});
+        }
+      });
+    }
+
+    // Filter local DB.sessions against tombstones only
     const beforeSessLen = (DB.sessions || []).length;
     DB.sessions = (DB.sessions || []).filter(s => {
       if (!s) return false;
       if (delSess.includes(String(s.id)) || delSess.includes(Number(s.id))) return false;
-      if (delS.includes(s.student) || delT.includes(s.teacher)) return false;
-      if (s.student && !validStudentNames.has(s.student)) return false;
+      if (delS.some(d => isSameStudent(d, s.student)) || delT.includes(s.teacher)) return false;
       return true;
     });
     if (DB.sessions.length !== beforeSessLen) changed = true;
@@ -2223,6 +3043,7 @@ const NAV = {
     { id:'admin-teachers', label:'إدارة المعلمين والمعلمات', icon:'book' },
     { id:'admin-moderators', label:'إدارة المشرفين التربويين', icon:'shield' },
     { id:'admin-sessions', label:'جدول الحصص الشامل', icon:'calendar' },
+    { id:'admin-evals', label:'سجل التقييمات والملاحظات 📝', icon:'edit' },
     { id:'admin-makeups', label:'رادار الغياب والتعويضات', icon:'flag' },
     { id:'admin-users', label:'الحسابات وكلمات المرور', icon:'key' },
     { id:'admin-backup', label:'النسخ الاحتياطي والضبط', icon:'chart' },
@@ -2232,6 +3053,7 @@ const NAV = {
     { id:'mod-students', label:'متابعة الطلاب', icon:'users' },
     { id:'mod-teachers', label:'متابعة المعلمين', icon:'book' },
     { id:'admin-sessions', label:'جدول الحصص الشامل', icon:'calendar' },
+    { id:'mod-evals', label:'ملاحظات وتقييمات الحصص 📝', icon:'edit' },
     { id:'mod-makeups', label:'حصص التعويض المعلقة', icon:'flag' },
     { id:'mod-alerts', label:'تنبيهات الحصص والشكاوى', icon:'edit' },
   ],
@@ -2239,12 +3061,13 @@ const NAV = {
     { id:'t-overview', label:'الرئيسية وحصص اليوم', icon:'grid' },
     { id:'t-students', label:'طلابي وملخصاتهم', icon:'users' },
     { id:'t-sessions', label:'جدول الحصص والتحضير', icon:'calendar' },
-    { id:'t-eval', label:'سجل التقييمات', icon:'edit' },
+    { id:'t-eval', label:'سجل التقييمات والملاحظات 📝', icon:'edit' },
     { id:'t-makeups', label:'حصص التعويض في ذمتي', icon:'flag' },
   ],
   student: [
     { id:'s-overview', label:'الرئيسية ورصيد الحصص', icon:'grid' },
     { id:'s-progress', label:'تقدّمي في المصحف', icon:'chart' },
+    { id:'s-notes', label:'دفتر ملاحظات الحصص 📝', icon:'edit' },
     { id:'s-monthly', label:'📜 ملخص الشهر الشامل', icon:'book' },
     { id:'s-sessions', label:'حصصي ورابط البث', icon:'calendar' },
     { id:'s-makeups', label:'حصص التعويض المستحقة', icon:'flag' },
@@ -2288,7 +3111,7 @@ const BOTTOM_NAV_ITEMS = {
   ],
   student: [
     { id:'s-overview', label:'الرئيسية', icon:'grid' },
-    { id:'s-progress', label:'تقدّمي', icon:'chart' },
+    { id:'s-notes', label:'الملاحظات', icon:'edit' },
     { id:'s-monthly', label:'الملخص', icon:'book' },
     { id:'s-sessions', label:'حصصي', icon:'calendar' },
     { id:'menu', label:'القائمة', icon:'menu' },
@@ -2496,9 +3319,9 @@ function saveMyProfileData(){
   } else if (currentUser.role === 'student') {
     const s = DB.students.find(std => std.name === oldName || std.username === oldUsername);
     if (s) { s.name = newName; s.phone = newPhone; s.username = newUsername; }
-    DB.sessions.forEach(sess => { if (sess.student === oldName) sess.student = newName; });
-    DB.evaluations.forEach(e => { if (e.student === oldName) e.student = newName; });
-    (DB.makeup_sessions||[]).forEach(m => { if (m.student_name === oldName) m.student_name = newName; });
+    DB.sessions.forEach(sess => { if (isSameStudent(sess.student, oldName)) sess.student = newName; });
+    DB.evaluations.forEach(e => { if (isSameStudent(e.student, oldName)) e.student = newName; });
+    (DB.makeup_sessions||[]).forEach(m => { if (isSameStudent(m.student_name, oldName)) m.student_name = newName; });
   } else if (currentUser.role === 'moderator') {
     const m = DB.moderators.find(mod => mod.name === oldName || mod.username === oldUsername);
     if (m) { m.name = newName; m.phone = newPhone; m.username = newUsername; }
@@ -2626,9 +3449,9 @@ function saveEditUserData(){
       s.schedule = schedule;
     }
     // Update dependent records
-    DB.sessions.forEach(sess => { if (sess.student === oldName) sess.student = newName; });
-    DB.evaluations.forEach(e => { if (e.student === oldName) e.student = newName; });
-    (DB.makeup_sessions||[]).forEach(m => { if (m.student_name === oldName) m.student_name = newName; });
+    DB.sessions.forEach(sess => { if (isSameStudent(sess.student, oldName)) sess.student = newName; });
+    DB.evaluations.forEach(e => { if (isSameStudent(e.student, oldName)) e.student = newName; });
+    (DB.makeup_sessions||[]).forEach(m => { if (isSameStudent(m.student_name, oldName)) m.student_name = newName; });
 
     if (supabaseClient) {
       safeCloudOp(supabaseClient.from('students').update({ name: newName, phone: newPhone, teacher_name: teacher, program, monthly_sessions: monthlySessions, session_schedule: schedule }).eq('name', oldName));
@@ -2917,7 +3740,7 @@ const PAGES = {
             ${DB.students.map(s => {
               const u = DB.users.find(x => x.name === s.name || x.username === s.username);
               const pass = u ? u.password : '••••••';
-              const sSessions = (DB.sessions || []).filter(sess => sess.student === s.name && sess.status === 'upcoming');
+              const sSessions = (DB.sessions || []).filter(sess => isSameStudent(sess.student, s.name) && sess.status === 'upcoming');
               const isScheduled = sSessions.length > 0;
               return `
               <tr class="student-row" data-name="${s.name}" data-username="${s.username||''}" data-phone="${s.phone||''}" data-teacher="${s.teacher}" data-program="${s.program||''}">
@@ -2955,6 +3778,12 @@ const PAGES = {
                     </button>
                     <button class="btn btn-ghost btn-sm" onclick="viewStudentMonthlySummary('${s.name}')" title="عرض ملخص الشهر">
                       📜 السمري
+                    </button>
+                    <button class="btn btn-ghost btn-sm" onclick="openCertModal('${s.name}')" style="color:var(--gold-deep);font-weight:700;" title="إصدار وطباعة شهادة إنجاز ملكية لهذا الطالب">
+                      📜 الشهادة
+                    </button>
+                    <button class="btn btn-ghost btn-sm" onclick="viewStudentNotesNotebook('${s.name}')" title="عرض دفتر ملاحظات وتوجيهات المعلم">
+                      📝 الملاحظات
                     </button>
                     <button class="btn btn-ghost btn-sm" onclick="adminResetUserPass('${s.username}')" title="تعديل كلمة المرور">
                       🔑 الباسورد
@@ -3470,15 +4299,14 @@ const PAGES = {
   /* ---------- TEACHER PAGES ---------- */
   't-overview': ()=>{
     const myName = currentUser ? currentUser.name : 'الشيخ أحمد فتحي';
-    const myStudents = DB.students.filter(s=>s.teacher===myName);
-    const validStudentNames = new Set(DB.students.map(s => s.name));
+    const myStudents = DB.students.filter(s => s.teacher === myName || cleanName(s.teacher) === cleanName(myName));
     const mySessions = DB.sessions.filter(s => {
       if (!s) return false;
-      const isMySession = s.teacher === myName || !s.teacher;
-      const studentExists = !s.student || validStudentNames.has(s.student);
+      const isMySession = s.teacher === myName || !s.teacher || cleanName(s.teacher) === cleanName(myName);
+      const studentExists = !s.student || DB.students.some(st => isSameStudent(st.name, s.student));
       return isMySession && studentExists;
     });
-    const myOwedMakeups = (DB.makeup_sessions||[]).filter(m=>m.teacher_name===myName && m.status!=='completed' && (!m.student_name || validStudentNames.has(m.student_name)));
+    const myOwedMakeups = (DB.makeup_sessions||[]).filter(m => (m.teacher_name === myName || cleanName(m.teacher_name) === cleanName(myName)) && m.status !== 'completed' && (!m.student_name || DB.students.some(st => isSameStudent(st.name, m.student_name))));
 
     const todaySessions = mySessions.filter(s => isSessionToday(s));
     const upcomingSessions = mySessions.filter(s => !isSessionToday(s) && s.status !== 'done');
@@ -3568,6 +4396,8 @@ const PAGES = {
                   <button class="btn btn-primary" onclick="openTripleEvalModal('${s.name}')" style="padding:6px 12px;font-size:12px;">تسجيل تسميع 📖</button>
                   <button class="btn btn-ghost" onclick="openAddSessionModal('${s.name}')" style="padding:6px 10px;font-size:12px;" title="جدولة موعد حصة جديدة لهذا الطالب">📅 حصة</button>
                   <button class="btn btn-ghost" onclick="viewStudentMonthlySummary('${s.name}')" style="padding:6px 12px;font-size:12px;">📜 سمري</button>
+                  <button class="btn btn-ghost" onclick="openCertModal('${s.name}')" style="padding:6px 10px;font-size:12px;color:var(--gold-deep);font-weight:700;" title="إصدار وطباعة شهادة إنجاز ملكية لهذا الطالب">📜 شهادة</button>
+                  <button class="btn btn-ghost" onclick="viewStudentNotesNotebook('${s.name}')" style="padding:6px 10px;font-size:12px;">📝 الملاحظات</button>
                 </div>
               </td>
             </tr>`).join('')}
@@ -3580,30 +4410,41 @@ const PAGES = {
 
   't-eval': ()=>{
     const myName = currentUser ? currentUser.name : 'الشيخ أحمد فتحي';
-    const myEvals = DB.evaluations.filter(e=>e.teacher===myName);
+    const myEvals = (DB.evaluations || []).filter(e => e.teacher === myName || cleanName(e.teacher) === cleanName(myName));
     return `
     <div class="panel">
-      <div class="panel-head">
-        <h3>سجل التقييمات والحصص المسجلة</h3>
+      <div class="panel-head" style="flex-wrap:wrap;gap:12px;">
+        <div>
+          <h3 style="margin:0;">سجل التقييمات والملاحظات للحصص</h3>
+          <span style="font-size:12.5px;color:var(--ink-soft);">عرض تفصيلي لكافة التسميعات ومواضع التركيز وتوجيهات التجويد</span>
+        </div>
         <button class="btn btn-primary" onclick="openTripleEvalModal()" style="padding:9px 18px;">➕ تقييم حصة جديدة</button>
       </div>
-      <table>
-        <thead><tr><th>الطالب</th><th>التاريخ</th><th>الحفظ الجديد</th><th>المراجعة</th><th>التجويد</th><th>التقييم العام</th><th>واتساب</th></tr></thead>
-        <tbody>
-          ${myEvals.map(e=>`
-            <tr>
-              <td class="cell-name"><span class="avatar-sm">${initial(e.student)}</span>${e.student}</td>
-              <td>${e.date}</td>
-              <td><b>${e.newScore||100}%</b> (${e.newAyahsCount||0} آية)</td>
-              <td><b>${e.revScore||100}%</b> (${e.revAyahsCount||0} آية)</td>
-              <td><b>${e.tajweedScore||100}%</b></td>
-              <td><b>${e.overallScore||95}%</b> ${ratingBadge(e.overallRating)}</td>
-              <td>
-                <button class="btn-wa-share" onclick="shareEvalToWhatsApp('${e.id}')" style="padding:4px 10px;font-size:11.5px;">واتساب 📱</button>
-              </td>
-            </tr>`).join('')}
-        </tbody>
-      </table>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead><tr><th>الطالب</th><th>التاريخ</th><th>الحفظ الجديد</th><th>المراجعة</th><th>التجويد</th><th>التقييم العام</th><th>الملاحظات والإجراءات</th></tr></thead>
+          <tbody>
+            ${myEvals.length === 0 ? `
+              <tr><td colspan="7" style="text-align:center;padding:30px;color:var(--ink-soft);">لا توجد تقييمات مسجلة بعد. اضغط "تقييم حصة جديدة" للبدء.</td></tr>
+            ` : myEvals.map(e=>`
+              <tr>
+                <td class="cell-name"><span class="avatar-sm">${initial(e.student)}</span>${e.student}</td>
+                <td><b>${e.date}</b><div style="font-size:11px;color:var(--ink-soft);">${e.monthKey||''}</div></td>
+                <td><b>${e.newScore||100}%</b> (${e.newAyahsCount||0} آية)</td>
+                <td><b>${e.revScore||100}%</b> (${e.revAyahsCount||0} آية)</td>
+                <td><b>${e.tajweedScore||100}%</b></td>
+                <td><b>${e.overallScore||95}%</b> ${ratingBadge(e.overallRating)}</td>
+                <td>
+                  <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                    <button class="btn btn-ghost btn-sm" onclick="openEvalDetailsModal('${e.id}')" style="padding:4px 9px;font-size:11.5px;font-weight:700;" title="عرض ملاحظات الحصة كاملة">🔍 الملاحظات</button>
+                    <button class="btn btn-ghost btn-sm" onclick="viewStudentMonthlySummary('${e.student}', '${e.monthKey||''}')" style="padding:4px 9px;font-size:11.5px;" title="عرض ملخص الشهر">📜 السمري</button>
+                    <button class="btn-wa-share" onclick="shareEvalToWhatsApp('${e.id}')" style="padding:4px 9px;font-size:11.5px;">📱 واتساب</button>
+                  </div>
+                </td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
     </div>`;
   },
 
@@ -3640,14 +4481,14 @@ const PAGES = {
   /* ---------- STUDENT PAGES ---------- */
   's-overview': ()=>{
     const myName = currentUser ? currentUser.name : 'يوسف أحمد';
-    const myProfile = DB.students.find(s=>s.name===myName) || { monthlySessions:8, schedule:'السبت والثلاثاء ٥:٠٠ م' };
-    const myEvals = DB.evaluations.filter(e=>e.student===myName);
+    const myProfile = (DB.students || []).find(s=>isSameStudent(s.name, myName)) || { monthlySessions:8, schedule:'السبت والثلاثاء ٥:٠٠ م' };
+    const myEvals = (DB.evaluations || []).filter(e=>isSameStudent(e.student, myName));
     const lastEval = myEvals[0] || null;
-    const mySessions = DB.sessions.filter(s=>s.student===myName);
+    const mySessions = (DB.sessions || []).filter(s=>isSameStudent(s.student, myName));
     const attendedThisMonth = mySessions.filter(s=>s.attendance==='present' || s.status==='done').length;
     const quota = myProfile.monthlySessions || 8;
     const remaining = Math.max(0, quota - attendedThisMonth);
-    const owedMakeups = (DB.makeup_sessions||[]).filter(m=>m.student_name===myName && m.status==='pending');
+    const owedMakeups = (DB.makeup_sessions||[]).filter(m=>isSameStudent(m.student_name, myName) && m.status==='pending');
     const lastCompletedSession = mySessions.find(s=>s.status==='done' || s.attendance==='present') || null;
 
     return `
@@ -3684,11 +4525,16 @@ const PAGES = {
         </div>
         ${lastEval ? `
           <div style="font-size:13.5px;line-height:1.9;">
-            <div>🟢 <b>الحفظ الجديد:</b> سورة ${QURAN_SURAHS[lastEval.newSurahFrom-1]?.name||''} (آية ${lastEval.newAyahFrom} إلى ${lastEval.newAyahTo}) · ${lastEval.newScore}%</div>
-            <div>🔵 <b>المراجعة:</b> سورة ${QURAN_SURAHS[lastEval.revSurahFrom-1]?.name||''} (آية ${lastEval.revAyahFrom} إلى ${lastEval.revAyahTo}) · ${lastEval.revScore}%</div>
+            <div>🟢 <b>الحفظ الجديد:</b> سورة ${resolveSurahName(lastEval.newSurahFrom)} (آية ${lastEval.newAyahFrom} إلى ${lastEval.newAyahTo}) · ${lastEval.newScore}%</div>
+            <div>🔵 <b>المراجعة:</b> سورة ${resolveSurahName(lastEval.revSurahFrom)} (آية ${lastEval.revAyahFrom} إلى ${lastEval.revAyahTo}) · ${lastEval.revScore}%</div>
             <div>🟡 <b>التجويد:</b> درجة الإتقان ${lastEval.tajweedScore}%</div>
             <div style="color:var(--ink-soft);margin-top:8px;background:var(--bg);padding:8px 12px;border-radius:8px;">
               💬 <b>توجيه المعلم:</b> "${lastEval.generalNotes||'حفظ ممتاز وبارك الله فيك.'}"
+            </div>
+            <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="btn btn-primary btn-sm" onclick="openEvalDetailsModal('${lastEval.id}')" style="font-weight:700;">🔍 ملاحظات وتفاصيل الحصة</button>
+              <button class="btn btn-ghost btn-sm" onclick="renderPage('student','s-notes')">📝 دفتر الملاحظات</button>
+              <button class="btn btn-ghost btn-sm" onclick="renderPage('student','s-monthly')">📜 السمري الشهري</button>
             </div>
           </div>
         ` : lastCompletedSession ? `
@@ -3728,8 +4574,8 @@ const PAGES = {
 
   's-progress': ()=>{
     const myName = currentUser ? currentUser.name : 'الطالب';
-    const myProfile = DB.students.find(s=>s.name===myName) || { progress:0, monthlySessions:8, lastRating:'ممتاز' };
-    const myEvals = DB.evaluations.filter(e=>e.student===myName);
+    const myProfile = (DB.students || []).find(s=>isSameStudent(s.name, myName)) || { progress:0, monthlySessions:8, lastRating:'ممتاز' };
+    const myEvals = (DB.evaluations || []).filter(e=>isSameStudent(e.student, myName));
     const progressCount = parseInt(myProfile.progress) || 0;
 
     const JUZ_NAMES = [
@@ -3802,6 +4648,11 @@ const PAGES = {
     </div>`;
   },
 
+  's-notes': ()=>{
+    const myName = currentUser ? currentUser.name : 'يوسف أحمد';
+    return renderStudentNotesNotebook(myName);
+  },
+
   's-monthly': ()=>{
     const myName = currentUser ? currentUser.name : 'يوسف أحمد';
     return renderStudentMonthlySummaryView(myName);
@@ -3811,7 +4662,7 @@ const PAGES = {
 
   's-makeups': ()=>{
     const myName = currentUser ? currentUser.name : 'يوسف أحمد';
-    const owed = (DB.makeup_sessions||[]).filter(m=>m.student_name===myName);
+    const owed = (DB.makeup_sessions||[]).filter(m=>isSameStudent(m.student_name, myName));
     return `
     <div class="panel">
       <div class="panel-head"><h3>حصص التعويض الخاصة بك (حقك المشروع)</h3></div>
@@ -3838,6 +4689,14 @@ const PAGES = {
       `}
     </div>`;
   },
+
+  'mod-evals': ()=>{
+    return renderAllEvaluationsView('moderator');
+  },
+
+  'admin-evals': ()=>{
+    return renderAllEvaluationsView('admin');
+  },
 };
 
 function moderatorOverview(){
@@ -3855,10 +4714,10 @@ function moderatorOverview(){
         <button class="btn btn-primary" onclick="openAddUserModal('student')" style="padding:7px 16px;font-size:13px;">➕ تسجيل طالب</button>
       </div>
       <table>
-        <thead><tr><th>الطالب</th><th>المعلم المشرف</th><th>الحصص الشهرية</th><th>حالة التسكين في الحصص</th><th>التقييم</th><th>السمري</th></tr></thead>
+        <thead><tr><th>الطالب</th><th>المعلم المشرف</th><th>الحصص الشهرية</th><th>حالة التسكين في الحصص</th><th>التقييم</th><th>السمري والملاحظات</th></tr></thead>
         <tbody>
           ${DB.students.map(s=>{
-            const sSessions = (DB.sessions || []).filter(sess => sess.student === s.name && sess.status === 'upcoming');
+            const sSessions = (DB.sessions || []).filter(sess => isSameStudent(sess.student, s.name) && sess.status === 'upcoming');
             const isScheduled = sSessions.length > 0;
             return `
             <tr>
@@ -3875,7 +4734,12 @@ function moderatorOverview(){
                 `}
               </td>
               <td>${ratingBadge(s.lastRating)}</td>
-              <td><button class="btn btn-ghost" onclick="viewStudentMonthlySummary('${s.name}')" style="padding:4px 10px;font-size:12px;">📜 سمري الشهر</button></td>
+              <td>
+                <div style="display:flex;gap:4px;flex-wrap:wrap;">
+                  <button class="btn btn-ghost btn-sm" onclick="viewStudentMonthlySummary('${s.name}')" style="padding:4px 8px;font-size:11.5px;">📜 سمري</button>
+                  <button class="btn btn-ghost btn-sm" onclick="viewStudentNotesNotebook('${s.name}')" style="padding:4px 8px;font-size:11.5px;">📝 ملاحظات</button>
+                </div>
+              </td>
             </tr>`;
           }).join('')}
         </tbody>
@@ -3995,8 +4859,9 @@ function filterJuzCards(filter, btn){
    6. SESSION LIST ITEMS & ATTENDANCE LOGIC
    ===================================================================== */
 function sessionItemTeacher(s, idx){
-  const isDone = s.status === 'done';
-  const att = s.attendance || '';
+  const matchedEval = (DB.evaluations || []).find(e => isSameStudent(e.student, s.student) && ((e.session_id && String(e.session_id) === String(s.id)) || isSameDate(e.date, s.date)));
+  const isDone = s.status === 'done' || Boolean(matchedEval);
+  const att = s.attendance || (matchedEval ? 'present' : '');
   const isToday = isSessionToday(s);
   const isFuture = isSessionFuture(s);
 
@@ -4040,6 +4905,7 @@ function sessionItemTeacher(s, idx){
       <button class="att-btn ${att==='absent_teacher'?'active-absent-t':''}" onclick="setAttendanceDetailed('${s.id}', 'absent_teacher')" title="غياب المعلم (يلزم تعويض للطالب)">غياب معلم 👨‍🏫⚠️</button>
     </div>
     <div style="display:flex;align-items:center;gap:8px;flex-wrap:nowrap;">
+      ${matchedEval ? `<button class="btn btn-ghost btn-sm" onclick="openEvalDetailsModal('${matchedEval.id}')" title="عرض ملاحظات وتوجيهات الحصة" style="padding:6px 10px;font-size:12px;font-weight:700;">📝 الملاحظات</button>` : ''}
       <button class="btn btn-ghost btn-sm" onclick="openEditSessionModal('${s.id}')" title="تعديل موعد أو تفاصيل الحصة" style="padding:6px 10px;font-size:12px;">✏️ تعديل</button>
       ${joinBtn}
       <button class="btn-icon-danger" onclick="deleteSessionDirect('${s.id}')" title="حذف هذه الحصة نهائياً" style="padding:7px 11px;border-radius:100px;font-size:12px;">
@@ -4051,8 +4917,9 @@ function sessionItemTeacher(s, idx){
 }
 
 function sessionItemStudent(s, idx){
-  const isDone = s.status === 'done';
-  const att = s.attendance || '';
+  const matchedEval = (DB.evaluations || []).find(e => isSameStudent(e.student, s.student) && ((e.session_id && String(e.session_id) === String(s.id)) || isSameDate(e.date, s.date)));
+  const isDone = s.status === 'done' || Boolean(matchedEval);
+  const att = s.attendance || (matchedEval ? 'present' : '');
   const isToday = isSessionToday(s);
   const isFuture = isSessionFuture(s);
 
@@ -4084,6 +4951,11 @@ function sessionItemStudent(s, idx){
     joinBtn = '<span class="session-join locked" title="يفتح رابط الحصة تلقائياً في يوم موعدها المحدد (نافذة 24 ساعة)">🔒 تفتح يوم الحصة</span>';
   }
 
+  let notesBtn = '';
+  if (isDone && matchedEval) {
+    notesBtn = `<button class="btn btn-ghost btn-sm" onclick="openEvalDetailsModal('${matchedEval.id}')" title="عرض ملاحظات وتوجيهات المعلم لك" style="margin-right:6px;padding:5px 10px;font-size:11.5px;font-weight:700;">📝 ملاحظات المعلم</button>`;
+  }
+
   return `<div class="${wrapperCls}">
     <div class="session-date"><b>${s.date.split(' ')[0]}</b><span>${s.date.split(' ')[1]||''}</span></div>
     <div class="session-info">
@@ -4091,6 +4963,7 @@ function sessionItemStudent(s, idx){
       <span>${s.time} · ${s.platform}</span>
     </div>
     ${badge}
+    ${notesBtn}
     ${joinBtn}
   </div>`;
 }
@@ -4101,11 +4974,15 @@ function teacherMarkPresent(studentName, sessionIdOrIdx){
     sess.attendance = 'present';
     sess.status = 'done';
     saveDB();
-    if (supabaseClient && sess.id) {
-      safeCloudOp(supabaseClient.from('sessions').update({ attendance: 'present', status: 'done' }).eq('id', sess.id));
+    if (supabaseClient && sess) {
+      if (sess.id && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(sess.id))) {
+        safeCloudOp(supabaseClient.from('sessions').update({ attendance: 'present', status: 'done' }).eq('id', sess.id));
+      } else {
+        safeCloudOp(supabaseClient.from('sessions').update({ attendance: 'present', status: 'done' }).eq('student_name', sess.student).eq('date_text', sess.date));
+      }
     }
   }
-  openTripleEvalModal(studentName);
+  openTripleEvalModal(studentName, sess ? sess.id : null);
 }
 
 function setAttendanceDetailed(sessionIdOrIdx, attType){
@@ -4161,13 +5038,17 @@ function waiveMakeupStudent(idx){
    7. TRIPLE SESSION EVALUATION ENGINE (الجديد + المراجعة + التجويد)
    ===================================================================== */
 let currentEvalStudent = '';
+let currentEvalSessionId = null;
 let currentEvalRecordId = null;
 
-function openTripleEvalModal(studentName = ''){
-  const studentsList = DB.students;
+function openTripleEvalModal(studentName = '', sessionId = null){
+  if (!DB.evaluations) DB.evaluations = [];
+  const studentsList = DB.students || [];
   if (!studentsList.length) { alert('لا يوجد طلاب مسجلين.'); return; }
   
-  currentEvalStudent = studentName || (studentsList[0] ? studentsList[0].name : '');
+  const matchedStudent = studentsList.find(s => isSameStudent(s.name, studentName)) || studentsList[0];
+  currentEvalStudent = matchedStudent.name;
+  currentEvalSessionId = sessionId || null;
   
   const studentSel = document.getElementById('evalStudentSelect');
   if (studentSel) {
@@ -4289,113 +5170,221 @@ function addTajweedNoteRow(defaultAyah = '', defaultRule = '', defaultText = '')
 }
 
 // Save Evaluation
-document.getElementById('evalSaveBtn').addEventListener('click', ()=>{
-  const newSFrom = parseInt(document.getElementById('newSurahFrom').value);
-  const newATo = parseInt(document.getElementById('newAyahTo').value);
-  const newAFrom = parseInt(document.getElementById('newAyahFrom').value);
-  const newSTo = parseInt(document.getElementById('newSurahTo').value);
+document.getElementById('evalSaveBtn').addEventListener('click', async ()=>{
+  try {
+    if (!DB.evaluations) DB.evaluations = [];
+    if (!DB.sessions) DB.sessions = [];
+    if (!DB.students) DB.students = [];
 
-  const revSFrom = parseInt(document.getElementById('revSurahFrom').value);
-  const revATo = parseInt(document.getElementById('revAyahTo').value);
-  const revAFrom = parseInt(document.getElementById('revAyahFrom').value);
-  const revSTo = parseInt(document.getElementById('revSurahTo').value);
+    // 1. Inputs with safe fallbacks
+    const newSFrom = parseInt(document.getElementById('newSurahFrom')?.value) || 2;
+    const newAFrom = parseInt(document.getElementById('newAyahFrom')?.value) || 1;
+    const newSTo = parseInt(document.getElementById('newSurahTo')?.value) || newSFrom;
+    const newATo = parseInt(document.getElementById('newAyahTo')?.value) || 15;
 
-  const newCov = calculateQuranCoverage(newSFrom, newAFrom, newSTo, newATo);
-  const revCov = calculateQuranCoverage(revSFrom, revAFrom, revSTo, revATo);
+    const revSFrom = parseInt(document.getElementById('revSurahFrom')?.value) || 1;
+    const revAFrom = parseInt(document.getElementById('revAyahFrom')?.value) || 1;
+    const revSTo = parseInt(document.getElementById('revSurahTo')?.value) || revSFrom;
+    const revATo = parseInt(document.getElementById('revAyahTo')?.value) || 7;
 
-  const newScore = parseInt(document.getElementById('newScore').value);
-  const revScore = parseInt(document.getElementById('revScore').value);
-  const tajweedScore = parseInt(document.getElementById('tajweedScore').value);
-  const overallScore = Math.round((newScore + revScore + tajweedScore) / 3);
+    const newCov = calculateQuranCoverage(newSFrom, newAFrom, newSTo, newATo);
+    const revCov = calculateQuranCoverage(revSFrom, revAFrom, revSTo, revATo);
 
-  let overallRating = 'ممتاز';
-  if (overallScore < 70) overallRating = 'يحتاج مراجعة';
-  else if (overallScore < 80) overallRating = 'جيد';
-  else if (overallScore < 90) overallRating = 'جيد جداً';
+    const newScore = parseInt(document.getElementById('newScore')?.value) || 95;
+    const revScore = parseInt(document.getElementById('revScore')?.value) || 90;
+    const tajweedScore = parseInt(document.getElementById('tajweedScore')?.value) || 90;
+    const overallScore = Math.round((newScore + revScore + tajweedScore) / 3);
 
-  // Gather notes
-  const newNotes = [];
-  document.querySelectorAll('#newNotesContainer .note-repeater-row').forEach(row=>{
-    const ay = parseInt(row.querySelector('.new-n-ayah').value);
-    const txt = row.querySelector('.new-n-text').value.trim();
-    if(txt) newNotes.push({ ayah: ay||1, note: txt });
-  });
+    let overallRating = 'ممتاز';
+    if (overallScore < 70) overallRating = 'يحتاج مراجعة';
+    else if (overallScore < 80) overallRating = 'جيد';
+    else if (overallScore < 90) overallRating = 'جيد جداً';
 
-  const revNotes = [];
-  document.querySelectorAll('#revNotesContainer .note-repeater-row').forEach(row=>{
-    const ay = parseInt(row.querySelector('.rev-n-ayah').value);
-    const txt = row.querySelector('.rev-n-text').value.trim();
-    if(txt) revNotes.push({ ayah: ay||1, note: txt });
-  });
+    // 2. Gather notes safely
+    const newNotes = [];
+    document.querySelectorAll('#newNotesContainer .note-repeater-row').forEach(row=>{
+      const ayInput = row.querySelector('.new-n-ayah');
+      const txtInput = row.querySelector('.new-n-text');
+      const ay = ayInput ? parseInt(ayInput.value) : 1;
+      const txt = txtInput ? txtInput.value.trim() : '';
+      if(txt) newNotes.push({ ayah: ay || 1, note: txt });
+    });
 
-  const tajweedNotes = [];
-  document.querySelectorAll('#tajweedNotesContainer .note-repeater-row').forEach(row=>{
-    const ay = parseInt(row.querySelector('.taj-n-ayah').value);
-    const rule = row.querySelector('.taj-n-rule').value.trim();
-    const note = row.querySelector('.taj-n-note').value.trim();
-    if(rule || note) tajweedNotes.push({ ayah: ay||1, rule: rule||'حكم تجويدي', note: note||'' });
-  });
+    const revNotes = [];
+    document.querySelectorAll('#revNotesContainer .note-repeater-row').forEach(row=>{
+      const ayInput = row.querySelector('.rev-n-ayah');
+      const txtInput = row.querySelector('.rev-n-text');
+      const ay = ayInput ? parseInt(ayInput.value) : 1;
+      const txt = txtInput ? txtInput.value.trim() : '';
+      if(txt) revNotes.push({ ayah: ay || 1, note: txt });
+    });
 
-  const now = new Date();
-  const dateStr = now.toLocaleDateString('ar-EG', { day:'numeric', month:'long', year:'numeric' });
-  const monthKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+    const tajweedNotes = [];
+    document.querySelectorAll('#tajweedNotesContainer .note-repeater-row').forEach(row=>{
+      const ayInput = row.querySelector('.taj-n-ayah');
+      const ruleInput = row.querySelector('.taj-n-rule');
+      const noteInput = row.querySelector('.taj-n-note');
+      const ay = ayInput ? parseInt(ayInput.value) : 1;
+      const rule = ruleInput ? ruleInput.value.trim() : '';
+      const note = noteInput ? noteInput.value.trim() : '';
+      if(rule || note) tajweedNotes.push({ ayah: ay || 1, rule: rule || 'حكم تجويدي', note: note || '' });
+    });
 
-  const teacherName = currentUser ? currentUser.name : 'الشيخ أحمد فتحي';
-  const targetStudent = document.getElementById('evalStudentSelect')?.value || currentEvalStudent;
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('ar-EG', { day:'numeric', month:'long', year:'numeric' });
+    const monthKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
 
-  const evalRecord = {
-    id: 'ev_' + Date.now(),
-    student: targetStudent,
-    teacher: teacherName,
-    date: dateStr,
-    monthKey: monthKey,
-    newSurahFrom: newSFrom, newAyahFrom: newAFrom, newSurahTo: newSTo, newAyahTo: newATo,
-    newAyahsCount: newCov.ayahs, newPagesCount: newCov.pages, newScore: newScore, newNotes: newNotes,
-    revSurahFrom: revSFrom, revAyahFrom: revAFrom, revSurahTo: revSTo, revAyahTo: revATo,
-    revAyahsCount: revCov.ayahs, revPagesCount: revCov.pages, revScore: revScore, revNotes: revNotes,
-    tajweedScore: tajweedScore, tajweedNotes: tajweedNotes,
-    overallScore: overallScore, overallRating: overallRating,
-    generalNotes: document.getElementById('generalTeacherNotes').value.trim()
-  };
+    // 3. Resolve canonical student and teacher
+    const rawStudent = document.getElementById('evalStudentSelect')?.value || currentEvalStudent;
+    const stObj = DB.students.find(s => isSameStudent(s.name, rawStudent)) || { name: rawStudent };
+    const targetStudent = stObj.name;
+    const teacherName = currentUser && (currentUser.role === 'teacher' || currentUser.name) ? currentUser.name : (stObj.teacher || 'الشيخ أحمد فتحي');
+    const generalNotes = document.getElementById('generalTeacherNotes')?.value?.trim() || '';
 
-  DB.evaluations.unshift(evalRecord);
-  
-  // Update student last rating
-  const st = DB.students.find(s=>s.name === targetStudent);
-  if(st) st.lastRating = overallRating;
+    // 4. Session matching and auto-completion
+    let targetSession = null;
+    if (currentEvalSessionId) {
+      targetSession = DB.sessions.find(x => String(x.id) === String(currentEvalSessionId));
+    }
+    if (!targetSession) {
+      targetSession = DB.sessions.find(s => isSameStudent(s.student, targetStudent) && (s.status === 'upcoming' || isSameDate(s.date, dateStr)));
+    }
 
-  saveDB();
+    if (targetSession) {
+      targetSession.status = 'done';
+      targetSession.attendance = 'present';
+    } else {
+      targetSession = {
+        id: 'sess_' + Date.now(),
+        student: targetStudent,
+        teacher: teacherName,
+        date: dateStr,
+        time: 'مكتملة',
+        platform: 'Zoom',
+        link: 'https://meet.google.com/new',
+        status: 'done',
+        attendance: 'present',
+        makeupRequired: false
+      };
+      DB.sessions.unshift(targetSession);
+    }
 
-  if (supabaseClient) {
-    safeCloudOp(supabaseClient.from('evaluations').insert([{
-      student_name: evalRecord.student,
-      teacher_name: evalRecord.teacher,
-      date_text: evalRecord.date,
-      month_key: evalRecord.monthKey,
-      new_surah_from: evalRecord.newSurahFrom, new_ayah_from: evalRecord.newAyahFrom, new_surah_to: evalRecord.newSurahTo, new_ayah_to: evalRecord.newAyahTo,
-      new_ayahs_count: evalRecord.newAyahsCount, new_pages_count: evalRecord.newPagesCount, new_score: evalRecord.newScore, new_notes: evalRecord.newNotes,
-      rev_surah_from: evalRecord.revSurahFrom, rev_ayah_from: evalRecord.revAyahFrom, rev_surah_to: evalRecord.revSurahTo, rev_ayah_to: evalRecord.revAyahTo,
-      rev_ayahs_count: evalRecord.revAyahsCount, rev_pages_count: evalRecord.revPagesCount, rev_score: evalRecord.revScore, rev_notes: evalRecord.revNotes,
-      tajweed_score: evalRecord.tajweedScore, tajweed_notes: evalRecord.tajweedNotes,
-      overall_score: evalRecord.overallScore, overall_rating: evalRecord.overallRating, general_notes: evalRecord.generalNotes
-    }]));
+    // 5. Construct evaluation record
+    const evalRecord = {
+      id: 'ev_' + Date.now(),
+      session_id: targetSession ? targetSession.id : '',
+      student: targetStudent,
+      teacher: teacherName,
+      date: dateStr,
+      monthKey: monthKey,
+      newSurahFrom: newSFrom, newAyahFrom: newAFrom, newSurahTo: newSTo, newAyahTo: newATo,
+      newAyahsCount: newCov.ayahs, newPagesCount: newCov.pages, newScore: newScore, newNotes: newNotes,
+      revSurahFrom: revSFrom, revAyahFrom: revAFrom, revSurahTo: revSTo, revAyahTo: revATo,
+      revAyahsCount: revCov.ayahs, revPagesCount: revCov.pages, revScore: revScore, revNotes: revNotes,
+      tajweedScore: tajweedScore, tajweedNotes: tajweedNotes,
+      overallScore: overallScore, overallRating: overallRating,
+      generalNotes: generalNotes
+    };
+
+    // Replace if already exists for this exact session or student on same date, else unshift
+    const existingIdx = DB.evaluations.findIndex(e => 
+      (targetSession && e.session_id && String(e.session_id) === String(targetSession.id)) ||
+      (isSameStudent(e.student, targetStudent) && isSameDate(e.date, dateStr))
+    );
+    if (existingIdx !== -1) {
+      evalRecord.id = DB.evaluations[existingIdx].id;
+      DB.evaluations[existingIdx] = evalRecord;
+    } else {
+      DB.evaluations.unshift(evalRecord);
+    }
+
+    // Update student progress and last rating
+    if (stObj) {
+      stObj.lastRating = overallRating;
+      stObj.current_surah_new = resolveSurahName(newSTo);
+      stObj.current_surah_rev = resolveSurahName(revSTo);
+    }
+
+    // Persist immediately to localStorage
+    saveDB();
+
+    currentEvalRecordId = evalRecord.id;
+    document.getElementById('evalModal').classList.remove('active');
+    showToast(`تم حفظ واعتماد تقييم الطالب ${targetStudent} بنسبة ${overallScore}% بنجاح! ⭐`);
+
+    if (currentRole && currentPage) {
+      renderPage(currentRole, currentPage);
+    }
+
+    // 6. Supabase Cloud Sync (Fire background sync with retry and fallbacks)
+    if (supabaseClient) {
+      (async () => {
+        try {
+          const cloudPayload = {
+            student_name: evalRecord.student,
+            teacher_name: evalRecord.teacher,
+            date_text: evalRecord.date,
+            month_key: evalRecord.monthKey,
+            new_surah_from: evalRecord.newSurahFrom, new_ayah_from: evalRecord.newAyahFrom, new_surah_to: evalRecord.newSurahTo, new_ayah_to: evalRecord.newAyahTo,
+            new_ayahs_count: evalRecord.newAyahsCount, new_pages_count: evalRecord.newPagesCount, new_score: evalRecord.newScore,
+            new_notes: evalRecord.newNotes,
+            rev_surah_from: evalRecord.revSurahFrom, rev_ayah_from: evalRecord.revAyahFrom, rev_surah_to: evalRecord.revSurahTo, rev_ayah_to: evalRecord.revAyahTo,
+            rev_ayahs_count: evalRecord.revAyahsCount, rev_pages_count: evalRecord.revPagesCount, rev_score: evalRecord.revScore,
+            rev_notes: evalRecord.revNotes,
+            tajweed_score: evalRecord.tajweedScore,
+            tajweed_notes: evalRecord.tajweedNotes,
+            overall_score: evalRecord.overallScore, overall_rating: evalRecord.overallRating, general_notes: evalRecord.generalNotes
+          };
+
+          if (evalRecord.session_id && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(evalRecord.session_id))) {
+            cloudPayload.session_id = evalRecord.session_id;
+          }
+
+          let insRes = await safeCloudOp(supabaseClient.from('evaluations').insert([cloudPayload]).select());
+          if (insRes && insRes.error && cloudPayload.session_id) {
+            delete cloudPayload.session_id;
+            insRes = await safeCloudOp(supabaseClient.from('evaluations').insert([cloudPayload]).select());
+          }
+          if (insRes && insRes.data && insRes.data[0] && insRes.data[0].id) {
+            evalRecord.id = insRes.data[0].id;
+            saveDB();
+          }
+
+          // Sync student rating to Supabase students table
+          safeCloudOp(supabaseClient.from('students').update({
+            last_rating: overallRating,
+            current_surah_new: resolveSurahName(newSTo),
+            current_surah_rev: resolveSurahName(revSTo)
+          }).eq('name', targetStudent));
+
+          // Sync session status to Supabase sessions table
+          if (targetSession) {
+            if (targetSession.id && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(targetSession.id))) {
+              safeCloudOp(supabaseClient.from('sessions').update({ status: 'done', attendance: 'present' }).eq('id', targetSession.id));
+            } else {
+              safeCloudOp(supabaseClient.from('sessions').update({ status: 'done', attendance: 'present' }).eq('student_name', targetStudent).eq('date_text', targetSession.date));
+            }
+          }
+        } catch (syncErr) {
+          console.warn('Background cloud sync warning:', syncErr);
+        }
+      })();
+    }
+  } catch (err) {
+    console.error('Critical evalSaveBtn error:', err);
+    alert('حدث خطأ أثناء حفظ التقييم: ' + (err.message || err));
   }
-
-  currentEvalRecordId = evalRecord.id;
-  document.getElementById('evalModal').classList.remove('active');
-  showToast(`تم حفظ تقييم الطالب ${targetStudent} بنسبة ${overallScore}% بنجاح! ⭐`);
-  if (currentRole && currentPage) renderPage(currentRole, currentPage);
 });
 
 // Share to WhatsApp
 document.getElementById('evalShareWaBtn').addEventListener('click', ()=>{
-  const evalRec = DB.evaluations.find(e => e.id === currentEvalRecordId) || DB.evaluations[0];
+  const evalRec = (DB.evaluations || []).find(e => e.id === currentEvalRecordId) || (DB.evaluations || [])[0];
   if(!evalRec){ alert('يرجى حفظ التقييم أولاً.'); return; }
   shareEvalToWhatsApp(evalRec.id);
 });
 
 function shareEvalToWhatsApp(evalId){
-  const e = DB.evaluations.find(ev => ev.id === evalId);
+  const e = (DB.evaluations || []).find(ev => ev.id === evalId);
   if(!e) return;
   const sNew = QURAN_SURAHS[e.newSurahFrom-1]?.name||'';
   const sRev = QURAN_SURAHS[e.revSurahFrom-1]?.name||'';
@@ -4416,14 +5405,177 @@ function shareEvalToWhatsApp(evalId){
 }
 
 /* =====================================================================
-   8. MONTHLY SUMMARY GENERATOR (سمري الشهر بالآيات والسور)
+   8. MONTHLY SUMMARY GENERATOR & NOTES NOTEBOOK
    ===================================================================== */
-function renderStudentMonthlySummaryView(studentName, targetMonthKey = ''){
+function formatMonthArabic(key) {
+  if (!key || key === 'all') return 'جميع الشهور (تراكمي)';
+  const parts = String(key).split('-');
+  if (parts.length < 2) return key;
+  const year = parts[0];
+  const month = parseInt(parts[1], 10);
+  const arabicMonths = [
+    'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+    'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
+  ];
+  const monthName = arabicMonths[month - 1] || parts[1];
+  return `${monthName} ${year}`;
+}
+
+function renderStudentMonthlySummaryView(studentName, targetMonthKey = '', targetSessionId = ''){
   const now = new Date();
-  const curMonthKey = targetMonthKey || `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  const currentCalMonth = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
   
-  const studentEvals = DB.evaluations.filter(e => e.student === studentName && (!targetMonthKey || e.monthKey === targetMonthKey));
+  // All evaluations and sessions for this student with loose title-tolerant matching
+  const allStudentEvals = (DB.evaluations || []).filter(e => isSameStudent(e.student, studentName));
+  const allStudentSessions = (DB.sessions || []).filter(s => isSameStudent(s.student, studentName));
   
+  // Extract all distinct recorded months from evaluations and sessions
+  const evalMonths = allStudentEvals.map(e => getEvalMonthKey(e));
+  const sessionMonths = allStudentSessions.map(s => getSessionMonthKey(s));
+  const rawMonths = Array.from(new Set([...evalMonths, ...sessionMonths, currentCalMonth])).filter(Boolean);
+  const availableMonths = rawMonths.sort().reverse();
+
+  // Selected month key
+  let selectedMonthKey = targetMonthKey;
+  if (!selectedMonthKey) {
+    selectedMonthKey = availableMonths.includes(currentCalMonth) ? currentCalMonth : availableMonths[0];
+  }
+  const isAllMonths = selectedMonthKey === 'all';
+
+  // Helper matching between evaluation and session
+  const getSessionForEval = (ev) => {
+    return allStudentSessions.find(s => (ev.session_id && s.id && String(ev.session_id) === String(s.id)) || isSameDate(ev.date, s.date));
+  };
+  const getEvalForSession = (s) => {
+    return allStudentEvals.find(ev => (ev.session_id && s.id && String(ev.session_id) === String(s.id)) || isSameDate(ev.date, s.date));
+  };
+
+  // 1. Calculate Cumulative Stats across all months (for the 'all' card)
+  let cumNewAyahs = 0;
+  let cumNewPages = 0;
+  let cumRevAyahs = 0;
+  let cumRevPages = 0;
+  let cumSumScore = 0;
+  allStudentEvals.forEach(ev => {
+    let nA = ev.newAyahsCount || 0;
+    let nP = ev.newPagesCount || 0;
+    if (!nA && ev.newSurahFrom && ev.newAyahFrom && ev.newAyahTo) {
+      const cov = calculateQuranCoverage(ev.newSurahFrom, ev.newAyahFrom, ev.newSurahTo || ev.newSurahFrom, ev.newAyahTo);
+      nA = cov.ayahs || 0;
+      nP = cov.pages || 0;
+    }
+    cumNewAyahs += nA;
+    cumNewPages += nP;
+
+    let rA = ev.revAyahsCount || 0;
+    let rP = ev.revPagesCount || 0;
+    if (!rA && ev.revSurahFrom && ev.revAyahFrom && ev.revAyahTo) {
+      const cov = calculateQuranCoverage(ev.revSurahFrom, ev.revAyahFrom, ev.revSurahTo || ev.revSurahFrom, ev.revAyahTo);
+      rA = cov.ayahs || 0;
+      rP = cov.pages || 0;
+    }
+    cumRevAyahs += rA;
+    cumRevPages += rP;
+    cumSumScore += (ev.overallScore || 0);
+  });
+  const cumAttended = allStudentSessions.filter(s => s.attendance === 'present' || s.status === 'done').length;
+  const cumSessionsCount = Math.max(allStudentEvals.length, cumAttended);
+  const cumAvgScore = allStudentEvals.length ? Math.round(cumSumScore / allStudentEvals.length) : null;
+
+  // 2. Precompute data for each individual month card
+  const monthCardData = availableMonths.map(m => {
+    const mEvals = allStudentEvals.filter(e => getEvalMonthKey(e) === m);
+    const mSessions = allStudentSessions.filter(s => getSessionMonthKey(s) === m && (s.attendance === 'present' || s.status === 'done'));
+    let mNewAyahs = 0;
+    let mRevAyahs = 0;
+    let mSumScore = 0;
+    mEvals.forEach(ev => {
+      let nA = ev.newAyahsCount || 0;
+      if (!nA && ev.newSurahFrom && ev.newAyahFrom && ev.newAyahTo) {
+        nA = calculateQuranCoverage(ev.newSurahFrom, ev.newAyahFrom, ev.newSurahTo || ev.newSurahFrom, ev.newAyahTo).ayahs || 0;
+      }
+      mNewAyahs += nA;
+
+      let rA = ev.revAyahsCount || 0;
+      if (!rA && ev.revSurahFrom && ev.revAyahFrom && ev.revAyahTo) {
+        rA = calculateQuranCoverage(ev.revSurahFrom, ev.revAyahFrom, ev.revSurahTo || ev.revSurahFrom, ev.revAyahTo).ayahs || 0;
+      }
+      mRevAyahs += rA;
+      mSumScore += (ev.overallScore || 0);
+    });
+    const mAvg = mEvals.length ? Math.round(mSumScore / mEvals.length) : null;
+    const mCount = Math.max(mEvals.length, mSessions.length);
+    return {
+      key: m,
+      title: formatMonthArabic(m),
+      newAyahs: mNewAyahs,
+      revAyahs: mRevAyahs,
+      avgScore: mAvg,
+      sessionsCount: mCount
+    };
+  });
+
+  // 3. Evaluations and sessions in the selected month/period
+  const periodEvals = isAllMonths 
+    ? allStudentEvals 
+    : allStudentEvals.filter(e => getEvalMonthKey(e) === selectedMonthKey);
+
+  const periodSessions = isAllMonths
+    ? allStudentSessions.filter(s => s.attendance === 'present' || s.status === 'done')
+    : allStudentSessions.filter(s => getSessionMonthKey(s) === selectedMonthKey && (s.attendance === 'present' || s.status === 'done'));
+
+  // 4. Build available session options for filtering within the period
+  const sessionFilterOptions = [];
+  const seenSessFilterKeys = new Set();
+
+  periodSessions.forEach(s => {
+    const ev = getEvalForSession(s);
+    const key = String(s.id || (ev ? ev.id : ''));
+    if (key && !seenSessFilterKeys.has(key)) {
+      seenSessFilterKeys.add(key);
+      const sn = ev ? resolveSurahName(ev.newSurahFrom) : '';
+      const scoreTxt = ev ? `(إتقان ${ev.overallScore}%)` : '(حاضر ✓)';
+      const label = `حصة ${s.date} · ${s.teacher || 'المعلم'} ${sn ? `— سورة ${sn}` : ''} ${scoreTxt}`;
+      sessionFilterOptions.push({ id: key, label, date: s.date, teacher: s.teacher || 'المعلم', ev, sess: s });
+    }
+  });
+
+  periodEvals.forEach(ev => {
+    const key = String(ev.session_id || ev.id);
+    if (key && !seenSessFilterKeys.has(key)) {
+      seenSessFilterKeys.add(key);
+      const sn = resolveSurahName(ev.newSurahFrom);
+      const label = `حصة ${ev.date} · ${ev.teacher} — سورة ${sn || 'تسميع'} (إتقان ${ev.overallScore}%)`;
+      sessionFilterOptions.push({ id: key, label, date: ev.date, teacher: ev.teacher, ev, sess: getSessionForEval(ev) });
+    }
+  });
+
+  // Sort session filter options descending by date
+  sessionFilterOptions.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+
+  // 5. Handle Session Filter (if targetSessionId is specified and not 'all')
+  const isSpecificSession = Boolean(targetSessionId && targetSessionId !== 'all');
+  let selectedSessionOpt = null;
+  let activeEvals = periodEvals;
+  let activeSessions = periodSessions;
+
+  if (isSpecificSession) {
+    selectedSessionOpt = sessionFilterOptions.find(opt => String(opt.id) === String(targetSessionId)) || null;
+    if (selectedSessionOpt) {
+      if (selectedSessionOpt.ev) {
+        activeEvals = [selectedSessionOpt.ev];
+      } else {
+        activeEvals = periodEvals.filter(e => isSameDate(e.date, selectedSessionOpt.date));
+      }
+      if (selectedSessionOpt.sess) {
+        activeSessions = [selectedSessionOpt.sess];
+      } else {
+        activeSessions = periodSessions.filter(s => isSameDate(s.date, selectedSessionOpt.date));
+      }
+    }
+  }
+
+  // 6. Compute stats for the active view (whether specific session, month, or total)
   let totalNewAyahs = 0;
   let totalNewPages = 0;
   let totalRevAyahs = 0;
@@ -4432,76 +5584,278 @@ function renderStudentMonthlySummaryView(studentName, targetMonthKey = ''){
   let allNewNotes = [];
   let allRevNotes = [];
   let allTajweedNotes = [];
+  let generalAdviceList = [];
   let surahsLearned = new Set();
   let surahsRevised = new Set();
-  
-  studentEvals.forEach(ev => {
-    totalNewAyahs += (ev.newAyahsCount || 0);
-    totalNewPages += (ev.newPagesCount || 0);
-    totalRevAyahs += (ev.revAyahsCount || 0);
-    totalRevPages += (ev.revPagesCount || 0);
+
+  activeEvals.forEach(ev => {
+    let nAyahs = ev.newAyahsCount || 0;
+    let nPages = ev.newPagesCount || 0;
+    if (!nAyahs && ev.newSurahFrom && ev.newAyahFrom && ev.newAyahTo) {
+      const cov = calculateQuranCoverage(ev.newSurahFrom, ev.newAyahFrom, ev.newSurahTo || ev.newSurahFrom, ev.newAyahTo);
+      nAyahs = cov.ayahs || 0;
+      nPages = cov.pages || 0;
+    }
+    totalNewAyahs += nAyahs;
+    totalNewPages += nPages;
+
+    let rAyahs = ev.revAyahsCount || 0;
+    let rPages = ev.revPagesCount || 0;
+    if (!rAyahs && ev.revSurahFrom && ev.revAyahFrom && ev.revAyahTo) {
+      const cov = calculateQuranCoverage(ev.revSurahFrom, ev.revAyahFrom, ev.revSurahTo || ev.revSurahFrom, ev.revAyahTo);
+      rAyahs = cov.ayahs || 0;
+      rPages = cov.pages || 0;
+    }
+    totalRevAyahs += rAyahs;
+    totalRevPages += rPages;
+
     sumScore += (ev.overallScore || 0);
-    
-    if (ev.newSurahFrom) surahsLearned.add(QURAN_SURAHS[ev.newSurahFrom - 1]?.name || '');
-    if (ev.newSurahTo) surahsLearned.add(QURAN_SURAHS[ev.newSurahTo - 1]?.name || '');
-    if (ev.revSurahFrom) surahsRevised.add(QURAN_SURAHS[ev.revSurahFrom - 1]?.name || '');
-    if (ev.revSurahTo) surahsRevised.add(QURAN_SURAHS[ev.revSurahTo - 1]?.name || '');
-    
-    if (ev.newNotes && Array.isArray(ev.newNotes)) {
-      ev.newNotes.forEach(n => allNewNotes.push({ date: ev.date, ayah: n.ayah, note: n.note }));
-    }
-    if (ev.revNotes && Array.isArray(ev.revNotes)) {
-      ev.revNotes.forEach(n => allRevNotes.push({ date: ev.date, ayah: n.ayah, note: n.note }));
-    }
-    if (ev.tajweedNotes && Array.isArray(ev.tajweedNotes)) {
-      ev.tajweedNotes.forEach(n => allTajweedNotes.push({ date: ev.date, ayah: n.ayah, rule: n.rule, note: n.note }));
+
+    const sNewF = resolveSurahName(ev.newSurahFrom);
+    const sNewT = resolveSurahName(ev.newSurahTo);
+    if (sNewF) surahsLearned.add(sNewF);
+    if (sNewT) surahsLearned.add(sNewT);
+
+    const sRevF = resolveSurahName(ev.revSurahFrom);
+    const sRevT = resolveSurahName(ev.revSurahTo);
+    if (sRevF) surahsRevised.add(sRevF);
+    if (sRevT) surahsRevised.add(sRevT);
+
+    const nNotes = safeParseArray(ev.newNotes);
+    nNotes.forEach(n => {
+      if (n && (n.note || n.ayah)) {
+        allNewNotes.push({ date: ev.date, ayah: n.ayah, note: n.note, surah: sNewF, teacher: ev.teacher, evalId: ev.id });
+      }
+    });
+
+    const rNotes = safeParseArray(ev.revNotes);
+    rNotes.forEach(n => {
+      if (n && (n.note || n.ayah)) {
+        allRevNotes.push({ date: ev.date, ayah: n.ayah, note: n.note, surah: sRevF, teacher: ev.teacher, evalId: ev.id });
+      }
+    });
+
+    const tNotes = safeParseArray(ev.tajweedNotes);
+    tNotes.forEach(n => {
+      if (n && (n.note || n.rule || n.ayah)) {
+        allTajweedNotes.push({ date: ev.date, ayah: n.ayah, rule: n.rule || 'حكم تجويدي', note: n.note, surah: sNewF || sRevF, teacher: ev.teacher, evalId: ev.id });
+      }
+    });
+
+    if (ev.generalNotes && ev.generalNotes.trim()) {
+      generalAdviceList.push({ date: ev.date, teacher: ev.teacher, text: ev.generalNotes.trim(), evalId: ev.id });
     }
   });
-  
-  const attendedSessions = (DB.sessions || []).filter(s => s.student === studentName && (s.attendance === 'present' || s.status === 'done')).length;
-  const completedSessionsCount = Math.max(studentEvals.length, attendedSessions);
 
-  const avgScore = studentEvals.length ? Math.round(sumScore / studentEvals.length) : null;
-  const sListLearned = Array.from(surahsLearned).filter(Boolean).join('، ') || 'لم يُسجل حفظ جديد هذا الشهر بعد';
-  const sListRev = Array.from(surahsRevised).filter(Boolean).join('، ') || 'لم تُسجل مراجعة هذا الشهر بعد';
+  const totalOverallAyahs = totalNewAyahs + totalRevAyahs;
+  const totalNotesCount = allNewNotes.length + allRevNotes.length + allTajweedNotes.length + generalAdviceList.length;
+  const completedSessionsCount = Math.max(activeEvals.length, activeSessions.length);
+  const avgScore = activeEvals.length ? Math.round(sumScore / activeEvals.length) : null;
+  const sListLearned = Array.from(surahsLearned).filter(Boolean).join('، ') || (isSpecificSession ? 'لم يُسجل حفظ جديد في هذه الحصة' : 'لم يُسجل حفظ جديد في هذه الفترة بعد');
+  const sListRev = Array.from(surahsRevised).filter(Boolean).join('، ') || (isSpecificSession ? 'لم تُسجل مراجعة في هذه الحصة' : 'لم تُسجل مراجعة في هذه الفترة بعد');
+
+  const isStaff = currentRole === 'teacher' || currentRole === 'moderator' || currentRole === 'admin';
+
+  // Build unified table rows
+  const sessionTableRows = [];
+  const seenEvalIds = new Set();
+
+  activeSessions.forEach(s => {
+    const ev = activeEvals.find(e => {
+      if (seenEvalIds.has(e.id)) return false;
+      if (e.session_id && s.id && String(e.session_id) === String(s.id)) return true;
+      if (isSameDate(e.date, s.date)) return true;
+      return false;
+    });
+    if (ev) {
+      seenEvalIds.add(ev.id);
+      sessionTableRows.push({ type: 'eval', ev: ev, sess: s });
+    } else {
+      sessionTableRows.push({ type: 'session_only', sess: s, ev: null });
+    }
+  });
+
+  activeEvals.forEach(ev => {
+    if (!seenEvalIds.has(ev.id)) {
+      sessionTableRows.push({ type: 'eval', ev: ev, sess: null });
+    }
+  });
+
+  sessionTableRows.sort((a, b) => {
+    const da = a.ev ? a.ev.date : (a.sess ? a.sess.date : '');
+    const db = b.ev ? b.ev.date : (b.sess ? b.sess.date : '');
+    return (db || '').localeCompare(da || '');
+  });
+
+  // Descriptive badge for current scope
+  let currentScopeLabel = '';
+  if (isSpecificSession && selectedSessionOpt) {
+    currentScopeLabel = `حصة ${selectedSessionOpt.date} (مع ${selectedSessionOpt.teacher})`;
+  } else if (isAllMonths) {
+    currentScopeLabel = '🌐 الإجمالي التراكمي الشامل (جميع الشهور والحصص)';
+  } else {
+    currentScopeLabel = `📅 شهر ${formatMonthArabic(selectedMonthKey)}`;
+  }
 
   return `
   <div id="printableSummary" class="panel">
-    <div class="panel-head">
+    <!-- Header -->
+    <div class="panel-head" style="flex-wrap:wrap;gap:12px;">
       <div>
-        <h3 style="font-size:22px;">📜 الحصاد والملخص الشهري للطالب: <span style="color:var(--gold);">${studentName}</span></h3>
-        <span style="font-size:13px;color:var(--ink-soft);">شامل الآيات والسور وملاحظات التجويد ونقاط التركيز</span>
+        <h3 style="font-size:22px;margin:0 0 4px;">📜 الحصاد والملخص التفاعلي للطالب: <span style="color:var(--gold);">${studentName}</span></h3>
+        <span style="font-size:13px;color:var(--ink-soft);">
+          النطاق المعروض حالياً: <b style="color:var(--green-deep);">${currentScopeLabel}</b>
+        </span>
       </div>
-      <div style="display:flex;gap:8px;" class="no-print">
-        <button class="btn btn-ghost" onclick="window.print()">🖨️ طباعة التقرير الشهري</button>
-        <button class="btn-wa-share" onclick="shareMonthlyToWhatsApp('${studentName}', ${avgScore !== null ? avgScore : 100}, ${totalNewAyahs}, '${sListLearned}')">واتساب لولي الأمر 📱</button>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;" class="no-print">
+        ${isStaff ? `
+          <select class="search-input" style="padding:6px 12px;font-size:13px;font-weight:700;border:1.5px solid var(--green);border-radius:10px;background:#fff;" onchange="viewStudentMonthlySummary(this.value, '${selectedMonthKey}', '${targetSessionId||'all'}')">
+            ${(DB.students||[]).map(st=>`<option value="${st.name}" ${isSameStudent(st.name, studentName)?'selected':''}>الطالب: ${st.name}</option>`).join('')}
+          </select>
+        ` : ''}
+        <button class="btn btn-ghost" onclick="syncAndRefreshHarvest('${studentName}', '${selectedMonthKey}', '${targetSessionId||'all'}')" style="font-weight:700;color:var(--green);" title="سحب ومزامنة أحدث البيانات من السحابة">
+          🔄 مزامنة من السحابة
+        </button>
+        <button class="btn btn-ghost" onclick="viewStudentNotesNotebook('${studentName}')">📝 دفتر الملاحظات</button>
+        <button class="btn btn-ghost" onclick="openCertModal('${studentName}', '${selectedMonthKey}')" style="font-weight:700;color:var(--gold-deep);border-color:var(--gold);background:rgba(216,149,24,0.08);" title="إصدار شهادة إنجاز وتفوق ملكية معتمدة للطالب">
+          📜 إصدار شهادة الإنجاز
+        </button>
+        <button class="btn btn-ghost" onclick="window.print()">🖨️ طباعة التقرير</button>
+        <button class="btn-wa-share" onclick="shareMonthlyToWhatsApp('${studentName}', ${avgScore !== null ? avgScore : 100}, ${totalNewAyahs}, '${sListLearned}', '${selectedMonthKey}', '${targetSessionId||'all'}')">واتساب لولي الأمر 📱</button>
       </div>
     </div>
 
-    <!-- Monthly Stats -->
+    <!-- Interactive Month Cards Deck -->
+    <div class="no-print" style="margin:16px 0 10px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px;">
+        <span style="font-size:13.5px;font-weight:700;color:var(--green-deep);display:flex;align-items:center;gap:6px;">
+          <span>🗓️</span> اختر الشهر لعرض بطاقة إنجازه وحصاده:
+        </span>
+        <span style="font-size:12px;color:var(--ink-soft);">اضغط على أي بطاقة شهر لفتح حصاده كاملاً</span>
+      </div>
+
+      <div class="month-deck">
+        <!-- Cumulative / All Time Card -->
+        <div class="month-card ${isAllMonths && !isSpecificSession ? 'active' : ''}" onclick="viewStudentMonthlySummary('${studentName}', 'all', 'all')" title="عرض ملخص شامل وتراكمي لجميع الشهور والحصص">
+          <div class="month-card-head">
+            <span class="month-card-title">🌐 التراكمي الشامل</span>
+            <span class="${isAllMonths && !isSpecificSession ? 'month-badge-active' : 'month-badge-inactive'}">
+              ${isAllMonths && !isSpecificSession ? 'المعروض الآن ✓' : 'عرض الكل'}
+            </span>
+          </div>
+          <div class="month-card-stats">
+            <div class="mc-stat"><b>${cumNewAyahs}</b><span>آية جديد</span></div>
+            <div class="mc-stat"><b>${cumRevAyahs}</b><span>آية مراجعة</span></div>
+            <div class="mc-stat highlight"><b>${cumAvgScore !== null ? cumAvgScore + '%' : '—'}</b><span>التقييم</span></div>
+            <div class="mc-stat"><b>${cumSessionsCount}</b><span>حصص</span></div>
+          </div>
+        </div>
+
+        <!-- Individual Month Cards -->
+        ${monthCardData.map(mc => `
+          <div class="month-card ${selectedMonthKey === mc.key && !isSpecificSession ? 'active' : ''}" onclick="viewStudentMonthlySummary('${studentName}', '${mc.key}', 'all')" title="عرض حصاد وإنجاز ${mc.title}">
+            <div class="month-card-head">
+              <span class="month-card-title">📅 ${mc.title}</span>
+              <span class="${selectedMonthKey === mc.key && !isSpecificSession ? 'month-badge-active' : 'month-badge-inactive'}">
+                ${selectedMonthKey === mc.key && !isSpecificSession ? 'المعروض الآن ✓' : 'عرض الشهر'}
+              </span>
+            </div>
+            <div class="month-card-stats">
+              <div class="mc-stat"><b>${mc.newAyahs}</b><span>آية جديد</span></div>
+              <div class="mc-stat"><b>${mc.revAyahs}</b><span>آية مراجعة</span></div>
+              <div class="mc-stat highlight"><b>${mc.avgScore !== null ? mc.avgScore + '%' : '—'}</b><span>التقييم</span></div>
+              <div class="mc-stat"><b>${mc.sessionsCount}</b><span>حصص</span></div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <!-- Triple Filter Bar: Total, Month, and Session Filter (User Request) -->
+    <div class="summary-filters-bar no-print">
+      <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
+        <span style="font-size:13px;font-weight:700;color:var(--green-deep);display:flex;align-items:center;gap:4px;">
+          <span>🔍</span> خيارات التصفية:
+        </span>
+        <button class="summary-filter-chip ${isAllMonths && !isSpecificSession ? 'active' : ''}" onclick="viewStudentMonthlySummary('${studentName}', 'all', 'all')" title="عرض الإجمالي الشامل لكافة الشهور والحصص">
+          🌐 الإجمالي الشامل
+        </button>
+      </div>
+
+      <!-- Month Filter Dropdown -->
+      <div style="display:flex;align-items:center;gap:6px;">
+        <span style="font-size:12.5px;font-weight:700;color:var(--green-deep);">📅 الشهر:</span>
+        <select class="search-input" style="padding:6px 12px;font-size:12.5px;font-weight:700;border:1.5px solid var(--green);border-radius:10px;background:#fff;" onchange="viewStudentMonthlySummary('${studentName}', this.value, 'all')">
+          <option value="all" ${isAllMonths ? 'selected' : ''}>🌐 جميع الشهور (تراكمي)</option>
+          ${availableMonths.map(m => `<option value="${m}" ${selectedMonthKey === m && !isAllMonths ? 'selected' : ''}>📅 ${formatMonthArabic(m)}</option>`).join('')}
+        </select>
+      </div>
+
+      <!-- Session Filter Dropdown -->
+      <div style="display:flex;align-items:center;gap:6px;">
+        <span style="font-size:12.5px;font-weight:700;color:var(--green-deep);">📋 الحصة:</span>
+        <select class="search-input" style="padding:6px 12px;font-size:12.5px;font-weight:700;border:1.5px solid var(--gold);border-radius:10px;background:#fff;max-width:280px;" onchange="viewStudentMonthlySummary('${studentName}', '${selectedMonthKey}', this.value)">
+          <option value="all" ${!isSpecificSession ? 'selected' : ''}>📋 جميع حصص الفترة (${sessionFilterOptions.length} حصة)</option>
+          ${sessionFilterOptions.map(opt => `<option value="${opt.id}" ${targetSessionId === String(opt.id) ? 'selected' : ''}>${opt.label}</option>`).join('')}
+        </select>
+      </div>
+
+      ${isSpecificSession ? `
+        <button class="btn btn-ghost btn-sm" onclick="viewStudentMonthlySummary('${studentName}', '${selectedMonthKey}', 'all')" style="color:var(--danger);border-color:var(--danger);padding:5px 12px;font-size:12px;font-weight:700;" title="إلغاء تصفية الحصة والرجوع لحصاد كامل الشهر">
+          ✕ إلغاء تصفية الحصة (عرض الشهر كاملاً)
+        </button>
+      ` : ''}
+    </div>
+
+    <!-- Active Specific Session Banner (If zoomed in on single session) -->
+    ${isSpecificSession ? `
+      <div style="background:rgba(185,131,42,0.08);border:1.5px dashed var(--gold);border-radius:12px;padding:12px 18px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:24px;">🎯</span>
+          <div>
+            <strong style="color:var(--green-deep);font-size:14px;display:block;">تصفية تفاصيل حصة بعينها:</strong>
+            <span style="font-size:12.5px;color:var(--ink);">${selectedSessionOpt?.label || 'الحصة المحددة'}</span>
+          </div>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="viewStudentMonthlySummary('${studentName}', '${selectedMonthKey}', 'all')" style="color:var(--danger);font-size:12px;font-weight:700;">
+          ✕ رجوع لحصاد الشهر كاملاً
+        </button>
+      </div>
+    ` : ''}
+
+    <!-- 6 Executive KPI Stat Cards (عدد الآيات والملاحظات والإتقان) -->
     <div class="monthly-grid">
       <div class="monthly-stat">
         <b>${totalNewAyahs} آية</b>
-        <span>إجمالي آيات الحفظ الجديد (${Math.round(totalNewPages*10)/10} صفحة)</span>
+        <span>📖 آيات الحفظ الجديد (${Math.round(totalNewPages*10)/10} صفحة)</span>
       </div>
       <div class="monthly-stat">
         <b>${totalRevAyahs} آية</b>
-        <span>إجمالي آيات المراجعة (${Math.round(totalRevPages*10)/10} صفحة)</span>
+        <span>🔄 آيات المراجعة والتثبيت (${Math.round(totalRevPages*10)/10} صفحة)</span>
+      </div>
+      <div class="monthly-stat">
+        <b style="color:var(--green-mid);">${totalOverallAyahs} آية</b>
+        <span>📊 إجمالي الآيات المقروءة (${Math.round((totalNewPages + totalRevPages)*10)/10} صفحة)</span>
+      </div>
+      <div class="monthly-stat">
+        <b style="color:var(--gold);">${totalNotesCount} ملاحظة</b>
+        <span>📝 إجمالي الملاحظات والتوجيهات (${allNewNotes.length} تركيز · ${allTajweedNotes.length} تجويد)</span>
       </div>
       <div class="monthly-stat">
         <b style="color:var(--gold);">${avgScore !== null ? avgScore + '%' : '—'}</b>
-        <span>متوسط التقييم العام للشهر</span>
+        <span>⭐ متوسط الإتقان والتقييم ${avgScore !== null ? ratingBadge(avgScore >= 90 ? 'ممتاز' : avgScore >= 80 ? 'جيد جداً' : 'جيد') : ''}</span>
       </div>
       <div class="monthly-stat">
         <b>${completedSessionsCount} حصص</b>
-        <span>الحصص المكتملة المسجلة</span>
+        <span>📋 ${isSpecificSession ? 'الحصة المحددة' : 'الحصص المكتملة المسجلة'}</span>
       </div>
     </div>
 
     <!-- Surahs Covered -->
     <div class="cols-2" style="margin-bottom:20px;">
       <div style="background:var(--bg);padding:18px;border-radius:14px;border:1px solid var(--line);">
-        <strong style="color:var(--green-deep);display:block;margin-bottom:6px;">📖 السور التي تم حفظ جديد منها هذا الشهر:</strong>
+        <strong style="color:var(--green-deep);display:block;margin-bottom:6px;">📖 السور التي تم حفظ جديد منها:</strong>
         <p style="margin:0;font-size:14.5px;font-weight:700;color:var(--ink);">${sListLearned}</p>
       </div>
       <div style="background:var(--bg);padding:18px;border-radius:14px;border:1px solid var(--line);">
@@ -4510,55 +5864,714 @@ function renderStudentMonthlySummaryView(studentName, targetMonthKey = ''){
       </div>
     </div>
 
-    <!-- Aggregated Notes -->
-    <div style="margin-top:20px;">
-      <h4 style="font-family:'Amiri',serif;font-size:18px;color:var(--green-deep);margin:0 0 12px;">🔍 بنك الآيات والكلمات التي احتاجت تركيزاً خلال الشهر:</h4>
-      ${allNewNotes.length === 0 ? `<p style="color:var(--ink-soft);">ما شاء الله، لا توجد مواضع صعوبة مسجلة.</p>` : `
+    <!-- Session-by-Session Breakdown Table for the Period -->
+    <div style="margin-top:24px;border:1px solid var(--line);border-radius:14px;padding:18px;background:#fff;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+        <h4 style="font-family:'Amiri',serif;font-size:18px;color:var(--green-deep);margin:0;">
+          📋 سجل حصص ${currentScopeLabel} (${sessionTableRows.length} حصة)
+        </h4>
+        <span style="font-size:12px;color:var(--ink-soft);">اضغط على "ملاحظات الحصة" للاطلاع على كامل تفاصيل التسميع وتوجيهات المعلم</span>
+      </div>
+      ${sessionTableRows.length === 0 ? `
+        <div style="text-align:center;padding:32px;color:var(--ink-soft);background:var(--bg);border-radius:10px;margin:8px 0;">
+          <div style="font-size:28px;margin-bottom:6px;">📖</div>
+          <b>لا توجد حصص مسجلة في هذا النطاق المختار.</b>
+          <div style="font-size:12px;margin-top:4px;">عندما يعقد المعلم الحصة ويسجل تقييمها ستظهر تلقائياً هنا في الحصاد.</div>
+        </div>
+      ` : `
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>تاريخ الحصة</th>
+                <th>المعلم المشرف</th>
+                <th>الحفظ الجديد</th>
+                <th>المراجعة والتثبيت</th>
+                <th>أحكام التجويد</th>
+                <th>التقييم العام</th>
+                <th style="text-align:center;">إجراء وملاحظات الحصة</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${sessionTableRows.map(row => {
+                if (row.type === 'eval' && row.ev) {
+                  const ev = row.ev;
+                  const sn = resolveSurahName(ev.newSurahFrom);
+                  const sr = resolveSurahName(ev.revSurahFrom);
+                  const isCurrentTarget = isSpecificSession && (String(ev.id) === String(targetSessionId) || String(ev.session_id) === String(targetSessionId));
+                  return `
+                  <tr style="${isCurrentTarget ? 'background:rgba(185,131,42,0.06);font-weight:700;' : ''}">
+                    <td><b>${ev.date}</b></td>
+                    <td>${ev.teacher}</td>
+                    <td>
+                      <b>${sn || '—'}</b> (${ev.newAyahFrom||1} - ${ev.newAyahTo||1})
+                      <div style="font-size:11.5px;color:var(--green-mid);">إتقان: ${ev.newScore||100}%</div>
+                    </td>
+                    <td>
+                      <b>${sr || '—'}</b> (${ev.revAyahFrom||1} - ${ev.revAyahTo||1})
+                      <div style="font-size:11.5px;color:var(--ink-soft);">إتقان: ${ev.revScore||100}%</div>
+                    </td>
+                    <td><b style="color:var(--gold);">${ev.tajweedScore||100}%</b></td>
+                    <td><b>${ev.overallScore||100}%</b> ${ratingBadge(ev.overallRating)}</td>
+                    <td style="text-align:center;">
+                      <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">
+                        <button class="btn btn-ghost btn-sm" onclick="openEvalDetailsModal('${ev.id}')" style="padding:4px 10px;font-size:12px;font-weight:700;">
+                          🔍 ملاحظات الحصة
+                        </button>
+                        ${!isSpecificSession ? `
+                          <button class="btn btn-ghost btn-sm" onclick="viewStudentMonthlySummary('${studentName}', '${selectedMonthKey}', '${ev.session_id||ev.id}')" style="padding:4px 8px;font-size:11.5px;" title="تصفية وعرض إحصائيات هذه الحصة وحدها في السمري">
+                            🎯 تصفية
+                          </button>
+                        ` : ''}
+                      </div>
+                    </td>
+                  </tr>`;
+                } else if (row.type === 'session_only' && row.sess) {
+                  const s = row.sess;
+                  return `
+                  <tr style="background:rgba(185,131,42,0.03);">
+                    <td><b>${s.date}</b></td>
+                    <td>${s.teacher || 'المعلم'}</td>
+                    <td colspan="4" style="text-align:center;">
+                      <span class="badge badge-success" style="font-size:11px;">✓ تم حضور الحصة</span>
+                      <span style="font-size:12px;color:var(--ink-soft);margin-right:8px;">(بانتظار اعتماد تفاصيل التسميع والدرجات)</span>
+                    </td>
+                    <td style="text-align:center;">
+                      ${isStaff ? `
+                        <button class="btn btn-primary btn-sm" onclick="openTripleEvalModal('${studentName}', '${s.id}')" style="padding:4px 10px;font-size:12px;">
+                          ➕ تقييم الحصة
+                        </button>
+                      ` : `
+                        <span style="font-size:11.5px;color:var(--ink-soft);">—</span>
+                      `}
+                    </td>
+                  </tr>`;
+                }
+                return '';
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      `}
+    </div>
+
+    <!-- Aggregated Notes Bank: Focus Ayahs -->
+    <div style="margin-top:24px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <h4 style="font-family:'Amiri',serif;font-size:18px;color:var(--green-deep);margin:0;">
+          🔍 بنك الآيات والكلمات التي احتاجت تركيزاً (${allNewNotes.length} موضع مسجل):
+        </h4>
+      </div>
+      ${allNewNotes.length === 0 ? `<p style="color:var(--ink-soft);background:var(--bg);padding:14px;border-radius:10px;">ما شاء الله، لا توجد مواضع صعوبة مسجلة في الحفظ الجديد في هذا النطاق.</p>` : `
         <div class="notes-list">
           ${allNewNotes.map(n=>`
-            <div class="note-pill-item">
+            <div class="note-pill-item" style="cursor:pointer;" onclick="openEvalDetailsModal('${n.evalId}')" title="انقر لعرض تفاصيل الحصة كاملة">
               <span class="note-pill-tag">آية ${n.ayah}</span>
-              <span style="flex:1;font-size:13.5px;">${n.note}</span>
+              ${n.surah ? `<span style="font-weight:700;font-size:12.5px;color:var(--green-deep);">سورة ${n.surah}:</span>` : ''}
+              <span style="flex:1;font-size:13.5px;color:var(--ink);">${n.note}</span>
+              <span style="font-size:11.5px;color:var(--ink-soft);">${n.date} · ${n.teacher}</span>
+            </div>
+          `).join('')}
+        </div>
+      `}
+    </div>
+
+    <!-- Aggregated Notes Bank: Revision Notes -->
+    ${allRevNotes.length > 0 ? `
+      <div style="margin-top:24px;">
+        <h4 style="font-family:'Amiri',serif;font-size:18px;color:var(--green-deep);margin:0 0 12px;">🔵 بنك ملاحظات مواضع المراجعة والتثبيت (${allRevNotes.length} موضع):</h4>
+        <div class="notes-list">
+          ${allRevNotes.map(n=>`
+            <div class="note-pill-item" style="border-right:3px solid #3b82f6;cursor:pointer;" onclick="openEvalDetailsModal('${n.evalId}')" title="انقر لعرض تفاصيل الحصة كاملة">
+              <span class="note-pill-tag" style="background:rgba(59,130,246,0.12);color:#2563eb;">آية ${n.ayah}</span>
+              ${n.surah ? `<span style="font-weight:700;font-size:12.5px;color:var(--green-deep);">سورة ${n.surah}:</span>` : ''}
+              <span style="flex:1;font-size:13.5px;color:var(--ink);">${n.note}</span>
               <span style="font-size:11.5px;color:var(--ink-soft);">${n.date}</span>
             </div>
           `).join('')}
         </div>
-      `}
-    </div>
+      </div>
+    ` : ''}
 
+    <!-- Aggregated Notes Bank: Tajweed Rules -->
     <div style="margin-top:24px;">
-      <h4 style="font-family:'Amiri',serif;font-size:18px;color:var(--green-deep);margin:0 0 12px;">🟡 حصاد أحكام وقواعد التجويد المطبقة خلال الشهر:</h4>
-      ${allTajweedNotes.length === 0 ? `<p style="color:var(--ink-soft);">تمت التلاوة بأحكام التجويد الأساسية دون ملاحظات خاصة.</p>` : `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <h4 style="font-family:'Amiri',serif;font-size:18px;color:var(--green-deep);margin:0;">
+          🟡 حصاد وتصويبات أحكام وقواعد التجويد (${allTajweedNotes.length} حكم مطبق ومصحح):
+        </h4>
+      </div>
+      ${allTajweedNotes.length === 0 ? `<p style="color:var(--ink-soft);background:var(--bg);padding:14px;border-radius:10px;">تمت التلاوة بأحكام التجويد الأساسية دون ملاحظات خاصة في هذا النطاق.</p>` : `
         <div class="notes-list">
           ${allTajweedNotes.map(t=>`
-            <div class="note-pill-item">
+            <div class="note-pill-item" style="cursor:pointer;" onclick="openEvalDetailsModal('${t.evalId}')" title="انقر لعرض تفاصيل الحصة كاملة">
               <span class="note-pill-tag" style="background:rgba(31,122,82,0.12);color:var(--success);">آية ${t.ayah}</span>
               <strong style="color:var(--green-deep);font-size:13px;">${t.rule}:</strong>
-              <span style="flex:1;font-size:13.5px;">${t.note}</span>
-              <span style="font-size:11.5px;color:var(--ink-soft);">${t.date}</span>
+              <span style="flex:1;font-size:13.5px;color:var(--ink);">${t.note}</span>
+              <span style="font-size:11.5px;color:var(--ink-soft);">${t.date} · ${t.teacher}</span>
             </div>
           `).join('')}
         </div>
       `}
     </div>
+
+    <!-- Aggregated Notes Bank: General Teacher Feedback -->
+    ${generalAdviceList.length > 0 ? `
+      <div style="margin-top:24px;">
+        <h4 style="font-family:'Amiri',serif;font-size:18px;color:var(--green-deep);margin:0 0 12px;">💬 توجيهات وتشجيع المعلم (${generalAdviceList.length} رسالة):</h4>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          ${generalAdviceList.map(a=>`
+            <div style="background:rgba(31,122,82,0.06);border:1px dashed var(--green-mid);border-radius:12px;padding:14px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+              <div style="flex:1;">
+                <p style="margin:0 0 6px;font-size:13.5px;color:var(--ink);font-weight:600;line-height:1.6;">"${a.text}"</p>
+                <span style="font-size:12px;color:var(--ink-soft);">👨‍🏫 المعلم: ${a.teacher} · ${a.date}</span>
+              </div>
+              <button class="btn btn-ghost btn-sm" onclick="openEvalDetailsModal('${a.evalId}')" style="padding:4px 8px;font-size:11px;">🔍 الحصة</button>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    ` : ''}
   </div>`;
 }
 
-function viewStudentMonthlySummary(studentName){
+function viewStudentMonthlySummary(studentName, targetMonthKey = '', targetSessionId = ''){
   window.scrollTo({ top: 0, behavior: 'smooth' });
   const c = document.getElementById('content');
-  c.innerHTML = renderStudentMonthlySummaryView(studentName);
-  document.getElementById('pageTitle').textContent = `ملخص الشهر — ${studentName}`;
+  c.innerHTML = renderStudentMonthlySummaryView(studentName, targetMonthKey, targetSessionId);
+  const mLabel = targetMonthKey && targetMonthKey !== 'all' ? ` (${formatMonthArabic(targetMonthKey)})` : '';
+  const sLabel = targetSessionId && targetSessionId !== 'all' ? ' — حصة محددة' : '';
+  document.getElementById('pageTitle').textContent = `ملخص الحصاد — ${studentName}${mLabel}${sLabel}`;
 }
 
-function shareMonthlyToWhatsApp(studentName, score, ayahs, surahs){
+async function syncAndRefreshHarvest(studentName, targetMonthKey = '', targetSessionId = ''){
+  showToast('جاري سحب أحدث بيانات الحصاد والتقييمات من السحابة... ⏳');
+  await syncFromCloud();
+  viewStudentMonthlySummary(studentName, targetMonthKey, targetSessionId);
+  showToast('تم تحديث ومزامنة بيانات الحصاد من السحابة بنجاح! 🌟');
+}
+
+function shareMonthlyToWhatsApp(studentName, score, ayahs, surahs, targetMonthKey = '', targetSessionId = ''){
+  let scopeLabel = 'التراكمي الشامل';
+  if (targetSessionId && targetSessionId !== 'all') {
+    scopeLabel = 'حصة محددة';
+  } else if (targetMonthKey && targetMonthKey !== 'all') {
+    scopeLabel = `عن شهر ${formatMonthArabic(targetMonthKey)}`;
+  }
   const text = `*التقرير والملخص الشهري لحفظ القرآن الكريم — أكاديمية قرطبة* 🕌📜\n\n` +
     `👤 *الطالب:* ${studentName}\n` +
-    `⭐ *التقييم العام للشهر:* ${score}%\n` +
+    `📅 *الفترة:* ${scopeLabel}\n` +
+    `⭐ *التقييم العام:* ${score}%\n` +
     `📖 *إجمالي الآيات المحفوظة حديثاً:* ${ayahs} آية\n` +
     `🌿 *السور المنجزة:* ${surahs}\n\n` +
     `نهنئكم على هذا الإنجاز المبارك ونسأل الله أن يجعل القرآن ربيع قلوبنا 🤍`;
   window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+}
+
+/* =====================================================================
+   8.5 STUDENT NOTES NOTEBOOK (دفتر ملاحظات الطالب الشامل)
+   ===================================================================== */
+function renderStudentNotesNotebook(studentName, filterType = 'all'){
+  const studentAllEvals = (DB.evaluations || []).filter(e => isSameStudent(e.student, studentName));
+  const stProfile = (DB.students || []).find(s => isSameStudent(s.name, studentName)) || {};
+  const isStaff = currentRole === 'teacher' || currentRole === 'moderator' || currentRole === 'admin';
+
+  let totalFocusNotes = 0;
+  let totalTajweedNotes = 0;
+  studentAllEvals.forEach(ev => {
+    totalFocusNotes += safeParseArray(ev.newNotes).length + safeParseArray(ev.revNotes).length;
+    totalTajweedNotes += safeParseArray(ev.tajweedNotes).length;
+  });
+
+  return `
+  <div class="panel">
+    <div class="panel-head" style="flex-wrap:wrap;gap:12px;">
+      <div>
+        <h3 style="font-size:22px;margin:0 0 4px;">📝 دفتر ملاحظات وتوجيهات الحصص: <span style="color:var(--gold);">${studentName}</span></h3>
+        <span style="font-size:13px;color:var(--ink-soft);">سجل زمني شامل لكافة توجيهات المعلم، وتنبيهات الآيات، وأحكام التجويد في كل حصة</span>
+      </div>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;" class="no-print">
+        ${isStaff ? `
+          <select class="search-input" style="padding:6px 12px;font-size:13px;font-weight:700;border:1.5px solid var(--green);border-radius:10px;background:#fff;" onchange="viewStudentNotesNotebook(this.value)">
+            ${(DB.students||[]).map(st=>`<option value="${st.name}" ${isSameStudent(st.name, studentName)?'selected':''}>الطالب: ${st.name}</option>`).join('')}
+          </select>
+        ` : ''}
+        <button class="btn btn-ghost" onclick="viewStudentMonthlySummary('${studentName}')">📜 ملخص الشهر (سمري)</button>
+        <button class="btn btn-ghost" onclick="window.print()">🖨️ طباعة الدفتر</button>
+      </div>
+    </div>
+
+    <!-- Summary Metrics -->
+    <div class="stat-grid" style="grid-template-columns:repeat(auto-fit, minmax(160px, 1fr));gap:12px;margin-bottom:20px;">
+      <div class="stat-card">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS['edit']}</svg></div>
+        <div class="num">${studentAllEvals.length}</div>
+        <div class="lbl">إجمالي الحصص المقيمة</div>
+      </div>
+      <div class="stat-card">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS['book']}</svg></div>
+        <div class="num">${totalFocusNotes}</div>
+        <div class="lbl">مواضع تحتاج تركيز</div>
+      </div>
+      <div class="stat-card">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS['shield']}</svg></div>
+        <div class="num">${totalTajweedNotes}</div>
+        <div class="lbl">قواعد تجويد مطبقة</div>
+      </div>
+      <div class="stat-card">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS['users']}</svg></div>
+        <div class="num" style="font-size:16px;color:var(--green-deep);">${stProfile.teacher || 'المعلم المشرف'}</div>
+        <div class="lbl">المعلم المخصص</div>
+      </div>
+    </div>
+
+    <!-- Filter Buttons -->
+    <div class="no-print" style="margin-bottom:20px;display:flex;gap:8px;flex-wrap:wrap;">
+      <button type="button" class="juz-filter-btn active notebook-filter-btn" onclick="filterNotebookCards('all', this)">📋 جميع الحصص (${studentAllEvals.length})</button>
+      <button type="button" class="juz-filter-btn notebook-filter-btn" onclick="filterNotebookCards('with-new-notes', this)">🟢 ملاحظات الحفظ الجديد</button>
+      <button type="button" class="juz-filter-btn notebook-filter-btn" onclick="filterNotebookCards('with-rev-notes', this)">🔵 ملاحظات المراجعة</button>
+      <button type="button" class="juz-filter-btn notebook-filter-btn" onclick="filterNotebookCards('with-tajweed-notes', this)">🟡 أحكام التجويد</button>
+    </div>
+
+    <!-- Chronological Session Cards -->
+    <div id="notebookCardsContainer" style="display:flex;flex-direction:column;gap:16px;">
+      ${studentAllEvals.length === 0 ? `
+        <div style="text-align:center;padding:40px 20px;background:var(--bg);border-radius:14px;color:var(--ink-soft);">
+          <div style="font-size:36px;margin-bottom:8px;">📝</div>
+          <strong style="font-size:16px;color:var(--ink);display:block;margin-bottom:4px;">لا توجد ملاحظات مسجلة بعد لهذا الطالب</strong>
+          <span>يقوم المعلم بتسجيل التقييم وملاحظات الآيات والتجويد خلال كل حصة تسميع.</span>
+        </div>
+      ` : studentAllEvals.map(ev => {
+        const nNotes = safeParseArray(ev.newNotes);
+        const rNotes = safeParseArray(ev.revNotes);
+        const tNotes = safeParseArray(ev.tajweedNotes);
+        const sNew = resolveSurahName(ev.newSurahFrom);
+        const sRev = resolveSurahName(ev.revSurahFrom);
+
+        const cardTags = [];
+        if (nNotes.length > 0) cardTags.push('with-new-notes');
+        if (rNotes.length > 0) cardTags.push('with-rev-notes');
+        if (tNotes.length > 0) cardTags.push('with-tajweed-notes');
+
+        return `
+        <div class="notebook-card" data-tags="${cardTags.join(' ')}" style="background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,0.03);">
+          <!-- Header -->
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:8px;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-size:20px;">🗓️</span>
+              <div>
+                <strong style="font-size:15.5px;color:var(--green-deep);">${ev.date}</strong>
+                <span style="font-size:12px;color:var(--ink-soft);margin-right:8px;">المعلم: <b>${ev.teacher}</b></span>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="badge" style="background:var(--bg);border:1px solid var(--line);font-size:12.5px;font-weight:700;">التقييم: <b style="color:var(--gold);">${ev.overallScore||100}%</b> (${ev.overallRating||'ممتاز'})</span>
+              <button class="btn btn-ghost btn-sm" onclick="openEvalDetailsModal('${ev.id}')" style="font-weight:700;">🔍 التفاصيل</button>
+              <button class="btn-wa-share" onclick="shareEvalToWhatsApp('${ev.id}')" style="padding:4px 8px;font-size:11px;">واتساب</button>
+            </div>
+          </div>
+
+          <!-- 1. New Memorization -->
+          <div style="margin-bottom:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <span style="font-size:13.5px;font-weight:700;color:var(--green-deep);">🟢 الحفظ الجديد: سورة ${sNew||'—'} (آية ${ev.newAyahFrom||1} إلى ${ev.newAyahTo||1})</span>
+              <span class="badge badge-success" style="font-size:11px;">إتقان: ${ev.newScore||100}%</span>
+            </div>
+            ${nNotes.length > 0 ? `
+              <div class="notes-list" style="margin-top:6px;">
+                ${nNotes.map(n => `
+                  <div class="note-pill-item" style="border-right:3px solid #10b981;padding:6px 12px;">
+                    <span class="note-pill-tag">آية ${n.ayah}</span>
+                    <span style="font-size:13px;color:var(--ink);">${n.note}</span>
+                  </div>
+                `).join('')}
+              </div>
+            ` : `<span style="font-size:12px;color:var(--ink-soft);">سرد متقن ومبارك بفضل الله.</span>`}
+          </div>
+
+          <!-- 2. Revision -->
+          <div style="margin-bottom:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <span style="font-size:13.5px;font-weight:700;color:var(--green-deep);">🔵 المراجعة: سورة ${sRev||'—'} (آية ${ev.revAyahFrom||1} إلى ${ev.revAyahTo||1})</span>
+              <span class="badge badge-success" style="font-size:11px;">إتقان: ${ev.revScore||100}%</span>
+            </div>
+            ${rNotes.length > 0 ? `
+              <div class="notes-list" style="margin-top:6px;">
+                ${rNotes.map(n => `
+                  <div class="note-pill-item" style="border-right:3px solid #3b82f6;padding:6px 12px;">
+                    <span class="note-pill-tag" style="background:rgba(59,130,246,0.12);color:#2563eb;">آية ${n.ayah}</span>
+                    <span style="font-size:13px;color:var(--ink);">${n.note}</span>
+                  </div>
+                `).join('')}
+              </div>
+            ` : `<span style="font-size:12px;color:var(--ink-soft);">تثبيت متقن.</span>`}
+          </div>
+
+          <!-- 3. Tajweed -->
+          ${tNotes.length > 0 ? `
+            <div style="margin-bottom:12px;">
+              <span style="font-size:13px;font-weight:700;color:var(--gold);display:block;margin-bottom:6px;">🟡 أحكام التجويد والتوجيهات (إتقان ${ev.tajweedScore||100}%):</span>
+              <div class="notes-list">
+                ${tNotes.map(t => `
+                  <div class="note-pill-item" style="border-right:3px solid #f59e0b;padding:6px 12px;">
+                    <span class="note-pill-tag" style="background:rgba(216,149,24,0.15);color:var(--gold);">آية ${t.ayah}</span>
+                    <strong style="color:var(--green-deep);font-size:12.5px;">${t.rule}:</strong>
+                    <span style="font-size:13px;color:var(--ink);">${t.note}</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          <!-- 4. Teacher Message -->
+          ${ev.generalNotes ? `
+            <div style="background:rgba(31,122,82,0.06);border:1px dashed var(--green-mid);border-radius:10px;padding:10px 14px;margin-top:10px;">
+              <span style="font-size:12px;color:var(--green-deep);font-weight:700;display:block;">💬 كلمة المعلم:</span>
+              <p style="margin:2px 0 0;font-size:13px;color:var(--ink);line-height:1.5;">"${ev.generalNotes}"</p>
+            </div>
+          ` : ''}
+        </div>`;
+      }).join('')}
+    </div>
+  </div>`;
+}
+
+function viewStudentNotesNotebook(studentName, filterType = 'all'){
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  const c = document.getElementById('content');
+  c.innerHTML = renderStudentNotesNotebook(studentName, filterType);
+  document.getElementById('pageTitle').textContent = `دفتر ملاحظات الحصص — ${studentName}`;
+}
+
+function filterNotebookCards(filter, btn){
+  document.querySelectorAll('.notebook-filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.querySelectorAll('.notebook-card').forEach(card => {
+    if (filter === 'all' || (card.getAttribute('data-tags')||'').includes(filter)) {
+      card.style.display = '';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+
+/* =====================================================================
+   8.6 ALL EVALUATIONS & NOTES VIEW (Admin / Moderator Hub)
+   ===================================================================== */
+function renderAllEvaluationsView(role = 'moderator'){
+  const evals = DB.evaluations || [];
+  const uniqueStudents = Array.from(new Set(evals.map(e => e.student))).filter(Boolean);
+  const uniqueTeachers = Array.from(new Set(evals.map(e => e.teacher))).filter(Boolean);
+  const uniqueMonths = Array.from(new Set(evals.map(e => e.monthKey || '2026-09'))).filter(Boolean).sort().reverse();
+
+  let totalAyahs = 0;
+  let sumScore = 0;
+  evals.forEach(e => {
+    totalAyahs += (e.newAyahsCount || 0);
+    sumScore += (e.overallScore || 0);
+  });
+  const avgScore = evals.length > 0 ? Math.round(sumScore / evals.length) : 0;
+
+  return `
+  <div class="panel">
+    <div class="panel-head" style="flex-wrap:wrap;gap:12px;">
+      <div>
+        <h3 style="margin:0;">سجل تقييمات وملاحظات الحصص التخصصية 📝</h3>
+        <span style="font-size:12.5px;color:var(--ink-soft);">متابعة وتقييم جودة كافة حصص التسميع، وملاحظات التجويد، ونقاط تركيز الطلاب</span>
+      </div>
+      <button class="btn btn-primary" onclick="openTripleEvalModal()" style="padding:8px 16px;font-size:13px;">➕ تسجيل تقييم حصة</button>
+    </div>
+
+    <!-- KPIs -->
+    <div class="stat-grid" style="grid-template-columns:repeat(auto-fit, minmax(170px, 1fr));gap:12px;margin-bottom:20px;">
+      <div class="stat-card">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS['edit']}</svg></div>
+        <div class="num">${evals.length}</div>
+        <div class="lbl">إجمالي التقييمات المسجلة</div>
+      </div>
+      <div class="stat-card">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS['book']}</svg></div>
+        <div class="num">${totalAyahs}</div>
+        <div class="lbl">آيات حفظ جديد منجزة</div>
+      </div>
+      <div class="stat-card">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS['chart']}</svg></div>
+        <div class="num" style="color:var(--gold);">${avgScore}%</div>
+        <div class="lbl">متوسط التقييم العام</div>
+      </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="search-filter-bar">
+      <input type="text" id="allEvalSearchInput" class="search-input" placeholder="🔍 ابحث بالطالب أو المعلم أو كلمة في الملاحظات..." oninput="filterAllEvaluationsTable()">
+      <select id="allEvalStudentFilter" class="search-input" style="max-width:180px;" onchange="filterAllEvaluationsTable()">
+        <option value="">جميع الطلاب</option>
+        ${uniqueStudents.map(s=>`<option value="${s}">${s}</option>`).join('')}
+      </select>
+      <select id="allEvalTeacherFilter" class="search-input" style="max-width:180px;" onchange="filterAllEvaluationsTable()">
+        <option value="">جميع المعلمين</option>
+        ${uniqueTeachers.map(t=>`<option value="${t}">${t}</option>`).join('')}
+      </select>
+      <select id="allEvalMonthFilter" class="search-input" style="max-width:160px;" onchange="filterAllEvaluationsTable()">
+        <option value="">جميع الشهور</option>
+        ${uniqueMonths.map(m=>`<option value="${m}">${formatMonthArabic(m)}</option>`).join('')}
+      </select>
+    </div>
+
+    <div style="overflow-x:auto;">
+      <table id="allEvaluationsTable">
+        <thead>
+          <tr>
+            <th>الطالب</th>
+            <th>المعلم المشرف</th>
+            <th>تاريخ الحصة</th>
+            <th>الحفظ الجديد</th>
+            <th>المراجعة والتثبيت</th>
+            <th>التجويد</th>
+            <th>التقييم العام</th>
+            <th style="text-align:center;">إجراءات وملاحظات</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${evals.length === 0 ? `
+            <tr><td colspan="8" style="text-align:center;padding:30px;color:var(--ink-soft);">لا توجد تقييمات مسجلة بعد في النظام.</td></tr>
+          ` : evals.map(e => {
+            const sn = resolveSurahName(e.newSurahFrom);
+            const sr = resolveSurahName(e.revSurahFrom);
+            const nNotes = safeParseArray(e.newNotes);
+            const tNotes = safeParseArray(e.tajweedNotes);
+            const noteCount = nNotes.length + tNotes.length;
+            return `
+            <tr class="all-eval-row" data-student="${e.student}" data-teacher="${e.teacher}" data-month="${e.monthKey||''}" data-notes="${e.generalNotes||''}">
+              <td class="cell-name">
+                <span class="avatar-sm">${initial(e.student)}</span>
+                <div>
+                  <strong>${e.student}</strong>
+                  ${noteCount > 0 ? `<span class="badge" style="background:rgba(216,149,24,0.12);color:var(--gold);font-size:10px;padding:1px 6px;margin-right:4px;">${noteCount} ملاحظات</span>` : ''}
+                </div>
+              </td>
+              <td><b>${e.teacher}</b></td>
+              <td>
+                <div style="font-weight:600;font-size:12.5px;">${e.date}</div>
+                <span style="font-size:11px;color:var(--ink-soft);">${e.monthKey||''}</span>
+              </td>
+              <td>
+                <b>${sn||'—'}</b> (${e.newAyahFrom||1} - ${e.newAyahTo||1})
+                <div style="font-size:11px;color:var(--green-mid);">إتقان: ${e.newScore||100}% (${e.newAyahsCount||0} آية)</div>
+              </td>
+              <td>
+                <b>${sr||'—'}</b> (${e.revAyahFrom||1} - ${evAyah(e)})
+                <div style="font-size:11px;color:var(--ink-soft);">إتقان: ${e.revScore||100}%</div>
+              </td>
+              <td><b style="color:var(--gold);">${e.tajweedScore||100}%</b></td>
+              <td><b>${e.overallScore||100}%</b> ${ratingBadge(e.overallRating)}</td>
+              <td>
+                <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;">
+                  <button class="btn btn-ghost btn-sm" onclick="openEvalDetailsModal('${e.id}')" style="padding:4px 8px;font-size:11.5px;font-weight:700;" title="عرض تفاصيل وملاحظات هذه الحصة">
+                    🔍 الملاحظات
+                  </button>
+                  <button class="btn btn-ghost btn-sm" onclick="viewStudentMonthlySummary('${e.student}', '${e.monthKey||''}')" style="padding:4px 8px;font-size:11.5px;" title="عرض ملخص الشهر الشامل">
+                    📜 السمري
+                  </button>
+                  <button class="btn btn-ghost btn-sm" onclick="viewStudentNotesNotebook('${e.student}')" style="padding:4px 8px;font-size:11.5px;" title="عرض دفتر ملاحظات الطالب">
+                    📝 الدفتر
+                  </button>
+                  <button class="btn-wa-share" onclick="shareEvalToWhatsApp('${e.id}')" style="padding:4px 8px;font-size:11px;">
+                    📱
+                  </button>
+                </div>
+              </td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+function evAyah(e){
+  return e.revAyahTo || e.revAyahFrom || 1;
+}
+
+function filterAllEvaluationsTable(){
+  const query = (document.getElementById('allEvalSearchInput')?.value || '').trim().toLowerCase();
+  const student = document.getElementById('allEvalStudentFilter')?.value || '';
+  const teacher = document.getElementById('allEvalTeacherFilter')?.value || '';
+  const month = document.getElementById('allEvalMonthFilter')?.value || '';
+
+  document.querySelectorAll('.all-eval-row').forEach(row => {
+    const st = row.getAttribute('data-student') || '';
+    const tc = row.getAttribute('data-teacher') || '';
+    const m = row.getAttribute('data-month') || '';
+    const notes = row.getAttribute('data-notes') || '';
+    const textAll = (st + ' ' + tc + ' ' + notes + ' ' + row.innerText).toLowerCase();
+
+    let match = true;
+    if (query && !textAll.includes(query)) match = false;
+    if (student && !isSameStudent(st, student)) match = false;
+    if (teacher && tc !== teacher) match = false;
+    if (month && m !== month) match = false;
+
+    row.style.display = match ? '' : 'none';
+  });
+}
+
+/* =====================================================================
+   8.7 EVALUATION DETAILS MODAL CONTROLLER
+   ===================================================================== */
+function openEvalDetailsModal(evalId){
+  const e = (DB.evaluations || []).find(ev => String(ev.id) === String(evalId));
+  if (!e) {
+    alert('لم يتم العثور على سجل التقييم المطلوب.');
+    return;
+  }
+
+  const sNew = resolveSurahName(e.newSurahFrom);
+  const sNewTo = resolveSurahName(e.newSurahTo || e.newSurahFrom);
+  const sRev = resolveSurahName(e.revSurahFrom);
+  const sRevTo = resolveSurahName(e.revSurahTo || e.revSurahFrom);
+
+  const nNotes = safeParseArray(e.newNotes);
+  const rNotes = safeParseArray(e.revNotes);
+  const tNotes = safeParseArray(e.tajweedNotes);
+
+  const newSurahLabel = (sNew === sNewTo || !sNewTo) ? `سورة ${sNew}` : `من سورة ${sNew} إلى ${sNewTo}`;
+  const revSurahLabel = (sRev === sRevTo || !sRevTo) ? `سورة ${sRev}` : `من سورة ${sRev} إلى ${sRevTo}`;
+
+  let newAyahs = e.newAyahsCount || 0;
+  let revAyahs = e.revAyahsCount || 0;
+  if (!newAyahs && e.newSurahFrom && e.newAyahFrom && e.newAyahTo) {
+    newAyahs = calculateQuranCoverage(e.newSurahFrom, e.newAyahFrom, e.newSurahTo || e.newSurahFrom, e.newAyahTo).ayahs;
+  }
+  if (!revAyahs && e.revSurahFrom && e.revAyahFrom && e.revAyahTo) {
+    revAyahs = calculateQuranCoverage(e.revSurahFrom, e.revAyahFrom, e.revSurahTo || e.revSurahFrom, e.revAyahTo).ayahs;
+  }
+
+  const modalTitle = document.getElementById('evalDetailsModalTitle');
+  const modalSub = document.getElementById('evalDetailsModalSub');
+  if (modalTitle) modalTitle.textContent = `تقرير الحصة للطالب: ${e.student}`;
+  if (modalSub) modalSub.textContent = `تاريخ الحصة: ${e.date} · المعلم المشرف: ${e.teacher} · شهر ${e.monthKey||'—'}`;
+
+  const c = document.getElementById('evalDetailsModalContent');
+  if (c) {
+    c.innerHTML = `
+      <!-- Overall Banner -->
+      <div style="background:linear-gradient(135deg, var(--green-deep), #164e33);color:#fff;padding:16px 20px;border-radius:14px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+        <div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.85);margin-bottom:4px;">الدرجة الكلية للحصة:</div>
+          <div style="font-size:28px;font-weight:900;color:var(--gold-soft);font-family:'Amiri',serif;line-height:1;">${e.overallScore || 100}%</div>
+        </div>
+        <div style="text-align:left;">
+          <span class="badge" style="background:#fff;color:var(--green-deep);font-weight:800;font-size:13px;padding:5px 12px;">${e.overallRating || 'ممتاز'} ⭐</span>
+          <div style="font-size:11.5px;color:rgba(255,255,255,0.8);margin-top:4px;">الفترة: ${formatMonthArabic(e.monthKey||'')}</div>
+        </div>
+      </div>
+
+      <!-- 1. الحفظ الجديد -->
+      <div style="background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:14px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
+          <strong style="color:var(--green-deep);font-size:14px;display:flex;align-items:center;gap:6px;">
+            <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#10b981;"></span>
+            🟢 الحفظ الجديد: ${newSurahLabel} (آية ${e.newAyahFrom || 1} إلى ${e.newAyahTo || 1})
+          </strong>
+          <span class="badge badge-success" style="font-size:12px;">الإتقان: ${e.newScore || 100}% (${newAyahs} آية)</span>
+        </div>
+        ${nNotes.length > 0 ? `
+          <div style="margin-top:8px;">
+            <div style="font-size:12px;font-weight:700;color:var(--ink-soft);margin-bottom:6px;">📌 مواضع وكلمات احتاجت تركيزاً:</div>
+            <div class="notes-list">
+              ${nNotes.map(n => `
+                <div class="note-pill-item" style="border-right:3px solid #10b981;">
+                  <span class="note-pill-tag">آية ${n.ayah}</span>
+                  <span style="flex:1;font-size:13px;color:var(--ink);">${n.note}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        ` : `
+          <div style="font-size:12px;color:var(--ink-soft);margin-top:4px;">ما شاء الله، سَرد ممتاز دون توقفات أو تنبيهات مسجلة.</div>
+        `}
+      </div>
+
+      <!-- 2. المراجعة والتثبيت -->
+      <div style="background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:14px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
+          <strong style="color:var(--green-deep);font-size:14px;display:flex;align-items:center;gap:6px;">
+            <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#3b82f6;"></span>
+            🔵 المراجعة والتثبيت: ${revSurahLabel} (آية ${e.revAyahFrom || 1} إلى ${e.revAyahTo || 1})
+          </strong>
+          <span class="badge badge-success" style="font-size:12px;">الإتقان: ${e.revScore || 100}% (${revAyahs} آية)</span>
+        </div>
+        ${rNotes.length > 0 ? `
+          <div style="margin-top:8px;">
+            <div style="font-size:12px;font-weight:700;color:var(--ink-soft);margin-bottom:6px;">📌 ملاحظات تثبيت المحفوظ:</div>
+            <div class="notes-list">
+              ${rNotes.map(n => `
+                <div class="note-pill-item" style="border-right:3px solid #3b82f6;">
+                  <span class="note-pill-tag">آية ${n.ayah}</span>
+                  <span style="flex:1;font-size:13px;color:var(--ink);">${n.note}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        ` : `
+          <div style="font-size:12px;color:var(--ink-soft);margin-top:4px;">المراجعة ممتازة ومتقنة بفضل الله.</div>
+        `}
+      </div>
+
+      <!-- 3. أحكام التجويد والأداء -->
+      <div style="background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:14px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
+          <strong style="color:var(--green-deep);font-size:14px;display:flex;align-items:center;gap:6px;">
+            <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#f59e0b;"></span>
+            🟡 أحكام التجويد والأداء القرآني
+          </strong>
+          <span class="badge badge-warn" style="font-size:12px;">درجة الأداء: ${e.tajweedScore || 100}%</span>
+        </div>
+        ${tNotes.length > 0 ? `
+          <div style="margin-top:8px;">
+            <div style="font-size:12px;font-weight:700;color:var(--ink-soft);margin-bottom:6px;">🎯 توجيهات الأحكام المطبقة:</div>
+            <div class="notes-list">
+              ${tNotes.map(t => `
+                <div class="note-pill-item" style="border-right:3px solid #f59e0b;">
+                  <span class="note-pill-tag" style="background:rgba(216,149,24,0.15);color:var(--gold);">آية ${t.ayah}</span>
+                  <strong style="color:var(--green-deep);font-size:13px;">${t.rule}:</strong>
+                  <span style="flex:1;font-size:13px;color:var(--ink);">${t.note}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        ` : `
+          <div style="font-size:12px;color:var(--ink-soft);margin-top:4px;">التلاوة جارية وفق الأحكام التجويدية الأساسية ومخارج الحروف الصحيحة.</div>
+        `}
+      </div>
+
+      <!-- 4. ملاحظة المعلم العامة -->
+      ${e.generalNotes ? `
+        <div style="background:rgba(31,122,82,0.06);border:1px dashed var(--green-mid);border-radius:12px;padding:14px;">
+          <strong style="color:var(--green-deep);font-size:13.5px;display:block;margin-bottom:4px;">💬 رسالة وتشجيع المعلم:</strong>
+          <p style="margin:0;font-size:13.5px;color:var(--ink);line-height:1.5;">${e.generalNotes}</p>
+        </div>
+      ` : ''}
+    `;
+  }
+
+  const waBtn = document.getElementById('evalDetailsWaBtn');
+  if (waBtn) waBtn.onclick = () => shareEvalToWhatsApp(e.id);
+
+  const sumBtn = document.getElementById('evalDetailsSummaryBtn');
+  if (sumBtn) sumBtn.onclick = () => {
+    closeEvalDetailsModal();
+    viewStudentMonthlySummary(e.student, e.monthKey);
+  };
+
+  const modal = document.getElementById('evalDetailsModal');
+  if (modal) modal.classList.add('active');
+}
+
+function closeEvalDetailsModal(){
+  const modal = document.getElementById('evalDetailsModal');
+  if (modal) modal.classList.remove('active');
 }
 
 /* =====================================================================
@@ -4727,19 +6740,19 @@ async function adminDeleteStudent(studentName){
   if (uname && !DB.deleted_records.users.includes(uname)) DB.deleted_records.users.push(uname);
   if (studentName && !DB.deleted_records.users.includes(studentName)) DB.deleted_records.users.push(studentName);
 
-  const studentSessions = (DB.sessions || []).filter(s => s.student === studentName);
+  const studentSessions = (DB.sessions || []).filter(s => isSameStudent(s.student, studentName));
   studentSessions.forEach(s => {
     if (s.id && !DB.deleted_records.sessions.includes(String(s.id))) {
       DB.deleted_records.sessions.push(String(s.id));
     }
   });
 
-  DB.students = DB.students.filter(s => s.name !== studentName && (!uname || s.username !== uname));
-  DB.users = DB.users.filter(u => u.name !== studentName && (!uname || u.username !== uname));
-  DB.sessions = DB.sessions.filter(s => s.student !== studentName);
-  if (DB.evaluations) DB.evaluations = DB.evaluations.filter(e => e.student !== studentName);
-  if (DB.makeup_sessions) DB.makeup_sessions = DB.makeup_sessions.filter(m => m.student_name !== studentName);
-  if (DB.teacher_alerts) DB.teacher_alerts = DB.teacher_alerts.filter(a => a.student_name !== studentName);
+  DB.students = DB.students.filter(s => !isSameStudent(s.name, studentName) && (!uname || s.username !== uname));
+  DB.users = DB.users.filter(u => !isSameStudent(u.name, studentName) && (!uname || u.username !== uname));
+  DB.sessions = DB.sessions.filter(s => !isSameStudent(s.student, studentName));
+  if (DB.evaluations) DB.evaluations = DB.evaluations.filter(e => !isSameStudent(e.student, studentName));
+  if (DB.makeup_sessions) DB.makeup_sessions = DB.makeup_sessions.filter(m => !isSameStudent(m.student_name, studentName));
+  if (DB.teacher_alerts) DB.teacher_alerts = DB.teacher_alerts.filter(a => !isSameStudent(a.student_name, studentName));
 
   saveDB();
 
@@ -5379,22 +7392,195 @@ document.getElementById('sessionSave').addEventListener('click', ()=>{
   renderPage(currentRole, currentPage);
 });
 
-/* ---------------- CERTIFICATE MODAL ---------------- */
-function openCertModal(studentName){
-  const s = DB.students.find(std => std.name === studentName) || { name: studentName, teacher: 'الشيخ أحمد فتحي', progress: 30 };
-  document.getElementById('certStudentName').textContent = s.name;
-  document.getElementById('certTeacherName').textContent = s.teacher || 'إدارة الأكاديمية';
-  
-  if (s.progress && s.progress > 0) {
-    document.getElementById('certAchievement').textContent = `حفظ وتثبيت (${s.progress}) أجزاء من القرآن الكريم`;
-  } else {
-    document.getElementById('certAchievement').textContent = 'الجزء الثلاثين (جزء عمّ) كاملاً مع إتقان التجويد';
+/* ---------------- ROYAL ISLAMIC CERTIFICATE OF ACHIEVEMENT (قرطبة الملكية) ---------------- */
+let currentCertStudent = null;
+
+function openCertModal(studentName, contextMonth = '', customAchievement = '', customScore = ''){
+  const s = (DB.students || []).find(std => isSameStudent(std.name, studentName)) || { 
+    name: studentName, 
+    teacher: 'الشيخ أحمد فتحي', 
+    progress: 30 
+  };
+  currentCertStudent = s;
+
+  // 1. Populate Student Name
+  const stdNameElem = document.getElementById('certStudentName');
+  if (stdNameElem) stdNameElem.textContent = s.name;
+  const editStdInput = document.getElementById('certEditStudent');
+  if (editStdInput) editStdInput.value = s.name;
+
+  // 2. Populate Teacher Name
+  const teacherName = s.teacher || 'الشيخ المشرف';
+  const tchElem = document.getElementById('certTeacherName');
+  if (tchElem) tchElem.textContent = teacherName;
+  const editTchInput = document.getElementById('certEditTeacher');
+  if (editTchInput) editTchInput.value = teacherName;
+
+  // 3. Compute or fetch score
+  let evalScore = 98;
+  const studentEvals = (DB.evaluations || []).filter(e => isSameStudent(e.student, studentName));
+  if (customScore) {
+    evalScore = parseInt(customScore) || 98;
+  } else if (studentEvals.length > 0) {
+    const validScores = studentEvals.map(e => parseInt(e.overallScore)).filter(v => !isNaN(v) && v > 0);
+    if (validScores.length > 0) {
+      evalScore = Math.round(validScores.reduce((a,b)=>a+b, 0) / validScores.length);
+    }
   }
-  
-  document.getElementById('certDate').textContent = new Date().toLocaleDateString('ar-EG', { year:'numeric', month:'long', day:'numeric' });
+
+  // 4. Determine Achievement Text
+  let achText = customAchievement;
+  if (!achText) {
+    if (contextMonth && contextMonth !== 'all') {
+      achText = `التميز والتفوق القرآني في حصاد شهر (${formatMonthArabic(contextMonth)}) المبارك`;
+    } else if (s.progress && s.progress > 0) {
+      achText = `حفظ وتثبيت وإتقان (${toArabicDigits(s.progress)}) أجزاء من القرآن الكريم`;
+    } else {
+      achText = 'الجزء الثلاثين (جزء عمّ) كاملاً مع ضبط أحكام التجويد';
+    }
+  }
+  const achElem = document.getElementById('certAchievement');
+  if (achElem) achElem.textContent = achText;
+  const editAchInput = document.getElementById('certEditAchievement');
+  if (editAchInput) editAchInput.value = achText;
+
+  // 5. Grade & Score Pill
+  let gradeText = 'مُمْتَاز مَعَ مَرْتَبَةِ الشَّرَفِ الأُولَى ★★★★★';
+  if (evalScore < 85) {
+    gradeText = 'جَيِّد جِدًّا مُرْتَفِع ★★★★☆';
+  } else if (evalScore < 95) {
+    gradeText = 'مُمْتَاز مُرْتَفِع ★★★★★';
+  }
+  const gradeElem = document.getElementById('certGradeBadge');
+  if (gradeElem) gradeElem.textContent = gradeText;
+  const gradeSelect = document.getElementById('certGradeSelect');
+  if (gradeSelect) gradeSelect.value = gradeText;
+
+  const scorePill = document.getElementById('certScorePill');
+  if (scorePill) scorePill.textContent = `نسبة الإتقان: ${toArabicDigits(evalScore)}٪`;
+  const editScoreInput = document.getElementById('certEditScore');
+  if (editScoreInput) editScoreInput.value = `${evalScore}%`;
+
+  // 6. Dual Hijri & Gregorian Date
+  const now = new Date();
+  const gregDateStr = now.toLocaleDateString('ar-EG', { year:'numeric', month:'long', day:'numeric' });
+  const hijriYear = '١٤٤٨ هـ';
+  const dateElem = document.getElementById('certDate');
+  if (dateElem) dateElem.textContent = `${gregDateStr} م (${hijriYear})`;
+
+  // 7. Verification Serial Code
+  let charSum = 0;
+  for (let i = 0; i < (s.name || '').length; i++) {
+    charSum = ((charSum << 5) - charSum) + s.name.charCodeAt(i);
+    charSum |= 0;
+  }
+  const hash = String(Math.abs(charSum)).slice(0, 4).padEnd(4, '7');
+  const serialElem = document.getElementById('certVerifyCode');
+  if (serialElem) serialElem.textContent = `KTB-${now.getFullYear()}-${hash}`;
+
+  // Reset preset selector
+  const presetSel = document.getElementById('certPresetSelect');
+  if (presetSel) {
+    if (contextMonth && contextMonth !== 'all') presetSel.value = 'monthly';
+    else if (s.progress && s.progress >= 30) presetSel.value = 'khatma';
+    else if (s.progress && s.progress > 0) presetSel.value = 'progress';
+    else presetSel.value = 'juz30';
+  }
+
+  // Ensure manual editor is closed initially
+  const manualEd = document.getElementById('certManualEditor');
+  if (manualEd) manualEd.style.display = 'none';
+
   document.getElementById('certModal').classList.add('active');
 }
-document.getElementById('certClose').addEventListener('click', ()=> document.getElementById('certModal').classList.remove('active'));
+
+function applyCertPreset(presetVal){
+  if (!currentCertStudent) return;
+  const s = currentCertStudent;
+  let bannerTitle = 'شَهَادَةُ إِتْقَانٍ وَتَفَوُّقٍ قُرْآنِيّ';
+  let achText = '';
+  let ayahText = '﴿ إِنَّ الَّذِينَ يَتْلُونَ كِتَابَ اللَّهِ وَأَقَامُوا الصَّلَاةَ وَأَنفَقُوا مِمَّا رَزَقْنَاهُمْ سِرًّا وَعَلَانِيَةً يَرْجُونَ تِجَارَةً لَّن تَبُورَ ﴾';
+  let ayahRef = '[ سورة فاطر: ٢٩ ]';
+
+  if (presetVal === 'juz30') {
+    achText = 'الجزء الثلاثين (جزء عمّ) كاملاً مع ضبط أحكام التجويد';
+    ayahText = '﴿ وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا ﴾';
+    ayahRef = '[ سورة المزمل: ٤ ]';
+  } else if (presetVal === 'juz29') {
+    achText = 'الجزء التاسع والعشرين (جزء تبارك) كاملاً مع الإتقان والضبط';
+    ayahText = '﴿ وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا ﴾';
+    ayahRef = '[ سورة المزمل: ٤ ]';
+  } else if (presetVal === 'progress') {
+    const p = (s.progress && s.progress > 0) ? s.progress : 1;
+    achText = `حفظ وتثبيت وإتقان (${toArabicDigits(p)}) أجزاء من القرآن الكريم`;
+  } else if (presetVal === 'khatma') {
+    bannerTitle = 'شَهَادَةُ إِجَازَةٍ وَخَتْمِ القُرْآنِ الكَرِيمِ';
+    achText = 'حفظ القرآن الكريم كاملاً غيباً برواية حفص عن عاصم من طريق الشاطبية';
+    ayahText = '﴿ ثُمَّ أَوْرَثْنَا الْكِتَابَ الَّذِينَ اصْطَفَيْنَا مِنْ عِبَادِنَا ﴾';
+    ayahRef = '[ سورة فاطر: ٣٢ ]';
+  } else if (presetVal === 'monthly') {
+    bannerTitle = 'شَهَادَةُ الطَّالِبِ المِثَالِيّ وَالتَّفَوُّقِ الشَّهْرِيّ';
+    achText = 'التميز والتفوق القرآني والانضباط العالي في الحصص القرآنية لهذا الشهر';
+  } else if (presetVal === 'custom') {
+    toggleCertEditor(true);
+    return;
+  }
+
+  const bTitleElem = document.getElementById('certBannerTitle');
+  if (bTitleElem) bTitleElem.textContent = bannerTitle;
+
+  const aTextElem = document.getElementById('certAyahText');
+  if (aTextElem) aTextElem.textContent = ayahText;
+
+  const aRefElem = document.getElementById('certAyahRef');
+  if (aRefElem) aRefElem.textContent = ayahRef;
+
+  const achElem = document.getElementById('certAchievement');
+  if (achElem) achElem.textContent = achText;
+
+  const editAchInput = document.getElementById('certEditAchievement');
+  if (editAchInput) editAchInput.value = achText;
+}
+
+function applyCertGrade(gradeText){
+  const gradeElem = document.getElementById('certGradeBadge');
+  if (gradeElem) gradeElem.textContent = gradeText;
+}
+
+function toggleCertEditor(forceOpen = false){
+  const ed = document.getElementById('certManualEditor');
+  if (!ed) return;
+  if (forceOpen) {
+    ed.style.display = 'block';
+  } else {
+    ed.style.display = ed.style.display === 'none' ? 'block' : 'none';
+  }
+}
+
+function updateCertField(fieldId, value){
+  const el = document.getElementById(fieldId);
+  if (el) el.textContent = value;
+}
+
+function shareCertViaWhatsApp(){
+  if (!currentCertStudent) return;
+  const stdName = document.getElementById('certStudentName')?.textContent || currentCertStudent.name;
+  const ach = document.getElementById('certAchievement')?.textContent || '';
+  const grade = document.getElementById('certGradeBadge')?.textContent || '';
+  const teacher = document.getElementById('certTeacherName')?.textContent || '';
+  const serial = document.getElementById('certVerifyCode')?.textContent || '';
+
+  const msg = `🎉 *تهنئة مباركة من أكاديمية قرطبة الدولية لتعليم القرآن الكريم* 📜✨\n\n` +
+    `يَسُرُّ إدارة الأكاديمية أن تُهَنِّئَ الطالبَ المبارك: *${stdName}*\n` +
+    `بمناسبة صدور شهادة الشرف والإتقان القرآني:\n` +
+    `🌟 *الإنجاز:* ${ach}\n` +
+    `⭐ *التقدير:* ${grade}\n` +
+    `👨‍🏫 *المعلم المشرف:* ${teacher}\n` +
+    `🔒 *رقم الاعتماد الرسمي:* ${serial}\n\n` +
+    `سائلين الله تعالى أن يجعله من أهل القرآن وخاصته، وأن ينفع به والديه والأمة الإسلامية. 🌿🤍`;
+
+  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+}
 
 document.querySelectorAll('.modal-overlay').forEach(overlay => {
   overlay.addEventListener('click', (e) => {
