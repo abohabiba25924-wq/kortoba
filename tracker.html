@@ -1521,10 +1521,10 @@
 <div class="modal-overlay" id="evalModal">
   <div class="modal modal-wide">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
-      <h3 style="margin:0;">تسجيل وتقييم تفصيلي للحصة 📖</h3>
+      <h3 style="margin:0;" id="evalModalTitle">تسجيل وتقييم تفصيلي للحصة 📖</h3>
       <div style="display:flex;align-items:center;gap:8px;">
         <label style="font-size:13px;font-weight:700;color:var(--green-deep);">الطالب المستهدف:</label>
-        <select id="evalStudentSelect" onchange="currentEvalStudent=this.value;" style="padding:6px 14px;border-radius:10px;border:1.5px solid var(--green);font-weight:700;color:var(--green-deep);background:#fff;font-size:13px;"></select>
+        <select id="evalStudentSelect" onchange="onEvalStudentSelectChange(this.value)" style="padding:6px 14px;border-radius:10px;border:1.5px solid var(--green);font-weight:700;color:var(--green-deep);background:#fff;font-size:13px;"></select>
       </div>
     </div>
 
@@ -1668,9 +1668,10 @@
       <!-- Injected dynamically by openEvalDetailsModal(evalId) -->
     </div>
 
-    <div class="modal-actions" style="margin-top:20px;padding-top:14px;border-top:1px solid var(--line);justify-content:space-between;align-items:center;">
+    <div class="modal-actions" style="margin-top:20px;padding-top:14px;border-top:1px solid var(--line);justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
       <button type="button" class="btn btn-ghost" onclick="closeEvalDetailsModal()">إغلاق</button>
-      <div style="display:flex;gap:8px;">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <button type="button" class="btn btn-primary" id="evalDetailsEditBtn" style="font-weight:700;">✏️ تعديل التقييم والملاحظات</button>
         <button type="button" class="btn btn-ghost" id="evalDetailsSummaryBtn">📜 عرض ملخص الشهر للطالب</button>
         <button type="button" class="btn-wa-share" id="evalDetailsWaBtn">📱 إرسال لولي الأمر واتساب</button>
       </div>
@@ -2959,10 +2960,16 @@ async function syncFromCloud(){
           if (localEv.session_id && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(localEv.session_id))) {
             cloudPayload.session_id = localEv.session_id;
           }
-          safeCloudOp(supabaseClient.from('evaluations').insert([cloudPayload]).select()).then(res => {
-            if (res && res.error && cloudPayload.session_id) {
-              delete cloudPayload.session_id;
-              return safeCloudOp(supabaseClient.from('evaluations').insert([cloudPayload]).select());
+          safeCloudOp(supabaseClient.from('evaluations').insert([cloudPayload]).select()).then(async res => {
+            if (res && res.error) {
+              if (res.error.message && res.error.message.includes('general_notes')) {
+                delete cloudPayload.general_notes;
+                res = await safeCloudOp(supabaseClient.from('evaluations').insert([cloudPayload]).select());
+              }
+              if (res && res.error && cloudPayload.session_id) {
+                delete cloudPayload.session_id;
+                res = await safeCloudOp(supabaseClient.from('evaluations').insert([cloudPayload]).select());
+              }
             }
             return res;
           }).then(res => {
@@ -3000,7 +3007,9 @@ async function syncFromCloud(){
     }
     if (delSess.length > 0) {
       delSess.forEach(val => {
-        safeCloudOp(supabaseClient.from('sessions').delete().eq('id', val));
+        if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(val))) {
+          safeCloudOp(supabaseClient.from('sessions').delete().eq('id', val));
+        }
       });
     }
 
@@ -4437,6 +4446,7 @@ const PAGES = {
                 <td>
                   <div style="display:flex;gap:6px;flex-wrap:wrap;">
                     <button class="btn btn-ghost btn-sm" onclick="openEvalDetailsModal('${e.id}')" style="padding:4px 9px;font-size:11.5px;font-weight:700;" title="عرض ملاحظات الحصة كاملة">🔍 الملاحظات</button>
+                    <button class="btn btn-ghost btn-sm" onclick="openTripleEvalModal('${e.student}', '${e.session_id||''}', '${e.id}')" style="padding:4px 9px;font-size:11.5px;font-weight:700;color:var(--green-deep);" title="تعديل هذا التقييم والملاحظات">✏️ تعديل</button>
                     <button class="btn btn-ghost btn-sm" onclick="viewStudentMonthlySummary('${e.student}', '${e.monthKey||''}')" style="padding:4px 9px;font-size:11.5px;" title="عرض ملخص الشهر">📜 السمري</button>
                     <button class="btn-wa-share" onclick="shareEvalToWhatsApp('${e.id}')" style="padding:4px 9px;font-size:11.5px;">📱 واتساب</button>
                   </div>
@@ -4905,8 +4915,11 @@ function sessionItemTeacher(s, idx){
       <button class="att-btn ${att==='absent_teacher'?'active-absent-t':''}" onclick="setAttendanceDetailed('${s.id}', 'absent_teacher')" title="غياب المعلم (يلزم تعويض للطالب)">غياب معلم 👨‍🏫⚠️</button>
     </div>
     <div style="display:flex;align-items:center;gap:8px;flex-wrap:nowrap;">
-      ${matchedEval ? `<button class="btn btn-ghost btn-sm" onclick="openEvalDetailsModal('${matchedEval.id}')" title="عرض ملاحظات وتوجيهات الحصة" style="padding:6px 10px;font-size:12px;font-weight:700;">📝 الملاحظات</button>` : ''}
-      <button class="btn btn-ghost btn-sm" onclick="openEditSessionModal('${s.id}')" title="تعديل موعد أو تفاصيل الحصة" style="padding:6px 10px;font-size:12px;">✏️ تعديل</button>
+      ${matchedEval ? `
+        <button class="btn btn-ghost btn-sm" onclick="openEvalDetailsModal('${matchedEval.id}')" title="عرض ملاحظات وتوجيهات الحصة" style="padding:6px 10px;font-size:12px;font-weight:700;">📝 الملاحظات</button>
+        <button class="btn btn-ghost btn-sm" onclick="openTripleEvalModal('${s.student}', '${s.id}', '${matchedEval.id}')" title="تعديل هذا التقييم والملاحظات" style="padding:6px 10px;font-size:12px;color:var(--green-deep);font-weight:700;">✏️ تعديل التقييم</button>
+      ` : ''}
+      <button class="btn btn-ghost btn-sm" onclick="openEditSessionModal('${s.id}')" title="تعديل موعد أو تفاصيل الحصة" style="padding:6px 10px;font-size:12px;">📅 الموعد</button>
       ${joinBtn}
       <button class="btn-icon-danger" onclick="deleteSessionDirect('${s.id}')" title="حذف هذه الحصة نهائياً" style="padding:7px 11px;border-radius:100px;font-size:12px;">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
@@ -4970,10 +4983,12 @@ function sessionItemStudent(s, idx){
 
 function teacherMarkPresent(studentName, sessionIdOrIdx){
   const sess = DB.sessions.find(x => String(x.id) === String(sessionIdOrIdx)) || DB.sessions[sessionIdOrIdx];
+  let matchedEval = null;
   if (sess) {
     sess.attendance = 'present';
     sess.status = 'done';
     saveDB();
+    matchedEval = (DB.evaluations || []).find(e => isSameStudent(e.student, sess.student) && ((e.session_id && String(e.session_id) === String(sess.id)) || isSameDate(e.date, sess.date)));
     if (supabaseClient && sess) {
       if (sess.id && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(sess.id))) {
         safeCloudOp(supabaseClient.from('sessions').update({ attendance: 'present', status: 'done' }).eq('id', sess.id));
@@ -4982,7 +4997,7 @@ function teacherMarkPresent(studentName, sessionIdOrIdx){
       }
     }
   }
-  openTripleEvalModal(studentName, sess ? sess.id : null);
+  openTripleEvalModal(studentName, sess ? sess.id : null, matchedEval ? matchedEval.id : null);
 }
 
 function setAttendanceDetailed(sessionIdOrIdx, attType){
@@ -5041,44 +5056,197 @@ let currentEvalStudent = '';
 let currentEvalSessionId = null;
 let currentEvalRecordId = null;
 
-function openTripleEvalModal(studentName = '', sessionId = null){
+function onEvalStudentSelectChange(selectedName) {
+  openTripleEvalModal(selectedName, null, null);
+}
+
+function openTripleEvalModal(studentName = '', sessionId = null, evalId = null){
   if (!DB.evaluations) DB.evaluations = [];
   const studentsList = DB.students || [];
   if (!studentsList.length) { alert('لا يوجد طلاب مسجلين.'); return; }
   
-  const matchedStudent = studentsList.find(s => isSameStudent(s.name, studentName)) || studentsList[0];
+  // 1. Locate student
+  let matchedStudent = null;
+  if (studentName) {
+    matchedStudent = studentsList.find(s => isSameStudent(s.name, studentName));
+  }
+  
+  // 2. Locate existing evaluation if any (for Edit Mode)
+  let existingEval = null;
+  if (evalId) {
+    existingEval = (DB.evaluations || []).find(e => String(e.id) === String(evalId));
+  }
+  if (!existingEval && sessionId) {
+    existingEval = (DB.evaluations || []).find(e => e.session_id && String(e.session_id) === String(sessionId));
+  }
+  if (!existingEval && sessionId) {
+    const sObj = (DB.sessions || []).find(s => String(s.id) === String(sessionId));
+    if (sObj && sObj.student && sObj.date) {
+      existingEval = (DB.evaluations || []).find(e => isSameStudent(e.student, sObj.student) && isSameDate(e.date, sObj.date));
+    }
+  }
+
+  if (existingEval) {
+    matchedStudent = studentsList.find(s => isSameStudent(s.name, existingEval.student)) || { name: existingEval.student };
+  } else if (!matchedStudent) {
+    matchedStudent = studentsList[0];
+  }
+
   currentEvalStudent = matchedStudent.name;
-  currentEvalSessionId = sessionId || null;
+  currentEvalSessionId = existingEval ? (existingEval.session_id || sessionId || null) : (sessionId || null);
+  currentEvalRecordId = existingEval ? existingEval.id : null;
   
   const studentSel = document.getElementById('evalStudentSelect');
   if (studentSel) {
-    studentSel.innerHTML = studentsList.map(s => `<option value="${s.name}" ${s.name === currentEvalStudent ? 'selected' : ''}>${s.name}</option>`).join('');
+    studentSel.innerHTML = studentsList.map(s => `<option value="${s.name}" ${isSameStudent(s.name, currentEvalStudent) ? 'selected' : ''}>${s.name}</option>`).join('');
     studentSel.value = currentEvalStudent;
   }
 
-  // Populate surahs selects
-  populateSurahSelect(document.getElementById('newSurahFrom'), 2);
-  populateSurahSelect(document.getElementById('newSurahTo'), 2);
-  populateSurahSelect(document.getElementById('revSurahFrom'), 1);
-  populateSurahSelect(document.getElementById('revSurahTo'), 1);
+  const modalTitle = document.getElementById('evalModalTitle');
+  const saveBtn = document.getElementById('evalSaveBtn');
 
-  // Defaults
-  document.getElementById('newAyahFrom').value = 1;
-  document.getElementById('newAyahTo').value = 15;
-  document.getElementById('revAyahFrom').value = 1;
-  document.getElementById('revAyahTo').value = 7;
+  // Clear notes containers
+  const newNotesC = document.getElementById('newNotesContainer');
+  const revNotesC = document.getElementById('revNotesContainer');
+  const tajNotesC = document.getElementById('tajweedNotesContainer');
+  if (newNotesC) newNotesC.innerHTML = '';
+  if (revNotesC) revNotesC.innerHTML = '';
+  if (tajNotesC) tajNotesC.innerHTML = '';
 
-  document.getElementById('newNotesContainer').innerHTML = '';
-  document.getElementById('revNotesContainer').innerHTML = '';
-  document.getElementById('tajweedNotesContainer').innerHTML = '';
+  if (existingEval) {
+    // =========================================================================
+    // EDIT MODE: Populate saved evaluation and notes
+    // =========================================================================
+    if (modalTitle) modalTitle.innerHTML = `تعديل تقييم وملاحظات الحصة ✏️ <span style="font-size:13px;color:var(--gold);font-weight:normal;">(${existingEval.date})</span>`;
+    if (saveBtn) saveBtn.textContent = '💾 حفظ التعديلات والاعتماد';
 
-  addNewNoteRow(5, 'مراعاة مخرج حرف الحاء وعدم التكلف');
-  addTajweedNoteRow(7, 'الإدغام بغنة', 'إدغام النون الساكنة في الياء');
+    const nSFrom = parseInt(existingEval.newSurahFrom) || 2;
+    const nSTo = parseInt(existingEval.newSurahTo) || nSFrom;
+    const rSFrom = parseInt(existingEval.revSurahFrom) || 1;
+    const rSTo = parseInt(existingEval.revSurahTo) || rSFrom;
 
-  document.getElementById('newScore').value = 95;
-  document.getElementById('revScore').value = 90;
-  document.getElementById('tajweedScore').value = 90;
-  document.getElementById('generalTeacherNotes').value = '';
+    populateSurahSelect(document.getElementById('newSurahFrom'), nSFrom);
+    populateSurahSelect(document.getElementById('newSurahTo'), nSTo);
+    populateSurahSelect(document.getElementById('revSurahFrom'), rSFrom);
+    populateSurahSelect(document.getElementById('revSurahTo'), rSTo);
+
+    document.getElementById('newAyahFrom').value = existingEval.newAyahFrom ?? 1;
+    document.getElementById('newAyahTo').value = existingEval.newAyahTo ?? 15;
+    document.getElementById('revAyahFrom').value = existingEval.revAyahFrom ?? 1;
+    document.getElementById('revAyahTo').value = existingEval.revAyahTo ?? 7;
+
+    document.getElementById('newScore').value = existingEval.newScore ?? 95;
+    document.getElementById('revScore').value = existingEval.revScore ?? 90;
+    document.getElementById('tajweedScore').value = existingEval.tajweedScore ?? 90;
+    document.getElementById('generalTeacherNotes').value = existingEval.generalNotes || '';
+
+    // Populate saved notes
+    const nNotes = safeParseArray(existingEval.newNotes);
+    nNotes.forEach(n => addNewNoteRow(n.ayah, n.note));
+
+    const rNotes = safeParseArray(existingEval.revNotes);
+    rNotes.forEach(r => addRevNoteRow(r.ayah, r.note));
+
+    const tNotes = safeParseArray(existingEval.tajweedNotes);
+    tNotes.forEach(t => addTajweedNoteRow(t.ayah, t.rule, t.note));
+
+  } else {
+    // =========================================================================
+    // NEW EVALUATION: Smart Quran Continuity (المتابعة التلقائية للحفظ الجديد)
+    // =========================================================================
+    if (modalTitle) modalTitle.textContent = 'تسجيل وتقييم تفصيلي للحصة 📖';
+    if (saveBtn) saveBtn.textContent = '💾 حفظ واعتماد تقييم الحصة';
+
+    document.getElementById('newScore').value = 95;
+    document.getElementById('revScore').value = 90;
+    document.getElementById('tajweedScore').value = 90;
+    document.getElementById('generalTeacherNotes').value = '';
+
+    // Find previous evaluations for this student
+    const studentEvals = (DB.evaluations || []).filter(e => isSameStudent(e.student, currentEvalStudent));
+    const lastEval = studentEvals.length > 0 ? studentEvals[0] : null;
+
+    if (lastEval) {
+      // 1. New Memorization Continuity (من حيث توقف الطالب في الحصة السابقة)
+      const prevSurahId = parseInt(lastEval.newSurahTo || lastEval.newSurahFrom) || 2;
+      const prevAyahTo = parseInt(lastEval.newAyahTo) || 1;
+      const prevSurahObj = QURAN_SURAHS.find(s => s.id === prevSurahId) || { ayahs: 286 };
+
+      let nextNewSurah = prevSurahId;
+      let nextNewAyahFrom = prevAyahTo + 1;
+      let nextNewAyahTo = nextNewAyahFrom + 14;
+
+      if (nextNewAyahFrom > prevSurahObj.ayahs) {
+        // انتقل للسورة التالية في ترتيب المصحف الشريف
+        if (prevSurahId < 114) {
+          nextNewSurah = prevSurahId + 1;
+          nextNewAyahFrom = 1;
+          const nextSurahObj = QURAN_SURAHS.find(s => s.id === nextNewSurah) || { ayahs: 20 };
+          nextNewAyahTo = Math.min(nextSurahObj.ayahs, 15);
+        } else {
+          nextNewSurah = 2;
+          nextNewAyahFrom = 1;
+          nextNewAyahTo = 15;
+        }
+      } else {
+        nextNewAyahTo = Math.min(prevSurahObj.ayahs, nextNewAyahTo);
+      }
+
+      populateSurahSelect(document.getElementById('newSurahFrom'), nextNewSurah);
+      populateSurahSelect(document.getElementById('newSurahTo'), nextNewSurah);
+      document.getElementById('newAyahFrom').value = nextNewAyahFrom;
+      document.getElementById('newAyahTo').value = nextNewAyahTo;
+
+      // 2. Revision Continuity
+      let revSurah = 1;
+      let revAyahFrom = 1;
+      let revAyahTo = 7;
+
+      if (lastEval.revSurahTo || lastEval.revSurahFrom) {
+        const pRevSurah = parseInt(lastEval.revSurahTo || lastEval.revSurahFrom) || 1;
+        const pRevAyahTo = parseInt(lastEval.revAyahTo) || 7;
+        const pRevObj = QURAN_SURAHS.find(s => s.id === pRevSurah) || { ayahs: 7 };
+
+        if (pRevAyahTo < pRevObj.ayahs) {
+          revSurah = pRevSurah;
+          revAyahFrom = pRevAyahTo + 1;
+          revAyahTo = Math.min(pRevObj.ayahs, revAyahFrom + 19);
+        } else {
+          revSurah = (pRevSurah % 114) + 1;
+          revAyahFrom = 1;
+          const nextRevObj = QURAN_SURAHS.find(s => s.id === revSurah) || { ayahs: 20 };
+          revAyahTo = Math.min(nextRevObj.ayahs, 20);
+        }
+      }
+
+      populateSurahSelect(document.getElementById('revSurahFrom'), revSurah);
+      populateSurahSelect(document.getElementById('revSurahTo'), revSurah);
+      document.getElementById('revAyahFrom').value = revAyahFrom;
+      document.getElementById('revAyahTo').value = revAyahTo;
+
+    } else {
+      // الطالب يبدأ لأول مرة
+      let defaultNewSurah = 2; // البقرة
+      if (matchedStudent.current_surah_new) {
+        const f = QURAN_SURAHS.find(s => s.name === matchedStudent.current_surah_new || matchedStudent.current_surah_new.includes(s.name));
+        if (f) defaultNewSurah = f.id;
+      }
+      populateSurahSelect(document.getElementById('newSurahFrom'), defaultNewSurah);
+      populateSurahSelect(document.getElementById('newSurahTo'), defaultNewSurah);
+      document.getElementById('newAyahFrom').value = 1;
+      document.getElementById('newAyahTo').value = 15;
+
+      let defaultRevSurah = 1; // الفاتحة
+      if (matchedStudent.current_surah_rev) {
+        const f = QURAN_SURAHS.find(s => s.name === matchedStudent.current_surah_rev || matchedStudent.current_surah_rev.includes(s.name));
+        if (f) defaultRevSurah = f.id;
+      }
+      populateSurahSelect(document.getElementById('revSurahFrom'), defaultRevSurah);
+      populateSurahSelect(document.getElementById('revSurahTo'), defaultRevSurah);
+      document.getElementById('revAyahFrom').value = 1;
+      document.getElementById('revAyahTo').value = 7;
+    }
+  }
 
   updateNewCoverage();
   updateRevCoverage();
@@ -5130,46 +5298,59 @@ function updateScores(){
 }
 
 // Repeaters for Notes
+function escapeHtmlAttr(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
 function addNewNoteRow(defaultAyah = '', defaultText = ''){
   const c = document.getElementById('newNotesContainer');
+  if (!c) return;
   const div = document.createElement('div');
   div.className = 'note-repeater-row';
   div.innerHTML = `
-    <input type="number" placeholder="رقم الآية" value="${defaultAyah}" style="border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:12.5px;" class="new-n-ayah">
-    <input type="text" placeholder="الكلمة أو الآية المحتاجة تركيز..." value="${defaultText}" style="border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12.5px;" class="new-n-text">
-    <button type="button" class="del-btn" onclick="this.parentElement.remove()">✕</button>
+    <input type="number" placeholder="رقم الآية" value="${escapeHtmlAttr(defaultAyah)}" style="border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:12.5px;" class="new-n-ayah">
+    <input type="text" placeholder="الكلمة أو الآية المحتاجة تركيز..." value="${escapeHtmlAttr(defaultText)}" style="border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12.5px;" class="new-n-text">
+    <button type="button" class="del-btn" onclick="this.parentElement.remove()" title="حذف هذا السطر">✕</button>
   `;
   c.appendChild(div);
 }
 
 function addRevNoteRow(defaultAyah = '', defaultText = ''){
   const c = document.getElementById('revNotesContainer');
+  if (!c) return;
   const div = document.createElement('div');
   div.className = 'note-repeater-row';
   div.innerHTML = `
-    <input type="number" placeholder="رقم الآية" value="${defaultAyah}" style="border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:12.5px;" class="rev-n-ayah">
-    <input type="text" placeholder="موضع أو ملاحظة المراجعة..." value="${defaultText}" style="border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12.5px;" class="rev-n-text">
-    <button type="button" class="del-btn" onclick="this.parentElement.remove()">✕</button>
+    <input type="number" placeholder="رقم الآية" value="${escapeHtmlAttr(defaultAyah)}" style="border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:12.5px;" class="rev-n-ayah">
+    <input type="text" placeholder="موضع أو ملاحظة المراجعة..." value="${escapeHtmlAttr(defaultText)}" style="border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12.5px;" class="rev-n-text">
+    <button type="button" class="del-btn" onclick="this.parentElement.remove()" title="حذف هذا السطر">✕</button>
   `;
   c.appendChild(div);
 }
 
 function addTajweedNoteRow(defaultAyah = '', defaultRule = '', defaultText = ''){
   const c = document.getElementById('tajweedNotesContainer');
+  if (!c) return;
   const div = document.createElement('div');
   div.className = 'note-repeater-row';
   div.innerHTML = `
-    <input type="number" placeholder="الآية" value="${defaultAyah}" style="border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:12.5px;" class="taj-n-ayah">
+    <input type="number" placeholder="الآية" value="${escapeHtmlAttr(defaultAyah)}" style="border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:12.5px;" class="taj-n-ayah">
     <div style="display:flex;gap:6px;">
-      <input type="text" placeholder="القاعدة (إخفاء، إدغام...)" value="${defaultRule}" style="flex:1;border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12.5px;" class="taj-n-rule">
-      <input type="text" placeholder="ملاحظة التوجيه..." value="${defaultText}" style="flex:1.2;border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12.5px;" class="taj-n-note">
+      <input type="text" placeholder="القاعدة (إخفاء، إدغام...)" value="${escapeHtmlAttr(defaultRule)}" style="flex:1;border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12.5px;" class="taj-n-rule">
+      <input type="text" placeholder="ملاحظة التوجيه..." value="${escapeHtmlAttr(defaultText)}" style="flex:1.2;border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12.5px;" class="taj-n-note">
     </div>
-    <button type="button" class="del-btn" onclick="this.parentElement.remove()">✕</button>
+    <button type="button" class="del-btn" onclick="this.parentElement.remove()" title="حذف هذا السطر">✕</button>
   `;
   c.appendChild(div);
 }
 
-// Save Evaluation
+// Save Evaluation (Create new or Update existing)
 document.getElementById('evalSaveBtn').addEventListener('click', async ()=>{
   try {
     if (!DB.evaluations) DB.evaluations = [];
@@ -5269,14 +5450,31 @@ document.getElementById('evalSaveBtn').addEventListener('click', async ()=>{
       DB.sessions.unshift(targetSession);
     }
 
-    // 5. Construct evaluation record
+    // 5. Check if updating an existing record (Edit Mode) or creating new
+    let existingRecord = null;
+    let existingIdx = -1;
+
+    if (currentEvalRecordId) {
+      existingIdx = DB.evaluations.findIndex(e => String(e.id) === String(currentEvalRecordId));
+      if (existingIdx !== -1) existingRecord = DB.evaluations[existingIdx];
+    }
+    if (!existingRecord && targetSession) {
+      existingIdx = DB.evaluations.findIndex(e => e.session_id && String(e.session_id) === String(targetSession.id));
+      if (existingIdx !== -1) existingRecord = DB.evaluations[existingIdx];
+    }
+    if (!existingRecord) {
+      existingIdx = DB.evaluations.findIndex(e => isSameStudent(e.student, targetStudent) && isSameDate(e.date, dateStr));
+      if (existingIdx !== -1) existingRecord = DB.evaluations[existingIdx];
+    }
+
+    // Construct evaluation record preserving original id, session_id, date and monthKey if editing
     const evalRecord = {
-      id: 'ev_' + Date.now(),
-      session_id: targetSession ? targetSession.id : '',
+      id: existingRecord ? existingRecord.id : ('ev_' + Date.now()),
+      session_id: targetSession ? targetSession.id : (existingRecord ? existingRecord.session_id : ''),
       student: targetStudent,
       teacher: teacherName,
-      date: dateStr,
-      monthKey: monthKey,
+      date: existingRecord ? existingRecord.date : dateStr,
+      monthKey: existingRecord ? (existingRecord.monthKey || monthKey) : monthKey,
       newSurahFrom: newSFrom, newAyahFrom: newAFrom, newSurahTo: newSTo, newAyahTo: newATo,
       newAyahsCount: newCov.ayahs, newPagesCount: newCov.pages, newScore: newScore, newNotes: newNotes,
       revSurahFrom: revSFrom, revAyahFrom: revAFrom, revSurahTo: revSTo, revAyahTo: revATo,
@@ -5286,13 +5484,7 @@ document.getElementById('evalSaveBtn').addEventListener('click', async ()=>{
       generalNotes: generalNotes
     };
 
-    // Replace if already exists for this exact session or student on same date, else unshift
-    const existingIdx = DB.evaluations.findIndex(e => 
-      (targetSession && e.session_id && String(e.session_id) === String(targetSession.id)) ||
-      (isSameStudent(e.student, targetStudent) && isSameDate(e.date, dateStr))
-    );
     if (existingIdx !== -1) {
-      evalRecord.id = DB.evaluations[existingIdx].id;
       DB.evaluations[existingIdx] = evalRecord;
     } else {
       DB.evaluations.unshift(evalRecord);
@@ -5310,13 +5502,14 @@ document.getElementById('evalSaveBtn').addEventListener('click', async ()=>{
 
     currentEvalRecordId = evalRecord.id;
     document.getElementById('evalModal').classList.remove('active');
-    showToast(`تم حفظ واعتماد تقييم الطالب ${targetStudent} بنسبة ${overallScore}% بنجاح! ⭐`);
+    
+    showToast(existingRecord ? `تم تحديث وحفظ تعديلات تقييم الطالب ${targetStudent} بنجاح! ✏️` : `تم حفظ واعتماد تقييم الطالب ${targetStudent} بنسبة ${overallScore}% بنجاح! ⭐`);
 
     if (currentRole && currentPage) {
       renderPage(currentRole, currentPage);
     }
 
-    // 6. Supabase Cloud Sync (Fire background sync with retry and fallbacks)
+    // 6. Supabase Cloud Sync (Upsert / Update or Insert with retry and fallbacks)
     if (supabaseClient) {
       (async () => {
         try {
@@ -5340,21 +5533,37 @@ document.getElementById('evalSaveBtn').addEventListener('click', async ()=>{
             cloudPayload.session_id = evalRecord.session_id;
           }
 
-          let insRes = await safeCloudOp(supabaseClient.from('evaluations').insert([cloudPayload]).select());
-          if (insRes && insRes.error && cloudPayload.session_id) {
-            delete cloudPayload.session_id;
-            insRes = await safeCloudOp(supabaseClient.from('evaluations').insert([cloudPayload]).select());
-          }
-          if (insRes && insRes.data && insRes.data[0] && insRes.data[0].id) {
-            evalRecord.id = insRes.data[0].id;
-            saveDB();
+          const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(evalRecord.id));
+
+          if (isUuid) {
+            // Update existing record in Supabase
+            let upRes = await safeCloudOp(supabaseClient.from('evaluations').update(cloudPayload).eq('id', evalRecord.id));
+            if (upRes && upRes.error && upRes.error.message && upRes.error.message.includes('general_notes')) {
+              delete cloudPayload.general_notes;
+              await safeCloudOp(supabaseClient.from('evaluations').update(cloudPayload).eq('id', evalRecord.id));
+            }
+          } else {
+            // Insert new record in Supabase
+            let insRes = await safeCloudOp(supabaseClient.from('evaluations').insert([cloudPayload]).select());
+            if (insRes && insRes.error) {
+              if (insRes.error.message && insRes.error.message.includes('general_notes')) {
+                delete cloudPayload.general_notes;
+                insRes = await safeCloudOp(supabaseClient.from('evaluations').insert([cloudPayload]).select());
+              }
+              if (insRes && insRes.error && cloudPayload.session_id) {
+                delete cloudPayload.session_id;
+                insRes = await safeCloudOp(supabaseClient.from('evaluations').insert([cloudPayload]).select());
+              }
+            }
+            if (insRes && insRes.data && insRes.data[0] && insRes.data[0].id) {
+              evalRecord.id = insRes.data[0].id;
+              saveDB();
+            }
           }
 
           // Sync student rating to Supabase students table
           safeCloudOp(supabaseClient.from('students').update({
-            last_rating: overallRating,
-            current_surah_new: resolveSurahName(newSTo),
-            current_surah_rev: resolveSurahName(revSTo)
+            last_rating: overallRating
           }).eq('name', targetStudent));
 
           // Sync session status to Supabase sessions table
@@ -5384,21 +5593,39 @@ document.getElementById('evalShareWaBtn').addEventListener('click', ()=>{
 });
 
 function shareEvalToWhatsApp(evalId){
-  const e = (DB.evaluations || []).find(ev => ev.id === evalId);
+  const e = (DB.evaluations || []).find(ev => String(ev.id) === String(evalId));
   if(!e) return;
-  const sNew = QURAN_SURAHS[e.newSurahFrom-1]?.name||'';
-  const sRev = QURAN_SURAHS[e.revSurahFrom-1]?.name||'';
+  const sNew = resolveSurahName(e.newSurahFrom);
+  const sNewTo = resolveSurahName(e.newSurahTo || e.newSurahFrom);
+  const sRev = resolveSurahName(e.revSurahFrom);
+  const sRevTo = resolveSurahName(e.revSurahTo || e.revSurahFrom);
+
+  const newSurahLabel = (sNew === sNewTo || !sNewTo) ? `سورة ${sNew}` : `من سورة ${sNew} إلى ${sNewTo}`;
+  const revSurahLabel = (sRev === sRevTo || !sRevTo) ? `سورة ${sRev}` : `من سورة ${sRev} إلى ${sRevTo}`;
 
   let text = `*تقرير حصة القرآن الكريم — أكاديمية قرطبة* 🕌✨\n\n` +
     `👤 *الطالب:* ${e.student}\n` +
     `📅 *التاريخ:* ${e.date}\n` +
     `👨‍🏫 *المعلم المشرف:* ${e.teacher}\n\n` +
-    `🟢 *الحفظ الجديد:* سورة ${sNew} (آية ${e.newAyahFrom} إلى ${e.newAyahTo}) — التقييم: ${e.newScore}%\n` +
-    `🔵 *المراجعة:* سورة ${sRev} (آية ${e.revAyahFrom} إلى ${e.revAyahTo}) — التقييم: ${e.revScore}%\n` +
+    `🟢 *الحفظ الجديد:* ${newSurahLabel} (آية ${e.newAyahFrom} إلى ${e.newAyahTo}) — التقييم: ${e.newScore}%\n` +
+    `🔵 *المراجعة:* ${revSurahLabel} (آية ${e.revAyahFrom} إلى ${e.revAyahTo}) — التقييم: ${e.revScore}%\n` +
     `🟡 *أحكام التجويد:* درجة الإتقان: ${e.tajweedScore}%\n` +
     `⭐ *التقييم العام للحصة:* ${e.overallScore}% (${e.overallRating})\n\n`;
 
-  if (e.generalNotes) text += `💬 *ملاحظات المعلم:* ${e.generalNotes}\n\n`;
+  const nNotes = safeParseArray(e.newNotes);
+  if (nNotes.length > 0) {
+    text += `📝 *ملاحظات وتنبيهات الحفظ الجديد:*\n` + nNotes.map(n => `  • آية ${n.ayah}: ${n.note}`).join('\n') + `\n\n`;
+  }
+  const rNotes = safeParseArray(e.revNotes);
+  if (rNotes.length > 0) {
+    text += `🔄 *ملاحظات المراجعة:*\n` + rNotes.map(r => `  • آية ${r.ayah}: ${r.note}`).join('\n') + `\n\n`;
+  }
+  const tNotes = safeParseArray(e.tajweedNotes);
+  if (tNotes.length > 0) {
+    text += `🟡 *تنبيهات وأحكام التجويد:*\n` + tNotes.map(t => `  • آية ${t.ayah} (${t.rule}): ${t.note}`).join('\n') + `\n\n`;
+  }
+
+  if (e.generalNotes) text += `💬 *ملاحظات وتوجيه المعلم:* ${e.generalNotes}\n\n`;
   text += `بارك الله في جهودكم ونفع بكم القرآن الكريم 🤍`;
 
   window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
@@ -6167,6 +6394,7 @@ function renderStudentNotesNotebook(studentName, filterType = 'all'){
             <div style="display:flex;align-items:center;gap:8px;">
               <span class="badge" style="background:var(--bg);border:1px solid var(--line);font-size:12.5px;font-weight:700;">التقييم: <b style="color:var(--gold);">${ev.overallScore||100}%</b> (${ev.overallRating||'ممتاز'})</span>
               <button class="btn btn-ghost btn-sm" onclick="openEvalDetailsModal('${ev.id}')" style="font-weight:700;">🔍 التفاصيل</button>
+              ${isStaff ? `<button class="btn btn-ghost btn-sm" onclick="openTripleEvalModal('${ev.student}', '${ev.session_id||''}', '${ev.id}')" style="font-weight:700;color:var(--green-deep);">✏️ تعديل</button>` : ''}
               <button class="btn-wa-share" onclick="shareEvalToWhatsApp('${ev.id}')" style="padding:4px 8px;font-size:11px;">واتساب</button>
             </div>
           </div>
@@ -6370,6 +6598,9 @@ function renderAllEvaluationsView(role = 'moderator'){
                   <button class="btn btn-ghost btn-sm" onclick="openEvalDetailsModal('${e.id}')" style="padding:4px 8px;font-size:11.5px;font-weight:700;" title="عرض تفاصيل وملاحظات هذه الحصة">
                     🔍 الملاحظات
                   </button>
+                  <button class="btn btn-ghost btn-sm" onclick="openTripleEvalModal('${e.student}', '${e.session_id||''}', '${e.id}')" style="padding:4px 8px;font-size:11.5px;font-weight:700;color:var(--green-deep);" title="تعديل هذا التقييم والملاحظات">
+                    ✏️ تعديل
+                  </button>
                   <button class="btn btn-ghost btn-sm" onclick="viewStudentMonthlySummary('${e.student}', '${e.monthKey||''}')" style="padding:4px 8px;font-size:11.5px;" title="عرض ملخص الشهر الشامل">
                     📜 السمري
                   </button>
@@ -6554,6 +6785,19 @@ function openEvalDetailsModal(evalId){
         </div>
       ` : ''}
     `;
+  }
+
+  const editBtn = document.getElementById('evalDetailsEditBtn');
+  if (editBtn) {
+    if (currentRole === 'student') {
+      editBtn.style.display = 'none';
+    } else {
+      editBtn.style.display = 'inline-flex';
+      editBtn.onclick = () => {
+        closeEvalDetailsModal();
+        openTripleEvalModal(e.student, e.session_id, e.id);
+      };
+    }
   }
 
   const waBtn = document.getElementById('evalDetailsWaBtn');
@@ -7394,6 +7638,12 @@ document.getElementById('sessionSave').addEventListener('click', ()=>{
 
 /* ---------------- ROYAL ISLAMIC CERTIFICATE OF ACHIEVEMENT (قرطبة الملكية) ---------------- */
 let currentCertStudent = null;
+
+function toArabicDigits(val) {
+  if (val === null || val === undefined) return '';
+  const arabicDigits = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+  return String(val).replace(/\d/g, d => arabicDigits[parseInt(d, 10)]);
+}
 
 function openCertModal(studentName, contextMonth = '', customAchievement = '', customScore = ''){
   const s = (DB.students || []).find(std => isSameStudent(std.name, studentName)) || { 
