@@ -1390,11 +1390,9 @@
       </div>
     </div>
 
-    <input type="hidden" id="autoSchedStudentName">
-
     <div class="field">
       <label>الطالب المستهدف</label>
-      <input type="text" id="autoSchedStudentDisplay" readonly style="background:var(--bg);font-weight:700;">
+      <select id="autoSchedStudent" onchange="onAutoSchedStudentChange()"></select>
     </div>
 
     <div class="field">
@@ -2052,7 +2050,6 @@ async function syncFromCloud(){
     if (delS.length > 0) {
       delS.forEach(val => {
         safeCloudOp(supabaseClient.from('students').delete().eq('name', val));
-        safeCloudOp(supabaseClient.from('students').delete().eq('username', val));
         safeCloudOp(supabaseClient.from('sessions').delete().eq('student_name', val));
         safeCloudOp(supabaseClient.from('evaluations').delete().eq('student_name', val));
       });
@@ -2060,7 +2057,6 @@ async function syncFromCloud(){
     if (delT.length > 0) {
       delT.forEach(val => {
         safeCloudOp(supabaseClient.from('teachers').delete().eq('name', val));
-        safeCloudOp(supabaseClient.from('teachers').delete().eq('username', val));
       });
     }
     if (delSess.length > 0) {
@@ -2393,8 +2389,8 @@ function saveMyProfileData(){
   localStorage.setItem('kortoba_current_user_name', newUsername);
 
   if (supabaseClient) {
-    if (currentUser.role === 'teacher') safeCloudOp(supabaseClient.from('teachers').update({ name: newName, phone: newPhone, username: newUsername }).eq('name', oldName));
-    if (currentUser.role === 'student') safeCloudOp(supabaseClient.from('students').update({ name: newName, phone: newPhone, username: newUsername }).eq('name', oldName));
+    if (currentUser.role === 'teacher') safeCloudOp(supabaseClient.from('teachers').update({ name: newName, phone: newPhone }).eq('name', oldName));
+    if (currentUser.role === 'student') safeCloudOp(supabaseClient.from('students').update({ name: newName, phone: newPhone }).eq('name', oldName));
   }
 
   document.getElementById('userName').textContent = newName;
@@ -2516,7 +2512,7 @@ function saveEditUserData(){
     (DB.makeup_sessions||[]).forEach(m => { if (m.student_name === oldName) m.student_name = newName; });
 
     if (supabaseClient) {
-      safeCloudOp(supabaseClient.from('students').update({ name: newName, username: newUsername, phone: newPhone, teacher_name: teacher, program, monthly_sessions: monthlySessions, session_schedule: schedule }).eq('name', oldName));
+      safeCloudOp(supabaseClient.from('students').update({ name: newName, phone: newPhone, teacher_name: teacher, program, monthly_sessions: monthlySessions, session_schedule: schedule }).eq('name', oldName));
     }
   } else if (role === 'teacher') {
     const area = document.getElementById('editAccountArea').value.trim();
@@ -2537,7 +2533,7 @@ function saveEditUserData(){
     (DB.makeup_sessions||[]).forEach(m => { if (m.teacher_name === oldName) m.teacher_name = newName; });
 
     if (supabaseClient) {
-      safeCloudOp(supabaseClient.from('teachers').update({ name: newName, username: newUsername, phone: newPhone, area, status }).eq('name', oldName));
+      safeCloudOp(supabaseClient.from('teachers').update({ name: newName, phone: newPhone, area, status }).eq('name', oldName));
     }
   } else if (role === 'moderator') {
     const modArea = document.getElementById('editAccountModArea').value.trim();
@@ -4313,7 +4309,7 @@ document.getElementById('userModalSave').addEventListener('click', ()=>{
     if(t) t.students = (t.students || 0) + 1;
 
     if (supabaseClient) {
-      safeCloudOp(supabaseClient.from('students').insert([{ username: uname, name, teacher_name: teacher, program, monthly_sessions: monthlySessions, session_schedule: schedule, progress_juz: progress, phone }]));
+      safeCloudOp(supabaseClient.from('students').insert([{ name, teacher_name: teacher, program, monthly_sessions: monthlySessions, session_schedule: schedule, progress_juz: progress, phone }]));
     }
   } else if (role === 'teacher') {
     const area = document.getElementById('newAccountArea').value.trim() || 'معلم قرآن وتجويد';
@@ -4328,7 +4324,7 @@ document.getElementById('userModalSave').addEventListener('click', ()=>{
       phone
     });
     if (supabaseClient) {
-      safeCloudOp(supabaseClient.from('teachers').insert([{ username: uname, name, area, students_count: 0, rating: 'ممتاز', status: 'نشط', phone }]));
+      safeCloudOp(supabaseClient.from('teachers').insert([{ name, area, students_count: 0, rating: 'ممتاز', status: 'نشط', phone }]));
     }
   } else if (role === 'moderator') {
     DB.moderators.unshift({
@@ -4403,7 +4399,6 @@ async function adminDeleteStudent(studentName){
       try {
         await Promise.allSettled([
           safeCloudOp(supabaseClient.from('students').delete().eq('name', studentName)),
-          uname ? safeCloudOp(supabaseClient.from('students').delete().eq('username', uname)) : Promise.resolve(),
           safeCloudOp(supabaseClient.from('sessions').delete().eq('student_name', studentName)),
           safeCloudOp(supabaseClient.from('evaluations').delete().eq('student_name', studentName))
         ]);
@@ -4448,8 +4443,7 @@ async function adminDeleteStudent(studentName){
     if (supabaseClient) {
       try {
         await Promise.allSettled([
-          safeCloudOp(supabaseClient.from('teachers').delete().eq('name', teacherName)),
-          uname ? safeCloudOp(supabaseClient.from('teachers').delete().eq('username', uname)) : Promise.resolve()
+          safeCloudOp(supabaseClient.from('teachers').delete().eq('name', teacherName))
         ]);
       } catch(e) {
         console.warn('Supabase teacher delete warn:', e);
@@ -4726,15 +4720,32 @@ function handleTimeSelectChange(selectId, customInputId){
 
 /* ---------------- AUTO-SCHEDULE & BULK ENROLLMENT ---------------- */
 function openAutoScheduleModal(studentName){
-  const s = DB.students.find(std => std.name === studentName);
   const studentSel = document.getElementById('autoSchedStudent');
   if (studentSel) {
     studentSel.innerHTML = DB.students.map(std => `<option value="${std.name}" ${std.name===studentName?'selected':''}>${std.name}</option>`).join('');
+    if (!studentName && DB.students.length > 0) {
+      studentName = DB.students[0].name;
+    }
   }
+
+  const startPicker = document.getElementById('autoSchedStartDate');
+  if (startPicker) {
+    startPicker.value = new Date().toISOString().split('T')[0];
+  }
+
+  onAutoSchedStudentChange(studentName);
+  document.getElementById('autoScheduleModal').classList.add('active');
+}
+
+function onAutoSchedStudentChange(forcedStudentName){
+  const studentName = forcedStudentName || document.getElementById('autoSchedStudent')?.value;
+  if (!studentName) return;
+
+  const s = DB.students.find(std => std.name === studentName);
 
   const teacherSel = document.getElementById('autoSchedTeacher');
   if (teacherSel) {
-    const studentTeacher = s ? s.teacher : (DB.teachers[0]?.name || 'الشيخ أحمد فتحي');
+    const studentTeacher = s ? s.teacher : (DB.teachers[0]?.name || 'إدارة الأكاديمية');
     teacherSel.innerHTML = DB.teachers.map(t => `<option value="${t.name}" ${t.name===studentTeacher?'selected':''}>${t.name}</option>`).join('');
   }
 
@@ -4742,14 +4753,9 @@ function openAutoScheduleModal(studentName){
   const quotaSel = document.getElementById('autoSchedQuota');
   if (quotaSel) quotaSel.value = String(quota);
 
-  const startPicker = document.getElementById('autoSchedStartDate');
-  if (startPicker) {
-    startPicker.value = new Date().toISOString().split('T')[0];
-  }
-
+  const dayCheckboxes = document.querySelectorAll('.auto-sched-day');
   if (s && s.schedule) {
     const schedStr = s.schedule.toLowerCase();
-    const dayCheckboxes = document.querySelectorAll('.auto-sched-day');
     let anyChecked = false;
     dayCheckboxes.forEach(cb => {
       let match = false;
@@ -4766,23 +4772,32 @@ function openAutoScheduleModal(studentName){
     if (!anyChecked) {
       dayCheckboxes.forEach(cb => {
         if (cb.value === 'Saturday' || cb.value === 'Tuesday') cb.checked = true;
+        else cb.checked = false;
       });
     }
+  } else {
+    dayCheckboxes.forEach(cb => {
+      if (cb.value === 'Saturday' || cb.value === 'Tuesday') cb.checked = true;
+      else cb.checked = false;
+    });
   }
-
-  document.getElementById('autoScheduleModal').classList.add('active');
 }
 
 function executeAutoSchedule(){
-  const student = document.getElementById('autoSchedStudent').value;
-  const teacher = document.getElementById('autoSchedTeacher').value;
-  const quota = parseInt(document.getElementById('autoSchedQuota').value) || 8;
-  const platform = document.getElementById('autoSchedPlatform').value;
-  const link = document.getElementById('autoSchedLink').value.trim() || 'https://meet.google.com/new';
+  const student = document.getElementById('autoSchedStudent')?.value?.trim();
+  if (!student) {
+    alert('يرجى اختيار الطالب المراد تسكينه في الحصص.');
+    return;
+  }
+  const teacher = document.getElementById('autoSchedTeacher')?.value || (DB.teachers[0]?.name || 'إدارة الأكاديمية');
+  const quota = parseInt(document.getElementById('autoSchedQuota')?.value) || 8;
+  const platform = document.getElementById('autoSchedPlatform')?.value || 'Zoom';
+  const link = document.getElementById('autoSchedLink')?.value?.trim() || 'https://meet.google.com/new';
 
-  let time = document.getElementById('autoSchedTimeSelect').value;
+  let time = document.getElementById('autoSchedTimeSelect')?.value || '٥:٠٠ م';
   if (time === 'custom') {
-    time = document.getElementById('autoSchedTimeCustom').value.trim() || '٥:٠٠ م';
+    const customTime = document.getElementById('autoSchedTimeCustom')?.value?.trim();
+    time = customTime || '٥:٠٠ م';
   }
 
   const dayMap = { 'Sunday':0, 'Monday':1, 'Tuesday':2, 'Wednesday':3, 'Thursday':4, 'Friday':5, 'Saturday':6 };
@@ -4804,7 +4819,7 @@ function executeAutoSchedule(){
     return;
   }
 
-  const startVal = document.getElementById('autoSchedStartDate').value;
+  const startVal = document.getElementById('autoSchedStartDate')?.value;
   let cursorDate = startVal ? new Date(startVal + 'T00:00:00') : new Date();
   if (isNaN(cursorDate.getTime())) cursorDate = new Date();
 
@@ -4860,7 +4875,7 @@ function executeAutoSchedule(){
     if (studentRecord) {
       safeCloudOp(supabaseClient.from('students').update({
         teacher_name: teacher,
-        schedule_text: studentRecord.schedule,
+        session_schedule: studentRecord.schedule,
         monthly_sessions: quota
       }).eq('name', student));
     }
