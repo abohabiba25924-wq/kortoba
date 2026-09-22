@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kortoba-v10';
+const CACHE_NAME = 'kortoba-v11';
 const STATIC_ASSETS = [
   './tracker.html',
   './manifest.json',

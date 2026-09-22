@@ -630,104 +630,160 @@
   @keyframes pulseGold{
     0%,100%{box-shadow:0 0 0 0 rgba(216,149,24,0.4);}
     50%{box-shadow:0 0 0 8px rgba(216,149,24,0);}
-  /* ============ ROYAL CERTIFICATE STYLING ============ */
+  }
+
+  /* Session Active & Dimming States */
+  .session-item.dimmed{
+    opacity: 0.65;
+    background: #FAFAF7;
+    border-color: var(--line);
+    transition: all .2s ease;
+  }
+  .session-item.today-active{
+    border: 2px solid var(--green) !important;
+    background: #F4F9F6 !important;
+    box-shadow: 0 4px 16px rgba(15,61,40,0.08) !important;
+  }
+  .session-join.locked{
+    opacity: 0.55 !important;
+    cursor: not-allowed !important;
+    background: #E5E7EB !important;
+    color: #64748B !important;
+    border: 1px dashed #CBD5E1 !important;
+    box-shadow: none !important;
+    pointer-events: none !important;
+  }
+
+  /* ============ LUXURY ROYAL CERTIFICATE STYLING ============ */
   .cert-modal{
-    max-width:840px !important;
+    max-width:960px !important;
+    width:95% !important;
     padding:0 !important;
     border-radius:24px !important;
     overflow:hidden !important;
-    background:#0b271b !important;
-    border:2px solid var(--gold) !important;
-    box-shadow:0 24px 70px rgba(0,0,0,0.6) !important;
+    background:#082115 !important;
+    border:3px solid #D89518 !important;
+    box-shadow:0 30px 90px rgba(0,0,0,0.7) !important;
   }
   .cert-paper{
     position:relative;
-    padding:40px 36px;
-    background:#FFFDF7;
-    background-image:radial-gradient(rgba(216,149,24,0.08) 1.5px, transparent 1.5px);
-    background-size:24px 24px;
-    border:3px double #D89518;
+    padding:44px 48px;
+    background:radial-gradient(circle at center, #FFFDF8 0%, #FAF3E2 100%);
+    border:4px double #D89518;
     margin:14px;
     border-radius:18px;
-    box-shadow:inset 0 0 50px rgba(216,149,24,0.08), 0 0 0 6px #FFFDF7, 0 0 0 8px #0F3D28;
+    box-shadow:inset 0 0 50px rgba(216,149,24,0.1), 0 0 0 6px #FAF3E2, 0 0 0 8px #082115;
     text-align:center;
     color:var(--ink);
   }
   .cert-paper::before, .cert-paper::after{
     content:'❖';
     position:absolute;
-    font-size:22px;
-    color:var(--gold);
+    font-size:24px;
+    color:#D89518;
     line-height:1;
   }
   .cert-paper::before{top:12px;right:14px;}
   .cert-paper::after{bottom:12px;left:14px;}
+  .cert-corner-tl{position:absolute;top:12px;left:14px;font-size:24px;color:#D89518;line-height:1;}
+  .cert-corner-br{position:absolute;bottom:12px;right:14px;font-size:24px;color:#D89518;line-height:1;}
+
+  .cert-bismillah{
+    font-family:'Amiri',serif;
+    font-size:21px;
+    color:#8A611E;
+    letter-spacing:1px;
+    margin-bottom:8px;
+    font-weight:700;
+  }
+  .cert-header{
+    position:relative;
+    margin-bottom:18px;
+  }
   .cert-logo{
-    width:78px;
-    height:78px;
+    width:76px;
+    height:76px;
     object-fit:contain;
-    margin:0 auto 10px;
+    margin:0 auto 8px;
     display:block;
-    filter:drop-shadow(0 4px 10px rgba(15,61,40,0.25));
+    filter:drop-shadow(0 4px 12px rgba(216,149,24,0.3));
+  }
+  .cert-subtitle{
+    font-size:13px;
+    font-weight:700;
+    color:#D89518;
+    letter-spacing:1.5px;
+    margin-bottom:8px;
+  }
+  .cert-title-badge{
+    display:inline-block;
+    background:linear-gradient(135deg, #0F3D28 0%, #17583B 100%);
+    color:#FFF7DC;
+    border:2px solid #D89518;
+    border-radius:100px;
+    padding:8px 36px;
+    box-shadow:0 6px 20px rgba(15,61,40,0.25);
+    margin-bottom:10px;
   }
   .cert-title{
     font-family:'Amiri',serif;
     font-size:32px;
     font-weight:700;
-    color:var(--green-deep);
     letter-spacing:1px;
-    margin-bottom:2px;
-  }
-  .cert-subtitle{
-    font-size:13.5px;
-    font-weight:700;
-    color:var(--gold);
-    letter-spacing:2px;
-    margin-bottom:12px;
-    text-transform:uppercase;
+    color:#FFF7DC;
+    margin:0;
+    line-height:1.2;
+    text-shadow:0 2px 4px rgba(0,0,0,0.3);
   }
   .cert-ayah{
     display:inline-block;
-    padding:4px 18px;
-    background:rgba(15,61,40,0.04);
-    border:1px dashed rgba(216,149,24,0.4);
+    padding:4px 20px;
+    background:rgba(15,61,40,0.05);
+    border:1px dashed rgba(216,149,24,0.5);
     border-radius:100px;
     font-family:'Amiri',serif;
-    font-size:15px;
-    color:var(--green);
-    margin-bottom:18px;
+    font-size:16px;
+    color:#0F3D28;
+    margin-top:4px;
   }
   .cert-body{
-    font-size:15px;
-    line-height:2.1;
-    color:#2C3E35;
-    max-width:680px;
-    margin:0 auto 22px;
+    font-size:15.5px;
+    line-height:2.2;
+    color:#1A2E25;
+    max-width:740px;
+    margin:0 auto 20px;
+  }
+  .cert-student-box{
+    margin:10px auto;
+    display:inline-block;
+    background:linear-gradient(180deg, #FFFFFF 0%, #FFF9EB 100%);
+    border:1.5px solid #D89518;
+    border-radius:14px;
+    padding:6px 32px;
+    box-shadow:0 4px 14px rgba(216,149,24,0.15);
   }
   .cert-student{
-    display:block;
     font-family:'Amiri',serif;
     font-size:34px;
     font-weight:700;
     color:#0A2D1E;
-    margin:6px 0;
-    text-shadow:0 1px 2px rgba(0,0,0,0.08);
+    display:block;
   }
   .cert-achievement{
     display:inline-block;
     font-weight:700;
-    font-size:16.5px;
-    color:var(--green-deep);
-    border-bottom:2px solid var(--gold);
+    font-size:17px;
+    color:#0F3D28;
+    border-bottom:2px solid #D89518;
     padding:0 8px;
   }
   .cert-footer{
     display:flex;
     justify-content:space-between;
-    align-items:flex-end;
+    align-items:center;
     margin-top:24px;
     padding-top:18px;
-    border-top:1px solid rgba(216,149,24,0.25);
+    border-top:1.5px dashed rgba(216,149,24,0.35);
   }
   .cert-sign{
     flex:1;
@@ -735,43 +791,51 @@
   }
   .cert-sign span{
     display:block;
-    font-size:12px;
-    color:var(--ink-soft);
-    margin-bottom:4px;
+    font-size:12.5px;
+    color:#64748B;
+    margin-bottom:6px;
   }
   .cert-sign strong{
-    font-size:14px;
-    color:var(--ink);
+    font-size:15px;
+    color:#0A2D1E;
+    font-weight:700;
+  }
+  .cert-stamp-wrap{
+    flex:none;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    margin:0 18px;
   }
   .cert-stamp{
-    width:92px;
-    height:92px;
+    width:104px;
+    height:104px;
     border-radius:50%;
-    border:2.5px dashed var(--gold);
-    background:radial-gradient(circle, rgba(216,149,24,0.12) 0%, rgba(15,61,40,0.05) 100%);
+    border:3px dashed #D89518;
+    outline:2px solid #0F3D28;
+    outline-offset:3px;
+    background:radial-gradient(circle, #FFFBEB 0%, #FEF3C7 60%, rgba(216,149,24,0.2) 100%);
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
     font-size:10px;
     font-weight:700;
-    color:var(--green-deep);
+    color:#0F3D28;
     line-height:1.2;
-    transform:rotate(-7deg);
-    box-shadow:0 4px 14px rgba(216,149,24,0.15);
+    box-shadow:0 6px 20px rgba(216,149,24,0.25);
+    transform:rotate(-6deg);
   }
-  .cert-stamp span:nth-child(2){
-    font-size:13.5px;
-    font-family:'Amiri',serif;
-    color:var(--gold);
-    font-weight:700;
-  }
+  .cert-stamp span:nth-child(1){ font-size:11px; color:#8A611E; }
+  .cert-stamp span:nth-child(2){ font-size:17px; font-family:'Amiri',serif; color:#0F3D28; font-weight:700; margin:2px 0; }
+  .cert-stamp span:nth-child(3){ font-size:9.5px; color:#15803D; letter-spacing:0.5px; }
 
   @media print{
+    @page { size: landscape; margin: 6mm; }
     body * { visibility: hidden !important; }
     #certModal, #certModal * { visibility: visible !important; }
     #certModal {
-      position: absolute !important;
+      position: fixed !important;
       left: 0 !important;
       top: 0 !important;
       width: 100% !important;
@@ -782,33 +846,61 @@
       justify-content: center !important;
       padding: 0 !important;
       box-shadow: none !important;
+      border: none !important;
     }
     .modal.cert-modal {
       box-shadow: none !important;
       border: none !important;
       max-width: 100% !important;
       width: 100% !important;
+      background: #fff !important;
     }
     .cert-paper {
       box-shadow: none !important;
       margin: 0 !important;
-      border-width: 2px !important;
+      border-width: 3px !important;
+      page-break-inside: avoid !important;
     }
     .modal-actions { display: none !important; }
   }
 
-  /* ============ 30-JUZ QURAN PROGRESS GRID ============ */
+  /* ============ 30-JUZ QURAN PROGRESS MOSAIC & FILTER ============ */
+  .juz-filter-bar{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin:14px 0 16px;
+  }
+  .juz-filter-btn{
+    padding:6px 14px;
+    border-radius:100px;
+    border:1.5px solid var(--line);
+    background:#fff;
+    font-size:12px;
+    font-weight:700;
+    color:var(--ink-soft);
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .juz-filter-btn:hover{
+    border-color:var(--green);
+    color:var(--green-deep);
+  }
+  .juz-filter-btn.active{
+    background:var(--green-deep);
+    color:#fff;
+    border-color:var(--green-deep);
+  }
   .juz-grid{
     display:grid;
     grid-template-columns:repeat(auto-fill, minmax(130px, 1fr));
-    gap:12px;
-    margin-top:18px;
+    gap:10px;
   }
   .juz-card{
     background:#fff;
     border:1px solid var(--line);
-    border-radius:14px;
-    padding:14px 10px;
+    border-radius:12px;
+    padding:12px 8px;
     text-align:center;
     transition:all .2s ease;
     position:relative;
@@ -827,25 +919,29 @@
     border-color:var(--gold);
     box-shadow:0 0 0 2px rgba(216,149,24,0.25);
   }
+  .juz-card.locked{
+    background:#fafaf8;
+    opacity:0.75;
+  }
   .juz-num{
     font-family:'Amiri',serif;
-    font-size:20px;
+    font-size:18px;
     font-weight:700;
     color:var(--green-deep);
     line-height:1.2;
   }
   .juz-surah{
-    font-size:11.5px;
+    font-size:11px;
     color:var(--ink-soft);
-    margin:4px 0 8px;
+    margin:3px 0 6px;
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
   }
   .juz-badge{
-    font-size:10.5px;
+    font-size:10px;
     font-weight:700;
-    padding:3px 7px;
+    padding:2px 6px;
     border-radius:6px;
     display:inline-block;
   }
@@ -858,7 +954,7 @@
     color:var(--gold);
   }
   .juz-card.locked .juz-badge{
-    background:var(--bg);
+    background:rgba(0,0,0,0.04);
     color:var(--ink-soft);
   }
 </style>
@@ -870,7 +966,7 @@
   <div class="login-card">
     <img class="login-logo" src="https://res.cloudinary.com/dvfx83gns/image/upload/v1787795512/%D9%82%D8%B1%D8%B7%D8%A8%D8%A9_gbn7xe.png" alt="قرطبة">
     <h1>منصة قرطبة لمتابعة الحفظ</h1>
-    <p class="sub">منصة قاف الإلكترونية لمتابعة الطلاب والمعلمين</p>
+    <p class="sub">منصة قرطبة الإلكترونية لمتابعة الطلاب والمعلمين</p>
 
     <form id="loginForm">
       <div class="field">
@@ -972,9 +1068,12 @@
 <!-- ============ MODAL: Triple Session Evaluation (المعلم) ============ -->
 <div class="modal-overlay" id="evalModal">
   <div class="modal modal-wide">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
       <h3 style="margin:0;">تسجيل وتقييم تفصيلي للحصة 📖</h3>
-      <span id="evalStudentBadge" class="coverage-pill" style="font-size:13.5px;">الطالب: —</span>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <label style="font-size:13px;font-weight:700;color:var(--green-deep);">الطالب المستهدف:</label>
+        <select id="evalStudentSelect" onchange="currentEvalStudent=this.value;" style="padding:6px 14px;border-radius:10px;border:1.5px solid var(--green);font-weight:700;color:var(--green-deep);background:#fff;font-size:13px;"></select>
+      </div>
     </div>
 
     <!-- 1. الحفظ الجديد -->
@@ -1563,44 +1662,64 @@
   </div>
 </div>
 
-<!-- ============ MODAL: Certificate of Achievement (الشهادة الملكية) ============ -->
+<!-- ============ MODAL: Certificate of Achievement (الشهادة الملكية الفاخرة) ============ -->
 <div class="modal-overlay" id="certModal">
   <div class="modal cert-modal">
     <div class="cert-paper">
+      <!-- Ornate Corners -->
+      <span class="cert-corner-tl">❖</span>
+      <span class="cert-corner-br">❖</span>
+
       <div class="cert-header">
+        <div class="cert-bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
         <img src="https://res.cloudinary.com/dvfx83gns/image/upload/v1787795512/%D9%82%D8%B1%D8%B7%D8%A8%D8%A9_gbn7xe.png" class="cert-logo" alt="قرطبة">
-        <div class="cert-title">شَهَادَةُ تَقْدِيرٍ وَإِتْقَانٍ</div>
         <div class="cert-subtitle">أَكَادِيمِيَّةُ قُرْطُبَةَ لِتَعْلِيمِ الْقُرْآنِ الْكَرِيمِ وَالْقِرَاءَاتِ</div>
+        <div class="cert-title-badge">
+          <h2 class="cert-title">شَهَادَةُ شَرَفٍ وَإِتْقَانٍ قُرْآنِيّ</h2>
+        </div>
+        <br>
         <div class="cert-ayah">﴿ وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا ﴾</div>
       </div>
+
       <div class="cert-body">
-        تَشْهَدُ إِدَارَةُ الأَكَادِيمِيَّةِ بِأَنَّ الطَّالِبَ / الطَّالِبَةَ:
-        <strong class="cert-student" id="certStudentName">يوسف أحمد</strong>
-        قَدْ أَتَمَّ بَفَضْلِ اللهِ تَعَالَى وَتَوْفِيقِهِ حِفْظَ وَإِتْقَانَ:
+        يَسُرُّ إِدَارَةَ أَكَادِيمِيَّةِ قُرْطُبَةَ أَنْ تَشْهَدَ بِأَنَّ الطَّالِبَ / الطَّالِبَةَ الْمُبَارَكَ:
+        <div class="cert-student-box">
+          <strong class="cert-student" id="certStudentName">يوسف أحمد</strong>
+        </div>
+        قَدْ أَتَمَّ بَفَضْلِ اللهِ تَعَالَى وَتَوْفِيقِهِ حِفْظَ وَإِتْقَانَ وَضَبْطَ:
         <span class="cert-achievement" id="certAchievement">الجزء الثلاثين (جزء عمّ) كاملاً</span>
-        بِتَقْدِيرِ: <b style="color:var(--success);">مُمْتَاز ★★★★★</b> وَأَظْهَرَ حِرْصًا بَالِغًا وَتَفَوُّقًا مُبَارَكًا فِي ضَبْطِ مَخَارِجِ الْحُرُوفِ وَأَحْكَامِ التَّجْوِيدِ.
+        <br>
+        بِتَقْدِيرِ: <b style="color:#15803d;font-size:16px;">مُمْتَاز مَعَ مَرْتَبَةِ الشَّرَفِ ★★★★★</b>
+        <div style="font-size:14px;color:#2D4A3E;margin-top:8px;">
+          وَأَظْهَرَ حِرْصًا بَالِغًا وَتَفَوُّقًا مُبَارَكًا فِي ضَبْطِ مَخَارِجِ الْحُرُوفِ وَأَحْكَامِ التَّجْوِيدِ، سَائِلِينَ اللهَ أَنْ يَجْعَلَ الْقُرْآنَ رَبِيعَ قَلْبِهِ وَنُورَ دَرْبِهِ.
+        </div>
       </div>
+
       <div class="cert-footer">
         <div class="cert-sign">
-          <span>المعلم المشرف</span>
+          <span>المعلم المشرف المعتمد</span>
           <strong id="certTeacherName">الشيخ المشرف</strong>
+          <div style="font-family:'Amiri',serif;color:var(--gold);font-size:14px;margin-top:2px;">(مُعتمد الإجازة)</div>
         </div>
-        <div class="cert-stamp">
-          <span>أكاديمية</span>
-          <span>قرطبة</span>
-          <span>معتمد رسمي ★</span>
+        <div class="cert-stamp-wrap">
+          <div class="cert-stamp">
+            <span>أكاديمية</span>
+            <span>قرطبة</span>
+            <span>★ مُعتمد رسمي ★</span>
+          </div>
         </div>
         <div class="cert-sign">
-          <span>التاريخ</span>
+          <span>التاريخ والاعتماد</span>
           <strong id="certDate">—</strong>
+          <div style="font-family:'Amiri',serif;color:var(--gold);font-size:14px;margin-top:2px;">(إدارة الشؤون التعليمية)</div>
         </div>
       </div>
     </div>
-    <div class="modal-actions" style="margin:16px 20px 20px;">
+    <div class="modal-actions" style="margin:16px 24px 22px;">
       <button class="btn btn-ghost" id="certClose" onclick="closeModal('certModal')">إغلاق</button>
-      <button class="btn btn-primary" onclick="window.print()" style="flex:1;">
+      <button class="btn btn-primary" onclick="window.print()" style="flex:1;font-weight:700;font-size:14.5px;">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-        طباعة / تنزيل الشهادة 📜
+        طباعة / تنزيل الشهادة الملكية (PDF) 📜
       </button>
     </div>
   </div>
@@ -2603,6 +2722,7 @@ function buildSidebar(role){
    4. PAGE RENDERING & ROUTER
    ===================================================================== */
 function renderPage(role, pageId){
+  checkAndExpirePastSessions();
   currentPage = pageId;
   if (pageId && PAGES[pageId]) {
     localStorage.setItem('kortoba_current_page', pageId);
@@ -3360,6 +3480,9 @@ const PAGES = {
     });
     const myOwedMakeups = (DB.makeup_sessions||[]).filter(m=>m.teacher_name===myName && m.status!=='completed' && (!m.student_name || validStudentNames.has(m.student_name)));
 
+    const todaySessions = mySessions.filter(s => isSessionToday(s));
+    const upcomingSessions = mySessions.filter(s => !isSessionToday(s) && s.status !== 'done');
+
     return `
     ${myOwedMakeups.length > 0 ? `
       <div class="makeup-banner">
@@ -3373,23 +3496,54 @@ const PAGES = {
 
     <div class="stat-grid">
       ${statCard('users', myStudents.length, 'طلابي المقيدون')}
-      ${statCard('calendar', mySessions.filter(s=>s.status==='upcoming').length, 'حصص قادمة')}
-      ${statCard('edit', DB.evaluations.filter(e=>e.teacher===myName && (!e.student || validStudentNames.has(e.student))).length, 'تسميعات مسجلة')}
+      ${statCard('calendar', todaySessions.length, 'حصص اليوم 🟢')}
+      ${statCard('edit', upcomingSessions.length, 'حصص قادمة ⏳')}
       ${statCard('chart', myOwedMakeups.length === 0 ? 'مكتمل' : myOwedMakeups.length + ' معلق', 'حالة التعويضات')}
     </div>
 
-    <div class="panel">
-      <div class="panel-head">
-        <h3>جدول حصص اليوم والمواعيد القادمة</h3>
-        <button class="btn btn-primary" onclick="openAddSessionModal()" style="padding:8px 16px;font-size:13px;">➕ جدولة حصة</button>
-      </div>
-      ${mySessions.length === 0 ? `
-        <div style="text-align:center;padding:36px 16px;color:var(--ink-soft);">
-          <div style="font-size:36px;margin-bottom:8px;">📅</div>
-          <div style="font-size:15px;font-weight:700;color:var(--ink);">لا توجد حصص مجدولة حالياً</div>
-          <div style="font-size:13px;margin-top:4px;">يمكنك إضافة موعد حصة جديد بالضغط على زر "جدولة حصة" بالأعلى.</div>
+    <!-- 1. بانل حصص اليوم -->
+    <div class="panel" style="border:1.5px solid rgba(15,61,40,0.25);box-shadow:0 8px 24px -10px rgba(15,61,40,0.18);margin-bottom:24px;">
+      <div class="panel-head" style="background:rgba(15,61,40,0.03);border-radius:12px 12px 0 0;padding:14px 18px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:22px;">📅</span>
+          <div>
+            <h3 style="margin:0;color:var(--green-deep);font-size:16.5px;">بانل حصص اليوم (${todaySessions.length})</h3>
+            <span style="font-size:12px;color:var(--ink-soft);">نافذة الحصة المفتوحة حالياً (لمدة 24 ساعة) لتسجيل الحضور والتسميع</span>
+          </div>
         </div>
-      ` : mySessions.map((s, idx)=> sessionItemTeacher(s, idx)).join('')}
+        <button class="btn btn-primary" onclick="openAddSessionModal()" style="padding:7px 15px;font-size:12.5px;">➕ جدولة حصة</button>
+      </div>
+      <div style="padding:8px 16px 16px;">
+        ${todaySessions.length === 0 ? `
+          <div style="text-align:center;padding:32px 16px;color:var(--ink-soft);background:var(--bg);border-radius:12px;margin-top:8px;">
+            <div style="font-size:32px;margin-bottom:6px;">🌿</div>
+            <div style="font-size:14.5px;font-weight:700;color:var(--ink);">لا توجد حصص مجدولة لليوم حتى الآن</div>
+            <div style="font-size:12.5px;margin-top:4px;">جميع حصصك مجدولة لأيام قادمة أو يمكنك إضافة موعد اليوم بالزر أعلاه.</div>
+          </div>
+        ` : todaySessions.map((s, idx)=> sessionItemTeacher(s, idx)).join('')}
+      </div>
+    </div>
+
+    <!-- 2. بانل الحصص القادمة -->
+    <div class="panel">
+      <div class="panel-head" style="padding:14px 18px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:22px;">🗓️</span>
+          <div>
+            <h3 style="margin:0;font-size:16.5px;">بانل الحصص القادمة (${upcomingSessions.length})</h3>
+            <span style="font-size:12px;color:var(--ink-soft);">تظهر خافتة ومقفلة حتى يحل يوم الموعد وتفتح تلقائياً</span>
+          </div>
+        </div>
+      </div>
+      <div style="padding:8px 16px 16px;">
+        ${upcomingSessions.length === 0 ? `
+          <div style="text-align:center;padding:32px 16px;color:var(--ink-soft);background:var(--bg);border-radius:12px;margin-top:8px;">
+            <div style="font-size:32px;margin-bottom:6px;">🗓️</div>
+            <div style="font-size:14.5px;font-weight:700;color:var(--ink);">لا توجد حصص قادمة مجدولة بعد اليوم</div>
+            <div style="font-size:12.5px;margin-top:4px;">يمكنك تسكين الطلاب أو إضافة مواعيد بالضغط على "جدولة حصة".</div>
+          </div>
+        ` : upcomingSessions.map((s, idx)=> sessionItemTeacher(s, idx)).join('')}
+      </div>
     </div>`;
   },
 
@@ -3490,10 +3644,11 @@ const PAGES = {
     const myEvals = DB.evaluations.filter(e=>e.student===myName);
     const lastEval = myEvals[0] || null;
     const mySessions = DB.sessions.filter(s=>s.student===myName);
-    const attendedThisMonth = mySessions.filter(s=>s.attendance==='present').length;
+    const attendedThisMonth = mySessions.filter(s=>s.attendance==='present' || s.status==='done').length;
     const quota = myProfile.monthlySessions || 8;
     const remaining = Math.max(0, quota - attendedThisMonth);
     const owedMakeups = (DB.makeup_sessions||[]).filter(m=>m.student_name===myName && m.status==='pending');
+    const lastCompletedSession = mySessions.find(s=>s.status==='done' || s.attendance==='present') || null;
 
     return `
     ${owedMakeups.length > 0 ? `
@@ -3517,14 +3672,15 @@ const PAGES = {
         <div class="ward-meta">
           <div><b>${myProfile.teacher||'الشيخ أحمد فتحي'}</b>المعلم</div>
           <div><b>${myProfile.schedule||'السبت والثلاثاء'}</b>المواعيد</div>
-          <div><b>${lastEval?lastEval.overallScore+'%':'—'}</b>آخر تقييم</div>
+          <div><b>${lastEval?lastEval.overallScore+'%': (lastCompletedSession ? 'حاضر ✓' : '—')}</b>آخر تقييم</div>
         </div>
       </div>
 
       <div class="panel" style="margin:0;">
         <div class="panel-head">
           <h3>آخر حصة تم إنجازها</h3>
-          ${lastEval?`<span class="badge badge-success">${lastEval.overallRating} (${lastEval.overallScore}%)</span>`:''}
+          ${lastEval ? `<span class="badge badge-success">${lastEval.overallRating} (${lastEval.overallScore}%)</span>` :
+            lastCompletedSession ? `<span class="badge badge-success">✓ تم حضور الحصة</span>` : ''}
         </div>
         ${lastEval ? `
           <div style="font-size:13.5px;line-height:1.9;">
@@ -3535,19 +3691,38 @@ const PAGES = {
               💬 <b>توجيه المعلم:</b> "${lastEval.generalNotes||'حفظ ممتاز وبارك الله فيك.'}"
             </div>
           </div>
-        ` : `<p style="color:var(--ink-soft);">لم يتم تسجيل أي تسميع حتى الآن.</p>`}
+        ` : lastCompletedSession ? `
+          <div style="font-size:13.5px;line-height:1.9;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <span class="badge badge-success" style="font-size:12px;">✓ تم حضور الحصة بنجاح</span>
+              <span style="color:var(--ink-soft);font-size:12.5px;">بتاريخ: <b>${lastCompletedSession.date}</b></span>
+            </div>
+            <div>👨‍🏫 <b>المعلم المشرف:</b> ${lastCompletedSession.teacher || myProfile.teacher || 'المعلم'}</div>
+            <div>⏰ <b>موعد الحصة:</b> ${lastCompletedSession.time || '—'} · المنصة: ${lastCompletedSession.platform || 'Zoom'}</div>
+            <div style="color:var(--gold);margin-top:10px;background:var(--warn-bg);padding:10px 14px;border-radius:10px;border:1px dashed var(--gold);font-size:12.5px;">
+              ⏳ <b>حالة التقرير:</b> تم تأكيد حضورك في الحصة، وبانتظار اعتماد التقييم التفصيلي للآيات والتجويد من المعلم.
+            </div>
+          </div>
+        ` : `<p style="color:var(--ink-soft);padding:12px 0;">لم يتم تسجيل أي حصة أو تسميع حتى الآن.</p>`}
       </div>
     </div>
 
     <!-- Student Sessions & Alert Button -->
     <div class="panel" style="margin-top:24px;">
       <div class="panel-head">
-        <h3>حصصك القادمة وموعد البث المباشر</h3>
+        <div>
+          <h3 style="margin:0;">حصصك وموعد البث المباشر</h3>
+          <span style="font-size:12px;color:var(--ink-soft);">تفتح الحصة للدخول تلقائياً يوم انعقادها لمدة 24 ساعة (خافتة ومقفلة قبل موعدها)</span>
+        </div>
         <button class="btn btn-ghost" onclick="openAlertTeacherModal()" style="color:var(--danger);border-color:var(--danger);padding:6px 12px;font-size:12px;" title="إبلاغ الإدارة إذا مر موعد الحصة والمعلم لم يدخل">
           📢 المعلم لم يحضر الحصة؟
         </button>
       </div>
-      ${mySessions.map((s, idx)=> sessionItemStudent(s, idx)).join('')}
+      <div style="padding:4px 16px 16px;">
+        ${mySessions.length === 0 ? `
+          <div style="text-align:center;padding:28px;color:var(--ink-soft);">لا توجد حصص مجدولة لك حالياً.</div>
+        ` : mySessions.map((s, idx)=> sessionItemStudent(s, idx)).join('')}
+      </div>
     </div>`;
   },
 
@@ -3597,9 +3772,18 @@ const PAGES = {
         </div>
       </div>
 
-      <!-- 30 Juz Visual Grid -->
-      <h4 style="margin:20px 0 10px;font-size:15px;color:var(--green-deep);">فهرس ومحطات أجزاء القرآن الكريم (٣٠ جزءاً):</h4>
-      <div class="juz-grid">
+      <!-- 30 Juz Visual Grid with Interactive Filter Tabs -->
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin:24px 0 14px;">
+        <h4 style="margin:0;font-size:16px;color:var(--green-deep);font-weight:700;">فهرس ومحطات أجزاء القرآن الكريم (٣٠ جزءاً):</h4>
+        <div class="juz-filter-bar">
+          <button type="button" class="juz-filter-btn active" onclick="filterJuzCards('all', this)">الكل (٣٠)</button>
+          <button type="button" class="juz-filter-btn" onclick="filterJuzCards('completed', this)">المكتملة (${progressCount})</button>
+          <button type="button" class="juz-filter-btn" onclick="filterJuzCards('in-progress', this)">قيد الحفظ (${progressCount < 30 ? 1 : 0})</button>
+          <button type="button" class="juz-filter-btn" onclick="filterJuzCards('locked', this)">المتبقية (${Math.max(0, 30 - progressCount - (progressCount < 30 ? 1 : 0))})</button>
+        </div>
+      </div>
+
+      <div class="juz-grid" id="juzCardsGrid">
         ${Array.from({length:30}, (_, i)=>{
           const jNum = i + 1;
           const isDone = progressCount >= jNum;
@@ -3607,7 +3791,7 @@ const PAGES = {
           const cls = isDone ? 'completed' : isCurrent ? 'in-progress' : 'locked';
           const badgeText = isDone ? 'مكتمل ومثبت ✅' : isCurrent ? 'قيد الحفظ 📖' : 'مستهدف ⚪';
           return `
-            <div class="juz-card ${cls}">
+            <div class="juz-card ${cls}" data-juz-status="${cls}">
               <div class="juz-num">الجزء ${jNum}</div>
               <div class="juz-surah" title="${JUZ_NAMES[i]}">${JUZ_NAMES[i]}</div>
               <span class="juz-badge">${badgeText}</span>
@@ -3708,16 +3892,147 @@ function statCard(icon, num, label){
 }
 
 /* =====================================================================
+   5.5 SESSION DATE STATUS, 24-HOUR WINDOW & AUTO-EXPIRATION
+   ===================================================================== */
+function getSessionDateStatus(s) {
+  if (!s) return 'future';
+  const now = new Date();
+  const todayIso = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+
+  let sIso = s.isoDate;
+  if (!sIso && s.date) {
+    if (/^\d{4}-\d{2}-\d{2}$/.test(s.date.trim())) {
+      sIso = s.date.trim();
+    } else if (s.date.includes('اليوم')) {
+      return 'today';
+    }
+  }
+
+  if (sIso) {
+    if (sIso === todayIso) return 'today';
+    if (sIso > todayIso) return 'future';
+    return 'past';
+  }
+
+  // Parse Arabic dates like "السبت، ٢٢ سبتمبر" or "السبت، 22 سبتمبر"
+  const arabicMonths = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+  const curMonthName = arabicMonths[now.getMonth()];
+
+  if (s.date && s.date.includes(curMonthName)) {
+    const arabicDigits = {'٠':0,'١':1,'٢':2,'٣':3,'٤':4,'٥':5,'٦':6,'٧':7,'٨':8,'٩':9};
+    const normalized = s.date.replace(/[٠-٩]/g, d => arabicDigits[d]);
+    const m = normalized.match(/\b(\d{1,2})\b/);
+    if (m) {
+      const dayNum = parseInt(m[1], 10);
+      const todayDay = now.getDate();
+      if (dayNum === todayDay) return 'today';
+      if (dayNum > todayDay) return 'future';
+      return 'past';
+    }
+  }
+
+  return 'future';
+}
+
+function isSessionToday(s) { return getSessionDateStatus(s) === 'today'; }
+function isSessionFuture(s) { return getSessionDateStatus(s) === 'future'; }
+function isSessionPast(s) { return getSessionDateStatus(s) === 'past'; }
+
+function checkAndExpirePastSessions() {
+  if (!DB.sessions || !Array.isArray(DB.sessions)) return;
+  let changed = false;
+
+  DB.sessions.forEach(s => {
+    // If more than 24 hours have passed since the session date and teacher took no action
+    if (isSessionPast(s) && s.status !== 'done' && !s.attendance) {
+      s.status = 'done';
+      s.attendance = 'absent_unrecorded';
+      s.makeupRequired = true;
+      changed = true;
+
+      if (!DB.makeup_sessions) DB.makeup_sessions = [];
+      const exists = DB.makeup_sessions.some(m => m.session_id === s.id);
+      if (!exists) {
+        DB.makeup_sessions.push({
+          id: 'mk_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+          session_id: s.id,
+          student_name: s.student,
+          teacher_name: s.teacher || 'المعلم',
+          reason: 'انقضاء موعد الحصة (24 ساعة) دون تسجيل — إلزام تعويض تلقائي',
+          status: 'pending',
+          scheduled_date: s.date
+        });
+      }
+
+      if (supabaseClient && s.id) {
+        safeCloudOp(supabaseClient.from('sessions').update({
+          status: 'done',
+          attendance: 'absent_unrecorded',
+          makeup_required: true
+        }).eq('id', s.id));
+      }
+    }
+  });
+
+  if (changed) {
+    saveDB();
+  }
+}
+
+function filterJuzCards(filter, btn){
+  document.querySelectorAll('.juz-filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.querySelectorAll('.juz-card').forEach(card => {
+    if (filter === 'all' || card.getAttribute('data-juz-status') === filter) {
+      card.style.display = '';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+
+/* =====================================================================
    6. SESSION LIST ITEMS & ATTENDANCE LOGIC
    ===================================================================== */
 function sessionItemTeacher(s, idx){
   const isDone = s.status === 'done';
   const att = s.attendance || '';
-  return `<div class="session-item">
+  const isToday = isSessionToday(s);
+  const isFuture = isSessionFuture(s);
+
+  let wrapperCls = 'session-item';
+  if (!isDone) {
+    if (isToday) wrapperCls += ' today-active';
+    else if (isFuture) wrapperCls += ' dimmed';
+  }
+
+  let statusBadge = '';
+  if (isDone) {
+    if (att === 'present') statusBadge = '<span class="badge badge-success" style="font-size:11px;">✓ حاضر ومكتمل</span>';
+    else if (att === 'absent_student') statusBadge = '<span class="badge badge-warn" style="font-size:11px;">غياب طالب 👤❌</span>';
+    else if (att === 'absent_teacher') statusBadge = '<span class="badge badge-danger" style="font-size:11px;">غياب معلم (ملزم تعويض)</span>';
+    else if (att === 'absent_unrecorded') statusBadge = '<span class="badge badge-danger" style="font-size:11px;">فائتة دون تسجيل (ملزم تعويض)</span>';
+    else statusBadge = '<span class="badge badge-success" style="font-size:11px;">تمت</span>';
+  } else if (isToday) {
+    statusBadge = '<span class="badge badge-success" style="font-size:11.5px;font-weight:700;">🟢 اليوم (مفتوحة 24 ساعة)</span>';
+  } else if (isFuture) {
+    statusBadge = '<span class="badge" style="background:rgba(91,107,98,0.15);color:var(--ink-soft);font-size:11px;">⏳ مجدولة لموعدها</span>';
+  }
+
+  let joinBtn = '';
+  if (isDone) {
+    joinBtn = '<span class="session-join disabled">تمت</span>';
+  } else if (isToday) {
+    joinBtn = `<a href="${s.link}" target="_blank" class="session-join">انضمام 🟢</a>`;
+  } else {
+    joinBtn = '<span class="session-join locked" title="يفتح الرابط تلقائياً يوم الحصة (نافذة 24 ساعة)">🔒 تفتح يوم الحصة</span>';
+  }
+
+  return `<div class="${wrapperCls}">
     <div class="session-date"><b>${s.date.split(' ')[0]}</b><span>${s.date.split(' ')[1]||''}</span></div>
     <div class="session-info">
       <strong>${s.student}</strong>
-      <span>${s.time} · ${s.platform} ${s.makeupRequired?'<b style="color:var(--danger);">(تعويض)</b>':''}</span>
+      <span>${s.time} · ${s.platform} ${s.makeupRequired?'<b style="color:var(--danger);">(تعويض)</b>':''} ${statusBadge}</span>
     </div>
     <div class="att-actions">
       <button class="att-btn ${att==='present'?'active-present':''}" onclick="teacherMarkPresent('${s.student}', '${s.id}')" title="حضر الحصة وتم التسميع">حاضر 📖</button>
@@ -3726,7 +4041,7 @@ function sessionItemTeacher(s, idx){
     </div>
     <div style="display:flex;align-items:center;gap:8px;flex-wrap:nowrap;">
       <button class="btn btn-ghost btn-sm" onclick="openEditSessionModal('${s.id}')" title="تعديل موعد أو تفاصيل الحصة" style="padding:6px 10px;font-size:12px;">✏️ تعديل</button>
-      <a href="${s.link}" target="_blank" class="session-join ${isDone?'disabled':''}">${isDone?'تمت':'انضمام'}</a>
+      ${joinBtn}
       <button class="btn-icon-danger" onclick="deleteSessionDirect('${s.id}')" title="حذف هذه الحصة نهائياً" style="padding:7px 11px;border-radius:100px;font-size:12px;">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
         حذف
@@ -3737,19 +4052,46 @@ function sessionItemTeacher(s, idx){
 
 function sessionItemStudent(s, idx){
   const isDone = s.status === 'done';
-  let badge = '';
-  if (s.attendance === 'present') badge = '<span class="badge badge-success">حاضر</span>';
-  else if (s.attendance === 'absent_student') badge = '<span class="badge badge-warn">غياب منك</span>';
-  else if (s.attendance === 'absent_teacher') badge = '<span class="badge badge-danger">غياب المعلم (مستحق تعويض)</span>';
+  const att = s.attendance || '';
+  const isToday = isSessionToday(s);
+  const isFuture = isSessionFuture(s);
 
-  return `<div class="session-item">
+  let wrapperCls = 'session-item';
+  if (!isDone) {
+    if (isToday) wrapperCls += ' today-active';
+    else if (isFuture) wrapperCls += ' dimmed';
+  }
+
+  let badge = '';
+  if (isDone) {
+    if (att === 'present') badge = '<span class="badge badge-success">حاضر ✓</span>';
+    else if (att === 'absent_student') badge = '<span class="badge badge-warn">غياب منك 👤❌</span>';
+    else if (att === 'absent_teacher') badge = '<span class="badge badge-danger">غياب المعلم (مستحق تعويض)</span>';
+    else if (att === 'absent_unrecorded') badge = '<span class="badge badge-danger">حصة فائتة (مستحق تعويض)</span>';
+    else badge = '<span class="badge badge-success">تمت</span>';
+  } else if (isToday) {
+    badge = '<span class="badge badge-success" style="font-weight:700;">🟢 موعد الحصة اليوم (مفتوحة)</span>';
+  } else if (isFuture) {
+    badge = '<span class="badge" style="background:rgba(91,107,98,0.15);color:var(--ink-soft);">⏳ موعدها قادم</span>';
+  }
+
+  let joinBtn = '';
+  if (isDone) {
+    joinBtn = '<span class="session-join disabled">تمت الحصة</span>';
+  } else if (isToday) {
+    joinBtn = `<a href="${s.link}" target="_blank" class="session-join">دخول الحصة 🟢</a>`;
+  } else {
+    joinBtn = '<span class="session-join locked" title="يفتح رابط الحصة تلقائياً في يوم موعدها المحدد (نافذة 24 ساعة)">🔒 تفتح يوم الحصة</span>';
+  }
+
+  return `<div class="${wrapperCls}">
     <div class="session-date"><b>${s.date.split(' ')[0]}</b><span>${s.date.split(' ')[1]||''}</span></div>
     <div class="session-info">
       <strong>${s.student} (مع ${s.teacher||'المعلم'})</strong>
       <span>${s.time} · ${s.platform}</span>
     </div>
     ${badge}
-    <a href="${s.link}" target="_blank" class="session-join ${isDone?'disabled':''}">${isDone?'تمت':'دخول الحصة 🟢'}</a>
+    ${joinBtn}
   </div>`;
 }
 
@@ -3826,7 +4168,12 @@ function openTripleEvalModal(studentName = ''){
   if (!studentsList.length) { alert('لا يوجد طلاب مسجلين.'); return; }
   
   currentEvalStudent = studentName || (studentsList[0] ? studentsList[0].name : '');
-  document.getElementById('evalStudentBadge').textContent = `الطالب: ${currentEvalStudent}`;
+  
+  const studentSel = document.getElementById('evalStudentSelect');
+  if (studentSel) {
+    studentSel.innerHTML = studentsList.map(s => `<option value="${s.name}" ${s.name === currentEvalStudent ? 'selected' : ''}>${s.name}</option>`).join('');
+    studentSel.value = currentEvalStudent;
+  }
 
   // Populate surahs selects
   populateSurahSelect(document.getElementById('newSurahFrom'), 2);
@@ -3994,10 +4341,11 @@ document.getElementById('evalSaveBtn').addEventListener('click', ()=>{
   const monthKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
 
   const teacherName = currentUser ? currentUser.name : 'الشيخ أحمد فتحي';
+  const targetStudent = document.getElementById('evalStudentSelect')?.value || currentEvalStudent;
 
   const evalRecord = {
     id: 'ev_' + Date.now(),
-    student: currentEvalStudent,
+    student: targetStudent,
     teacher: teacherName,
     date: dateStr,
     monthKey: monthKey,
@@ -4013,7 +4361,7 @@ document.getElementById('evalSaveBtn').addEventListener('click', ()=>{
   DB.evaluations.unshift(evalRecord);
   
   // Update student last rating
-  const st = DB.students.find(s=>s.name === currentEvalStudent);
+  const st = DB.students.find(s=>s.name === targetStudent);
   if(st) st.lastRating = overallRating;
 
   saveDB();
@@ -4035,7 +4383,7 @@ document.getElementById('evalSaveBtn').addEventListener('click', ()=>{
 
   currentEvalRecordId = evalRecord.id;
   document.getElementById('evalModal').classList.remove('active');
-  showToast(`تم حفظ تقييم الطالب ${currentEvalStudent} بنسبة ${overallScore}% بنجاح! ⭐`);
+  showToast(`تم حفظ تقييم الطالب ${targetStudent} بنسبة ${overallScore}% بنجاح! ⭐`);
   if (currentRole && currentPage) renderPage(currentRole, currentPage);
 });
 
@@ -4110,9 +4458,12 @@ function renderStudentMonthlySummaryView(studentName, targetMonthKey = ''){
     }
   });
   
-  const avgScore = studentEvals.length ? Math.round(sumScore / studentEvals.length) : 0;
-  const sListLearned = Array.from(surahsLearned).filter(Boolean).join('، ') || 'سورة البقرة';
-  const sListRev = Array.from(surahsRevised).filter(Boolean).join('، ') || 'سورة الفاتحة';
+  const attendedSessions = (DB.sessions || []).filter(s => s.student === studentName && (s.attendance === 'present' || s.status === 'done')).length;
+  const completedSessionsCount = Math.max(studentEvals.length, attendedSessions);
+
+  const avgScore = studentEvals.length ? Math.round(sumScore / studentEvals.length) : null;
+  const sListLearned = Array.from(surahsLearned).filter(Boolean).join('، ') || 'لم يُسجل حفظ جديد هذا الشهر بعد';
+  const sListRev = Array.from(surahsRevised).filter(Boolean).join('، ') || 'لم تُسجل مراجعة هذا الشهر بعد';
 
   return `
   <div id="printableSummary" class="panel">
@@ -4123,7 +4474,7 @@ function renderStudentMonthlySummaryView(studentName, targetMonthKey = ''){
       </div>
       <div style="display:flex;gap:8px;" class="no-print">
         <button class="btn btn-ghost" onclick="window.print()">🖨️ طباعة التقرير الشهري</button>
-        <button class="btn-wa-share" onclick="shareMonthlyToWhatsApp('${studentName}', ${avgScore}, ${totalNewAyahs}, '${sListLearned}')">واتساب لولي الأمر 📱</button>
+        <button class="btn-wa-share" onclick="shareMonthlyToWhatsApp('${studentName}', ${avgScore !== null ? avgScore : 100}, ${totalNewAyahs}, '${sListLearned}')">واتساب لولي الأمر 📱</button>
       </div>
     </div>
 
@@ -4138,11 +4489,11 @@ function renderStudentMonthlySummaryView(studentName, targetMonthKey = ''){
         <span>إجمالي آيات المراجعة (${Math.round(totalRevPages*10)/10} صفحة)</span>
       </div>
       <div class="monthly-stat">
-        <b style="color:var(--gold);">${avgScore || 92}%</b>
+        <b style="color:var(--gold);">${avgScore !== null ? avgScore + '%' : '—'}</b>
         <span>متوسط التقييم العام للشهر</span>
       </div>
       <div class="monthly-stat">
-        <b>${studentEvals.length} حصص</b>
+        <b>${completedSessionsCount} حصص</b>
         <span>الحصص المكتملة المسجلة</span>
       </div>
     </div>
@@ -4830,11 +5181,13 @@ function executeAutoSchedule(){
     safetyLoop++;
     if (selectedDayNums.has(cursorDate.getDay())) {
       const dateStr = formatArabicDate(cursorDate);
+      const isoDate = `${cursorDate.getFullYear()}-${String(cursorDate.getMonth()+1).padStart(2,'0')}-${String(cursorDate.getDate()).padStart(2,'0')}`;
       const newSess = {
         id: 'sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
         student: student,
         teacher: teacher,
         date: dateStr,
+        isoDate: isoDate,
         time: time,
         platform: platform,
         link: link,
@@ -4928,6 +5281,10 @@ function saveEditedSession(){
   sess.student = document.getElementById('editSessionStudent').value;
   sess.teacher = document.getElementById('editSessionTeacher').value;
   sess.date = document.getElementById('editSessionDate').value.trim() || sess.date;
+  const editPickerVal = document.getElementById('editSessionDatePicker')?.value;
+  if (editPickerVal) {
+    sess.isoDate = editPickerVal;
+  }
 
   const timeSel = document.getElementById('editSessionTimeSelect').value;
   if (timeSel === 'custom') {
@@ -4991,6 +5348,9 @@ document.getElementById('sessionCancel').addEventListener('click', ()=> closeMod
 document.getElementById('sessionSave').addEventListener('click', ()=>{
   const student = document.getElementById('newSessionStudent').value;
   const date = document.getElementById('newSessionDate').value.trim() || 'اليوم';
+  const pickerVal = document.getElementById('newSessionDatePicker')?.value;
+  const todayIso = new Date().toISOString().split('T')[0];
+  const isoDate = pickerVal || todayIso;
   
   let time = document.getElementById('newSessionTimeSelect') ? document.getElementById('newSessionTimeSelect').value : '٦:٠٠ م';
   if (time === 'custom') {
@@ -5006,7 +5366,7 @@ document.getElementById('sessionSave').addEventListener('click', ()=>{
   const newId = 'sess_' + Date.now();
   DB.sessions.unshift({
     id: newId,
-    student, teacher, date, time, platform, link, status:'upcoming', attendance:'', makeupRequired:false
+    student, teacher, date, isoDate, time, platform, link, status:'upcoming', attendance:'', makeupRequired:false
   });
   saveDB();
 
@@ -5132,6 +5492,7 @@ if ('serviceWorker' in navigator) {
 
 /* ---------------- SESSION AUTO-RESTORE ON REFRESH ---------------- */
 function restoreSavedSession(){
+  checkAndExpirePastSessions();
   const savedUsername = localStorage.getItem('kortoba_current_user_name');
   if (!savedUsername) return;
   const user = DB.users.find(u => u.username.toLowerCase() === savedUsername.toLowerCase());
