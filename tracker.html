@@ -1427,7 +1427,7 @@ async function safeCloudOp(queryPromise) {
 }
 
 const DEFAULT_DB = {
-  deleted_records: { students: [], teachers: [], moderators: [], users: [] },
+  deleted_records: { students: [], teachers: [], moderators: [], users: [], sessions: [] },
   users: [
     { id:'u_admin', username:'admin', password:'admin123', name:'محمد جمال (المدير العام)', role:'admin', phone:'01000000000' },
     { id:'u_mod', username:'mod_heba', password:'mod123', name:'أ. هبة السيد', role:'moderator', phone:'01011111111' },
@@ -1494,11 +1494,13 @@ function loadDB(){
   if(raw){
     try{
       let parsed = JSON.parse(raw);
-      if(!parsed.deleted_records) parsed.deleted_records = { students: [], teachers: [], moderators: [], users: [] };
+      if(!parsed.deleted_records) parsed.deleted_records = { students: [], teachers: [], moderators: [], users: [], sessions: [] };
+      if(!parsed.deleted_records.sessions) parsed.deleted_records.sessions = [];
       if(!parsed.users) parsed.users = DEFAULT_DB.users;
       if(!parsed.students) parsed.students = DEFAULT_DB.students;
       if(!parsed.teachers) parsed.teachers = DEFAULT_DB.teachers;
       if(!parsed.moderators) parsed.moderators = DEFAULT_DB.moderators;
+      if(!parsed.sessions) parsed.sessions = DEFAULT_DB.sessions;
       if(!parsed.makeup_sessions) parsed.makeup_sessions = [];
       if(!parsed.teacher_alerts) parsed.teacher_alerts = [];
 
@@ -1507,11 +1509,41 @@ function loadDB(){
       const delT = parsed.deleted_records.teachers || [];
       const delM = parsed.deleted_records.moderators || [];
       const delU = parsed.deleted_records.users || [];
+      const delSess = parsed.deleted_records.sessions || [];
 
       parsed.students = (parsed.students || []).filter(s => !delS.includes(s.name) && !delS.includes(s.username));
       parsed.teachers = (parsed.teachers || []).filter(t => !delT.includes(t.name) && !delT.includes(t.username));
       parsed.moderators = (parsed.moderators || []).filter(m => !delM.includes(m.name) && !delM.includes(m.username) && !delM.some(x => x && (m.name.includes(x) || x.includes(m.name))));
       parsed.users = (parsed.users || []).filter(u => !delU.includes(u.username) && !delU.includes(u.name) && !delM.some(x => x && (u.name.includes(x) || x.includes(u.name))));
+
+      const validStudentNames = new Set((parsed.students || []).map(s => s.name));
+
+      // Filter sessions: remove tombstones and any ghost sessions whose student does not exist
+      parsed.sessions = (parsed.sessions || []).filter(s => {
+        if (!s) return false;
+        if (delSess.includes(String(s.id)) || delSess.includes(Number(s.id))) return false;
+        if (delS.includes(s.student) || delT.includes(s.teacher)) return false;
+        if (s.student && !validStudentNames.has(s.student)) return false;
+        return true;
+      });
+
+      if (parsed.evaluations) {
+        parsed.evaluations = parsed.evaluations.filter(e => {
+          if (!e) return false;
+          if (delS.includes(e.student) || delT.includes(e.teacher)) return false;
+          if (e.student && !validStudentNames.has(e.student)) return false;
+          return true;
+        });
+      }
+
+      if (parsed.makeup_sessions) {
+        parsed.makeup_sessions = parsed.makeup_sessions.filter(m => {
+          if (!m) return false;
+          if (delS.includes(m.student_name) || delT.includes(m.teacher_name)) return false;
+          if (m.student_name && !validStudentNames.has(m.student_name)) return false;
+          return true;
+        });
+      }
 
       return parsed;
     }catch(e){}
@@ -1521,7 +1553,8 @@ function loadDB(){
 }
 
 function saveDB(){
-  if (!DB.deleted_records) DB.deleted_records = { students: [], teachers: [], moderators: [], users: [] };
+  if (!DB.deleted_records) DB.deleted_records = { students: [], teachers: [], moderators: [], users: [], sessions: [] };
+  if (!DB.deleted_records.sessions) DB.deleted_records.sessions = [];
   localStorage.setItem('kortoba_db', JSON.stringify(DB));
 }
 
@@ -1539,6 +1572,7 @@ async function syncFromCloud(){
 
     const delS = DB.deleted_records?.students || [];
     const delT = DB.deleted_records?.teachers || [];
+    const delSess = DB.deleted_records?.sessions || [];
     let changed = false;
 
     if (tRes && tRes.data && tRes.data.length > 0) {
@@ -1551,13 +1585,27 @@ async function syncFromCloud(){
       DB.students = liveStudents.map(s => ({ id: s.id, username: s.username||'', name: s.name, teacher: s.teacher_name, program: s.program, monthlySessions: s.monthly_sessions||8, schedule: s.session_schedule||'', progress: s.progress_juz||0, lastRating: s.last_rating||'ممتاز', phone: s.phone||'' }));
       changed = true;
     }
+
+    const validStudentNames = new Set((DB.students || []).map(s => s.name));
+
     if (sessRes && sessRes.data && sessRes.data.length > 0) {
-      const liveSessions = sessRes.data.filter(s => !delS.includes(s.student_name) && !delT.includes(s.teacher_name));
+      const liveSessions = sessRes.data.filter(s => 
+        !delS.includes(s.student_name) && 
+        !delT.includes(s.teacher_name) && 
+        !delSess.includes(String(s.id)) && 
+        !delSess.includes(Number(s.id)) &&
+        (!s.student_name || validStudentNames.has(s.student_name))
+      );
       DB.sessions = liveSessions.map(s => ({ id: s.id, student: s.student_name, teacher: s.teacher_name, date: s.date_text, time: s.time_text, platform: s.platform, link: s.link, status: s.status, attendance: s.attendance || '', makeupRequired: s.makeup_required||false }));
       changed = true;
     }
+
     if (evalRes && evalRes.data && evalRes.data.length > 0) {
-      const liveEvals = evalRes.data.filter(e => !delS.includes(e.student_name) && !delT.includes(e.teacher_name));
+      const liveEvals = evalRes.data.filter(e => 
+        !delS.includes(e.student_name) && 
+        !delT.includes(e.teacher_name) &&
+        (!e.student_name || validStudentNames.has(e.student_name))
+      );
       DB.evaluations = liveEvals.map(e => ({
         id: e.id, student: e.student_name, teacher: e.teacher_name, date: e.date_text, monthKey: e.month_key||'2026-09',
         newSurahFrom: e.new_surah_from, newAyahFrom: e.new_ayah_from, newSurahTo: e.new_surah_to, newAyahTo: e.new_ayah_to,
@@ -1570,17 +1618,35 @@ async function syncFromCloud(){
       changed = true;
     }
 
+    // Filter local DB.sessions against any orphans or tombstones
+    const beforeSessLen = (DB.sessions || []).length;
+    DB.sessions = (DB.sessions || []).filter(s => {
+      if (!s) return false;
+      if (delSess.includes(String(s.id)) || delSess.includes(Number(s.id))) return false;
+      if (delS.includes(s.student) || delT.includes(s.teacher)) return false;
+      if (s.student && !validStudentNames.has(s.student)) return false;
+      return true;
+    });
+    if (DB.sessions.length !== beforeSessLen) changed = true;
+
     // Purge tombstoned records from cloud in the background safely
     if (delS.length > 0) {
       delS.forEach(val => {
         safeCloudOp(supabaseClient.from('students').delete().eq('name', val));
         safeCloudOp(supabaseClient.from('students').delete().eq('username', val));
+        safeCloudOp(supabaseClient.from('sessions').delete().eq('student_name', val));
+        safeCloudOp(supabaseClient.from('evaluations').delete().eq('student_name', val));
       });
     }
     if (delT.length > 0) {
       delT.forEach(val => {
         safeCloudOp(supabaseClient.from('teachers').delete().eq('name', val));
         safeCloudOp(supabaseClient.from('teachers').delete().eq('username', val));
+      });
+    }
+    if (delSess.length > 0) {
+      delSess.forEach(val => {
+        safeCloudOp(supabaseClient.from('sessions').delete().eq('id', val));
       });
     }
 
@@ -2546,7 +2612,7 @@ const PAGES = {
                 </td>
                 <td>
                   <div class="table-actions" style="justify-content:center;">
-                    <button class="btn-icon-danger" onclick="adminDeleteSession(${idx})" title="حذف هذه الحصة">
+                    <button class="btn-icon-danger" onclick="adminDeleteSession('${s.id}', ${idx})" title="حذف هذه الحصة">
                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
                       حذف
                     </button>
@@ -2853,8 +2919,14 @@ const PAGES = {
   't-overview': ()=>{
     const myName = currentUser ? currentUser.name : 'الشيخ أحمد فتحي';
     const myStudents = DB.students.filter(s=>s.teacher===myName);
-    const mySessions = DB.sessions.filter(s=>s.teacher===myName || !s.teacher);
-    const myOwedMakeups = (DB.makeup_sessions||[]).filter(m=>m.teacher_name===myName && m.status!=='completed');
+    const validStudentNames = new Set(DB.students.map(s => s.name));
+    const mySessions = DB.sessions.filter(s => {
+      if (!s) return false;
+      const isMySession = s.teacher === myName || !s.teacher;
+      const studentExists = !s.student || validStudentNames.has(s.student);
+      return isMySession && studentExists;
+    });
+    const myOwedMakeups = (DB.makeup_sessions||[]).filter(m=>m.teacher_name===myName && m.status!=='completed' && (!m.student_name || validStudentNames.has(m.student_name)));
 
     return `
     ${myOwedMakeups.length > 0 ? `
@@ -2870,7 +2942,7 @@ const PAGES = {
     <div class="stat-grid">
       ${statCard('users', myStudents.length, 'طلابي المقيدون')}
       ${statCard('calendar', mySessions.filter(s=>s.status==='upcoming').length, 'حصص قادمة')}
-      ${statCard('edit', DB.evaluations.filter(e=>e.teacher===myName).length, 'تسميعات مسجلة')}
+      ${statCard('edit', DB.evaluations.filter(e=>e.teacher===myName && (!e.student || validStudentNames.has(e.student))).length, 'تسميعات مسجلة')}
       ${statCard('chart', myOwedMakeups.length === 0 ? 'مكتمل' : myOwedMakeups.length + ' معلق', 'حالة التعويضات')}
     </div>
 
@@ -2879,7 +2951,13 @@ const PAGES = {
         <h3>جدول حصص اليوم والمواعيد القادمة</h3>
         <button class="btn btn-primary" onclick="openAddSessionModal()" style="padding:8px 16px;font-size:13px;">➕ جدولة حصة</button>
       </div>
-      ${mySessions.map((s, idx)=> sessionItemTeacher(s, idx)).join('')}
+      ${mySessions.length === 0 ? `
+        <div style="text-align:center;padding:36px 16px;color:var(--ink-soft);">
+          <div style="font-size:36px;margin-bottom:8px;">📅</div>
+          <div style="font-size:15px;font-weight:700;color:var(--ink);">لا توجد حصص مجدولة حالياً</div>
+          <div style="font-size:13px;margin-top:4px;">يمكنك إضافة موعد حصة جديد بالضغط على زر "جدولة حصة" بالأعلى.</div>
+        </div>
+      ` : mySessions.map((s, idx)=> sessionItemTeacher(s, idx)).join('')}
     </div>`;
   },
 
@@ -3148,11 +3226,17 @@ function sessionItemTeacher(s, idx){
       <span>${s.time} · ${s.platform} ${s.makeupRequired?'<b style="color:var(--danger);">(تعويض)</b>':''}</span>
     </div>
     <div class="att-actions">
-      <button class="att-btn ${att==='present'?'active-present':''}" onclick="teacherMarkPresent('${s.student}', ${idx})" title="حضر الحصة وتم التسميع">حاضر 📖</button>
-      <button class="att-btn ${att==='absent_student'?'active-absent-s':''}" onclick="setAttendanceDetailed(${idx}, 'absent_student')" title="غياب الطالب (لا يلزم تعويض)">غياب طالب 👤❌</button>
-      <button class="att-btn ${att==='absent_teacher'?'active-absent-t':''}" onclick="setAttendanceDetailed(${idx}, 'absent_teacher')" title="غياب المعلم (يلزم تعويض للطالب)">غياب معلم 👨‍🏫⚠️</button>
+      <button class="att-btn ${att==='present'?'active-present':''}" onclick="teacherMarkPresent('${s.student}', '${s.id}')" title="حضر الحصة وتم التسميع">حاضر 📖</button>
+      <button class="att-btn ${att==='absent_student'?'active-absent-s':''}" onclick="setAttendanceDetailed('${s.id}', 'absent_student')" title="غياب الطالب (لا يلزم تعويض)">غياب طالب 👤❌</button>
+      <button class="att-btn ${att==='absent_teacher'?'active-absent-t':''}" onclick="setAttendanceDetailed('${s.id}', 'absent_teacher')" title="غياب المعلم (يلزم تعويض للطالب)">غياب معلم 👨‍🏫⚠️</button>
     </div>
-    <a href="${s.link}" target="_blank" class="session-join ${isDone?'disabled':''}">${isDone?'تمت':'انضمام'}</a>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:nowrap;">
+      <a href="${s.link}" target="_blank" class="session-join ${isDone?'disabled':''}">${isDone?'تمت':'انضمام'}</a>
+      <button class="btn-icon-danger" onclick="deleteSessionDirect('${s.id}')" title="حذف هذه الحصة نهائياً" style="padding:7px 11px;border-radius:100px;font-size:12px;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+        حذف
+      </button>
+    </div>
   </div>`;
 }
 
@@ -3174,17 +3258,21 @@ function sessionItemStudent(s, idx){
   </div>`;
 }
 
-function teacherMarkPresent(studentName, sessionIdx){
-  if (DB.sessions[sessionIdx]) {
-    DB.sessions[sessionIdx].attendance = 'present';
-    DB.sessions[sessionIdx].status = 'done';
+function teacherMarkPresent(studentName, sessionIdOrIdx){
+  const sess = DB.sessions.find(x => String(x.id) === String(sessionIdOrIdx)) || DB.sessions[sessionIdOrIdx];
+  if (sess) {
+    sess.attendance = 'present';
+    sess.status = 'done';
     saveDB();
+    if (supabaseClient && sess.id) {
+      safeCloudOp(supabaseClient.from('sessions').update({ attendance: 'present', status: 'done' }).eq('id', sess.id));
+    }
   }
   openTripleEvalModal(studentName);
 }
 
-function setAttendanceDetailed(idx, attType){
-  const sess = DB.sessions[idx];
+function setAttendanceDetailed(sessionIdOrIdx, attType){
+  const sess = DB.sessions.find(x => String(x.id) === String(sessionIdOrIdx)) || DB.sessions[sessionIdOrIdx];
   if (!sess) return;
   sess.attendance = attType;
   sess.status = 'done';
@@ -3206,6 +3294,9 @@ function setAttendanceDetailed(idx, attType){
     showToast(`تم تسجيل اعتذار المعلم. تم إلزام المعلم بحصة تعويضية مستحقة للطالب.`, 'warn');
   }
   saveDB();
+  if (supabaseClient && sess.id) {
+    safeCloudOp(supabaseClient.from('sessions').update({ attendance: attType, status: 'done', makeup_required: sess.makeupRequired || false }).eq('id', sess.id));
+  }
   if (currentRole && currentPage) renderPage(currentRole, currentPage);
 }
 
@@ -3780,14 +3871,22 @@ async function adminDeleteStudent(studentName){
   const uObj = DB.users.find(u => u.name === studentName || (sObj && u.username === sObj.username));
   const uname = sObj?.username || uObj?.username || '';
 
-  if (!DB.deleted_records) DB.deleted_records = { students: [], teachers: [], moderators: [], users: [] };
+  if (!DB.deleted_records) DB.deleted_records = { students: [], teachers: [], moderators: [], users: [], sessions: [] };
   if (!DB.deleted_records.students) DB.deleted_records.students = [];
   if (!DB.deleted_records.users) DB.deleted_records.users = [];
+  if (!DB.deleted_records.sessions) DB.deleted_records.sessions = [];
 
   if (studentName && !DB.deleted_records.students.includes(studentName)) DB.deleted_records.students.push(studentName);
   if (uname && !DB.deleted_records.students.includes(uname)) DB.deleted_records.students.push(uname);
   if (uname && !DB.deleted_records.users.includes(uname)) DB.deleted_records.users.push(uname);
   if (studentName && !DB.deleted_records.users.includes(studentName)) DB.deleted_records.users.push(studentName);
+
+  const studentSessions = (DB.sessions || []).filter(s => s.student === studentName);
+  studentSessions.forEach(s => {
+    if (s.id && !DB.deleted_records.sessions.includes(String(s.id))) {
+      DB.deleted_records.sessions.push(String(s.id));
+    }
+  });
 
   DB.students = DB.students.filter(s => s.name !== studentName && (!uname || s.username !== uname));
   DB.users = DB.users.filter(u => u.name !== studentName && (!uname || u.username !== uname));
@@ -3924,17 +4023,42 @@ async function adminDeleteStudent(studentName){
     }
   }
 
-  function adminDeleteSession(sessionIdx){
-    if (confirm('هل ترغب في حذف هذه الحصة من الجدول نهائياً؟')) {
-      const deleted = DB.sessions.splice(sessionIdx, 1)[0];
-      saveDB();
-      if (supabaseClient && deleted && deleted.id) {
-        safeCloudOp(supabaseClient.from('sessions').delete().eq('id', deleted.id));
-      }
-      showToast('تم حذف الحصة من الجدول بنجاح.');
-      renderPage(currentRole, currentPage);
-    }
+function deleteSessionDirect(sessionIdOrIdx, fallbackIdx){
+  if (!confirm('هل ترغب في حذف هذه الحصة من الجدول نهائياً؟')) return;
+
+  let idx = -1;
+  if (sessionIdOrIdx !== undefined && sessionIdOrIdx !== null && sessionIdOrIdx !== '') {
+    idx = DB.sessions.findIndex(x => String(x.id) === String(sessionIdOrIdx));
   }
+  if (idx === -1 && typeof fallbackIdx === 'number' && fallbackIdx >= 0) {
+    idx = fallbackIdx;
+  }
+  if (idx === -1 && typeof sessionIdOrIdx === 'number' && sessionIdOrIdx >= 0) {
+    idx = sessionIdOrIdx;
+  }
+
+  if (idx >= 0 && idx < DB.sessions.length) {
+    const deleted = DB.sessions.splice(idx, 1)[0];
+    if (!DB.deleted_records) DB.deleted_records = { students: [], teachers: [], moderators: [], users: [], sessions: [] };
+    if (!DB.deleted_records.sessions) DB.deleted_records.sessions = [];
+    if (deleted && deleted.id && !DB.deleted_records.sessions.includes(String(deleted.id))) {
+      DB.deleted_records.sessions.push(String(deleted.id));
+    }
+    saveDB();
+
+    if (supabaseClient && deleted && deleted.id) {
+      safeCloudOp(supabaseClient.from('sessions').delete().eq('id', deleted.id));
+    }
+    showToast('تم حذف الحصة من الجدول بنجاح.');
+    if (currentRole && currentPage) renderPage(currentRole, currentPage);
+  } else {
+    showToast('تعذر العثور على الحصة لحذفها.', 'error');
+  }
+}
+
+function adminDeleteSession(sessionIdOrIdx, fallbackIdx){
+  deleteSessionDirect(sessionIdOrIdx, fallbackIdx);
+}
 
 function filterAdminStudents(){
   const search = (document.getElementById('studentSearchInput')?.value || '').toLowerCase().trim();
