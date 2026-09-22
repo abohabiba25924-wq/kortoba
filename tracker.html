@@ -1412,6 +1412,20 @@ if (window.supabase && SUPABASE_CONFIG.url && SUPABASE_CONFIG.anonKey) {
   }
 }
 
+async function safeCloudOp(queryPromise) {
+  if (!supabaseClient || !queryPromise) return null;
+  try {
+    const res = await Promise.resolve(queryPromise);
+    if (res && res.error) {
+      console.warn('Cloud op note:', res.error.message || res.error);
+    }
+    return res;
+  } catch (err) {
+    console.warn('Cloud op notice:', err?.message || err);
+    return null;
+  }
+}
+
 const DEFAULT_DB = {
   deleted_records: { students: [], teachers: [], moderators: [], users: [] },
   users: [
@@ -1516,34 +1530,33 @@ let DB = loadDB();
 async function syncFromCloud(){
   if (!supabaseClient) return;
   try {
-    const [tRes, sRes, sessRes, evalRes, mkRes] = await Promise.all([
-      supabaseClient.from('teachers').select('*'),
-      supabaseClient.from('students').select('*'),
-      supabaseClient.from('sessions').select('*').order('created_at', { ascending: false }),
-      supabaseClient.from('evaluations').select('*').order('created_at', { ascending: false }),
-      supabaseClient.from('makeup_sessions').select('*')
+    const [tRes, sRes, sessRes, evalRes] = await Promise.all([
+      safeCloudOp(supabaseClient.from('teachers').select('*')),
+      safeCloudOp(supabaseClient.from('students').select('*')),
+      safeCloudOp(supabaseClient.from('sessions').select('*').order('created_at', { ascending: false })),
+      safeCloudOp(supabaseClient.from('evaluations').select('*').order('created_at', { ascending: false }))
     ]);
 
     const delS = DB.deleted_records?.students || [];
     const delT = DB.deleted_records?.teachers || [];
     let changed = false;
 
-    if (tRes.data && tRes.data.length > 0) {
+    if (tRes && tRes.data && tRes.data.length > 0) {
       const liveTeachers = tRes.data.filter(t => !delT.includes(t.name) && !delT.includes(t.username));
       DB.teachers = liveTeachers.map(t => ({ id: t.id, username: t.username||'', name: t.name, area: t.area, students: t.students_count || 0, rating: t.rating || 'ممتاز', status: t.status || 'نشط', phone: t.phone||'' }));
       changed = true;
     }
-    if (sRes.data && sRes.data.length > 0) {
+    if (sRes && sRes.data && sRes.data.length > 0) {
       const liveStudents = sRes.data.filter(s => !delS.includes(s.name) && !delS.includes(s.username));
       DB.students = liveStudents.map(s => ({ id: s.id, username: s.username||'', name: s.name, teacher: s.teacher_name, program: s.program, monthlySessions: s.monthly_sessions||8, schedule: s.session_schedule||'', progress: s.progress_juz||0, lastRating: s.last_rating||'ممتاز', phone: s.phone||'' }));
       changed = true;
     }
-    if (sessRes.data && sessRes.data.length > 0) {
+    if (sessRes && sessRes.data && sessRes.data.length > 0) {
       const liveSessions = sessRes.data.filter(s => !delS.includes(s.student_name) && !delT.includes(s.teacher_name));
       DB.sessions = liveSessions.map(s => ({ id: s.id, student: s.student_name, teacher: s.teacher_name, date: s.date_text, time: s.time_text, platform: s.platform, link: s.link, status: s.status, attendance: s.attendance || '', makeupRequired: s.makeup_required||false }));
       changed = true;
     }
-    if (evalRes.data && evalRes.data.length > 0) {
+    if (evalRes && evalRes.data && evalRes.data.length > 0) {
       const liveEvals = evalRes.data.filter(e => !delS.includes(e.student_name) && !delT.includes(e.teacher_name));
       DB.evaluations = liveEvals.map(e => ({
         id: e.id, student: e.student_name, teacher: e.teacher_name, date: e.date_text, monthKey: e.month_key||'2026-09',
@@ -1556,22 +1569,18 @@ async function syncFromCloud(){
       }));
       changed = true;
     }
-    if (mkRes.data && mkRes.data.length > 0) {
-      DB.makeup_sessions = mkRes.data.filter(m => !delS.includes(m.student_name) && !delT.includes(m.teacher_name));
-      changed = true;
-    }
 
-    // Purge tombstoned records from cloud in the background
+    // Purge tombstoned records from cloud in the background safely
     if (delS.length > 0) {
       delS.forEach(val => {
-        supabaseClient.from('students').delete().eq('name', val).catch(()=>{});
-        supabaseClient.from('students').delete().eq('username', val).catch(()=>{});
+        safeCloudOp(supabaseClient.from('students').delete().eq('name', val));
+        safeCloudOp(supabaseClient.from('students').delete().eq('username', val));
       });
     }
     if (delT.length > 0) {
       delT.forEach(val => {
-        supabaseClient.from('teachers').delete().eq('name', val).catch(()=>{});
-        supabaseClient.from('teachers').delete().eq('username', val).catch(()=>{});
+        safeCloudOp(supabaseClient.from('teachers').delete().eq('name', val));
+        safeCloudOp(supabaseClient.from('teachers').delete().eq('username', val));
       });
     }
 
@@ -1834,10 +1843,6 @@ document.getElementById('changePassSave').addEventListener('click', ()=>{
   if (idx !== -1) DB.users[idx].password = nw;
   saveDB();
 
-  if (supabaseClient) {
-    supabaseClient.from('users_accounts').update({ password_hash: nw }).eq('username', currentUser.username).catch(console.warn);
-  }
-
   document.getElementById('changePassModal').classList.remove('active');
   showToast('تم تحديث كلمة المرور الخاصة بك بنجاح! 🔒');
 });
@@ -1903,10 +1908,8 @@ function saveMyProfileData(){
   localStorage.setItem('kortoba_current_user_name', newUsername);
 
   if (supabaseClient) {
-    supabaseClient.from('users_accounts').update({ name: newName, phone: newPhone, username: newUsername }).eq('username', oldUsername).catch(console.warn);
-    if (currentUser.role === 'teacher') supabaseClient.from('teachers').update({ name: newName, phone: newPhone, username: newUsername }).eq('name', oldName).catch(console.warn);
-    if (currentUser.role === 'student') supabaseClient.from('students').update({ name: newName, phone: newPhone, username: newUsername }).eq('name', oldName).catch(console.warn);
-    if (currentUser.role === 'moderator') supabaseClient.from('moderators').update({ name: newName, phone: newPhone, username: newUsername }).eq('name', oldName).catch(console.warn);
+    if (currentUser.role === 'teacher') safeCloudOp(supabaseClient.from('teachers').update({ name: newName, phone: newPhone, username: newUsername }).eq('name', oldName));
+    if (currentUser.role === 'student') safeCloudOp(supabaseClient.from('students').update({ name: newName, phone: newPhone, username: newUsername }).eq('name', oldName));
   }
 
   document.getElementById('userName').textContent = newName;
@@ -2028,7 +2031,7 @@ function saveEditUserData(){
     (DB.makeup_sessions||[]).forEach(m => { if (m.student_name === oldName) m.student_name = newName; });
 
     if (supabaseClient) {
-      supabaseClient.from('students').update({ name: newName, username: newUsername, phone: newPhone, teacher_name: teacher, program, monthly_sessions: monthlySessions, session_schedule: schedule }).eq('name', oldName).catch(console.warn);
+      safeCloudOp(supabaseClient.from('students').update({ name: newName, username: newUsername, phone: newPhone, teacher_name: teacher, program, monthly_sessions: monthlySessions, session_schedule: schedule }).eq('name', oldName));
     }
   } else if (role === 'teacher') {
     const area = document.getElementById('editAccountArea').value.trim();
@@ -2049,7 +2052,7 @@ function saveEditUserData(){
     (DB.makeup_sessions||[]).forEach(m => { if (m.teacher_name === oldName) m.teacher_name = newName; });
 
     if (supabaseClient) {
-      supabaseClient.from('teachers').update({ name: newName, username: newUsername, phone: newPhone, area, status }).eq('name', oldName).catch(console.warn);
+      safeCloudOp(supabaseClient.from('teachers').update({ name: newName, username: newUsername, phone: newPhone, area, status }).eq('name', oldName));
     }
   } else if (role === 'moderator') {
     const modArea = document.getElementById('editAccountModArea').value.trim();
@@ -2059,9 +2062,6 @@ function saveEditUserData(){
       m.username = newUsername;
       m.phone = newPhone;
       m.area = modArea;
-    }
-    if (supabaseClient) {
-      supabaseClient.from('moderators').update({ name: newName, username: newUsername, phone: newPhone, area: modArea }).eq('name', oldName).catch(console.warn);
     }
   }
 
@@ -2077,10 +2077,6 @@ function saveEditUserData(){
   }
 
   saveDB();
-
-  if (supabaseClient) {
-    supabaseClient.from('users_accounts').update({ name: newName, username: newUsername, password_hash: newPassword, phone: newPhone }).eq('username', oldUsername).catch(console.warn);
-  }
 
   document.getElementById('editUserModal').classList.remove('active');
   showToast(`تم تعديل وحفظ بيانات (${newName}) بنجاح! ✏️`);
@@ -3437,7 +3433,7 @@ document.getElementById('evalSaveBtn').addEventListener('click', ()=>{
   saveDB();
 
   if (supabaseClient) {
-    supabaseClient.from('evaluations').insert([{
+    safeCloudOp(supabaseClient.from('evaluations').insert([{
       student_name: evalRecord.student,
       teacher_name: evalRecord.teacher,
       date_text: evalRecord.date,
@@ -3448,7 +3444,7 @@ document.getElementById('evalSaveBtn').addEventListener('click', ()=>{
       rev_ayahs_count: evalRecord.revAyahsCount, rev_pages_count: evalRecord.revPagesCount, rev_score: evalRecord.revScore, rev_notes: evalRecord.revNotes,
       tajweed_score: evalRecord.tajweedScore, tajweed_notes: evalRecord.tajweedNotes,
       overall_score: evalRecord.overallScore, overall_rating: evalRecord.overallRating, general_notes: evalRecord.generalNotes
-    }]).catch(console.warn);
+    }]));
   }
 
   currentEvalRecordId = evalRecord.id;
@@ -3727,7 +3723,7 @@ document.getElementById('userModalSave').addEventListener('click', ()=>{
     if(t) t.students = (t.students || 0) + 1;
 
     if (supabaseClient) {
-      supabaseClient.from('students').insert([{ username: uname, name, teacher_name: teacher, program, monthly_sessions: monthlySessions, session_schedule: schedule, progress_juz: progress, phone }]).catch(console.warn);
+      safeCloudOp(supabaseClient.from('students').insert([{ username: uname, name, teacher_name: teacher, program, monthly_sessions: monthlySessions, session_schedule: schedule, progress_juz: progress, phone }]));
     }
   } else if (role === 'teacher') {
     const area = document.getElementById('newAccountArea').value.trim() || 'معلم قرآن وتجويد';
@@ -3742,7 +3738,7 @@ document.getElementById('userModalSave').addEventListener('click', ()=>{
       phone
     });
     if (supabaseClient) {
-      supabaseClient.from('teachers').insert([{ username: uname, name, area, students_count: 0, rating: 'ممتاز', status: 'نشط', phone }]).catch(console.warn);
+      safeCloudOp(supabaseClient.from('teachers').insert([{ username: uname, name, area, students_count: 0, rating: 'ممتاز', status: 'نشط', phone }]));
     }
   } else if (role === 'moderator') {
     DB.moderators.unshift({
@@ -3752,16 +3748,9 @@ document.getElementById('userModalSave').addEventListener('click', ()=>{
       area: 'متابعة جودة التسميع والحصص',
       phone
     });
-    if (supabaseClient) {
-      supabaseClient.from('moderators').insert([{ username: uname, name, area: 'متابعة جودة التسميع والحصص', phone }]).catch(console.warn);
-    }
   }
 
   saveDB();
-
-  if (supabaseClient) {
-    supabaseClient.from('users_accounts').insert([{ username: uname, password_hash: pass, name, role, phone }]).catch(console.warn);
-  }
 
   document.getElementById('userModal').classList.remove('active');
   showToast(`تم إنشاء حساب (${name}) بنجاح! اسم المستخدم: ${uname}`);
@@ -3775,9 +3764,6 @@ function adminResetUserPass(username){
   if(newP && newP.trim()){
     u.password = newP.trim();
     saveDB();
-    if (supabaseClient) {
-      supabaseClient.from('users_accounts').update({ password_hash: u.password }).eq('username', username).catch(console.warn);
-    }
     showToast(`تم تحديث كلمة مرور (${u.name}) إلى: ${u.password}`);
     renderPage(currentRole, currentPage);
   }
@@ -3815,168 +3801,140 @@ async function adminDeleteStudent(studentName){
   showToast(`تم حذف الطالب (${studentName}) بنجاح.`);
   if (currentRole && currentPage) renderPage(currentRole, currentPage);
 
-  if (supabaseClient) {
-    try {
-      await Promise.allSettled([
-        supabaseClient.from('students').delete().eq('name', studentName),
-        uname ? supabaseClient.from('students').delete().eq('username', uname) : Promise.resolve(),
-        supabaseClient.from('users_accounts').delete().eq('name', studentName),
-        uname ? supabaseClient.from('users_accounts').delete().eq('username', uname) : Promise.resolve(),
-        supabaseClient.from('sessions').delete().eq('student_name', studentName),
-        supabaseClient.from('evaluations').delete().eq('student_name', studentName),
-        supabaseClient.from('makeup_sessions').delete().eq('student_name', studentName)
-      ]);
-    } catch(e) {
-      console.warn('Supabase student delete warn:', e);
+    if (supabaseClient) {
+      try {
+        await Promise.allSettled([
+          safeCloudOp(supabaseClient.from('students').delete().eq('name', studentName)),
+          uname ? safeCloudOp(supabaseClient.from('students').delete().eq('username', uname)) : Promise.resolve(),
+          safeCloudOp(supabaseClient.from('sessions').delete().eq('student_name', studentName)),
+          safeCloudOp(supabaseClient.from('evaluations').delete().eq('student_name', studentName))
+        ]);
+      } catch(e) {
+        console.warn('Supabase student delete warn:', e);
+      }
     }
   }
-}
 
-async function adminDeleteTeacher(teacherName){
-  if (!confirm(`⚠️ تحذير: هل أنت متأكد من حذف المعلم (${teacherName}) نهائياً؟\nسيتم فك ارتباط الطلاب المسندين إليه ليتسنى إعادة تسكينهم على معلم آخر.`)) {
-    return;
-  }
-  const tObj = DB.teachers.find(t => t.name === teacherName);
-  const uObj = DB.users.find(u => u.name === teacherName || (tObj && u.username === tObj.username));
-  const uname = tObj?.username || uObj?.username || '';
-
-  if (!DB.deleted_records) DB.deleted_records = { students: [], teachers: [], moderators: [], users: [] };
-  if (!DB.deleted_records.teachers) DB.deleted_records.teachers = [];
-  if (!DB.deleted_records.users) DB.deleted_records.users = [];
-
-  if (teacherName && !DB.deleted_records.teachers.includes(teacherName)) DB.deleted_records.teachers.push(teacherName);
-  if (uname && !DB.deleted_records.teachers.includes(uname)) DB.deleted_records.teachers.push(uname);
-  if (uname && !DB.deleted_records.users.includes(uname)) DB.deleted_records.users.push(uname);
-  if (teacherName && !DB.deleted_records.users.includes(teacherName)) DB.deleted_records.users.push(teacherName);
-
-  DB.teachers = DB.teachers.filter(t => t.name !== teacherName && (!uname || t.username !== uname));
-  DB.users = DB.users.filter(u => u.name !== teacherName && (!uname || u.username !== uname));
-  
-  // Reassign / mark students
-  DB.students.forEach(s => {
-    if (s.teacher === teacherName) {
-      s.teacher = 'غير معيّن (يحتاج تسكين)';
+  async function adminDeleteTeacher(teacherName){
+    if (!confirm(`⚠️ تحذير: هل أنت متأكد من حذف المعلم (${teacherName}) نهائياً؟\nسيتم فك ارتباط الطلاب المسندين إليه ليتسنى إعادة تسكينهم على معلم آخر.`)) {
+      return;
     }
-  });
+    const tObj = DB.teachers.find(t => t.name === teacherName);
+    const uObj = DB.users.find(u => u.name === teacherName || (tObj && u.username === tObj.username));
+    const uname = tObj?.username || uObj?.username || '';
 
-  saveDB();
-
-  showToast(`تم حذف المعلم (${teacherName}) وتحديث الطلاب المسندين إليه.`);
-  if (currentRole && currentPage) renderPage(currentRole, currentPage);
-
-  if (supabaseClient) {
-    try {
-      await Promise.allSettled([
-        supabaseClient.from('teachers').delete().eq('name', teacherName),
-        uname ? supabaseClient.from('teachers').delete().eq('username', uname) : Promise.resolve(),
-        supabaseClient.from('users_accounts').delete().eq('name', teacherName),
-        uname ? supabaseClient.from('users_accounts').delete().eq('username', uname) : Promise.resolve()
-      ]);
-    } catch(e) {
-      console.warn('Supabase teacher delete warn:', e);
-    }
-  }
-}
-
-async function adminDeleteModerator(modName){
-  if (currentRole !== 'admin') {
-    alert('صلاحية حذف المشرفين قاصرة على المدير العام فقط.');
-    return;
-  }
-  if (!confirm(`⚠️ هل أنت متأكد من حذف المشرف (${modName})؟`)) {
-    return;
-  }
-  const mObj = DB.moderators.find(m => m.name === modName || m.name.includes(modName) || modName.includes(m.name));
-  const uObj = DB.users.find(u => u.name === modName || u.name.includes(modName) || modName.includes(u.name) || (mObj && u.username === mObj.username));
-  const uname = mObj?.username || uObj?.username || '';
-  const fullName = mObj?.name || modName;
-
-  if (!DB.deleted_records) DB.deleted_records = { students: [], teachers: [], moderators: [], users: [] };
-  if (!DB.deleted_records.moderators) DB.deleted_records.moderators = [];
-  if (!DB.deleted_records.users) DB.deleted_records.users = [];
-
-  const toAddM = [modName, fullName, uname, 'أ. هبة السيد', 'أ. هبة السيد (المشرفة)'].filter(Boolean);
-  toAddM.forEach(item => {
-    if (!DB.deleted_records.moderators.includes(item)) DB.deleted_records.moderators.push(item);
-    if (!DB.deleted_records.users.includes(item)) DB.deleted_records.users.push(item);
-  });
-
-  DB.moderators = DB.moderators.filter(m => m.name !== modName && m.name !== fullName && (!uname || m.username !== uname));
-  DB.users = DB.users.filter(u => u.name !== modName && u.name !== fullName && (!uname || u.username !== uname) && !(u.role === 'moderator' && (u.name.includes('هبة') || modName.includes('هبة'))));
-
-  saveDB();
-
-  showToast(`تم حذف المشرف (${modName}) بنجاح.`);
-  if (currentRole && currentPage) renderPage(currentRole, currentPage);
-
-  if (supabaseClient) {
-    try {
-      await Promise.allSettled([
-        supabaseClient.from('moderators').delete().eq('name', modName),
-        supabaseClient.from('moderators').delete().eq('name', fullName),
-        uname ? supabaseClient.from('moderators').delete().eq('username', uname) : Promise.resolve(),
-        supabaseClient.from('users_accounts').delete().eq('name', modName),
-        supabaseClient.from('users_accounts').delete().eq('name', fullName),
-        uname ? supabaseClient.from('users_accounts').delete().eq('username', uname) : Promise.resolve()
-      ]);
-    } catch(e) {
-      console.warn('Supabase moderator delete warn:', e);
-    }
-  }
-}
-
-async function adminDeleteUser(username){
-  if (username === 'admin' || (currentUser && username === currentUser.username)) {
-    alert('لا يمكن حذف حساب المدير العام المسجل به حالياً!');
-    return;
-  }
-  const u = DB.users.find(x => x.username === username);
-  if (!u) return;
-
-  if (u.role === 'student') {
-    await adminDeleteStudent(u.name);
-    return;
-  } else if (u.role === 'teacher') {
-    await adminDeleteTeacher(u.name);
-    return;
-  } else if (u.role === 'moderator') {
-    await adminDeleteModerator(u.name);
-    return;
-  }
-
-  if (confirm(`هل أنت متأكد من حذف الحساب "${username}"؟`)) {
     if (!DB.deleted_records) DB.deleted_records = { students: [], teachers: [], moderators: [], users: [] };
+    if (!DB.deleted_records.teachers) DB.deleted_records.teachers = [];
     if (!DB.deleted_records.users) DB.deleted_records.users = [];
-    if (!DB.deleted_records.users.includes(username)) DB.deleted_records.users.push(username);
-    if (u.name && !DB.deleted_records.users.includes(u.name)) DB.deleted_records.users.push(u.name);
 
-    DB.users = DB.users.filter(x => x.username !== username && x.name !== u.name);
+    if (teacherName && !DB.deleted_records.teachers.includes(teacherName)) DB.deleted_records.teachers.push(teacherName);
+    if (uname && !DB.deleted_records.teachers.includes(uname)) DB.deleted_records.teachers.push(uname);
+    if (uname && !DB.deleted_records.users.includes(uname)) DB.deleted_records.users.push(uname);
+    if (teacherName && !DB.deleted_records.users.includes(teacherName)) DB.deleted_records.users.push(teacherName);
+
+    DB.teachers = DB.teachers.filter(t => t.name !== teacherName && (!uname || t.username !== uname));
+    DB.users = DB.users.filter(u => u.name !== teacherName && (!uname || u.username !== uname));
+    
+    // Reassign / mark students
+    DB.students.forEach(s => {
+      if (s.teacher === teacherName) {
+        s.teacher = 'غير معيّن (يحتاج تسكين)';
+      }
+    });
+
     saveDB();
 
-    showToast(`تم حذف المستخدم ${username} بنجاح.`);
+    showToast(`تم حذف المعلم (${teacherName}) وتحديث الطلاب المسندين إليه.`);
     if (currentRole && currentPage) renderPage(currentRole, currentPage);
 
     if (supabaseClient) {
       try {
-        await supabaseClient.from('users_accounts').delete().eq('username', username);
+        await Promise.allSettled([
+          safeCloudOp(supabaseClient.from('teachers').delete().eq('name', teacherName)),
+          uname ? safeCloudOp(supabaseClient.from('teachers').delete().eq('username', uname)) : Promise.resolve()
+        ]);
       } catch(e) {
-        console.warn('Supabase user delete warn:', e);
+        console.warn('Supabase teacher delete warn:', e);
       }
     }
   }
-}
 
-function adminDeleteSession(sessionIdx){
-  if (confirm('هل ترغب في حذف هذه الحصة من الجدول نهائياً؟')) {
-    const deleted = DB.sessions.splice(sessionIdx, 1)[0];
-    saveDB();
-    if (supabaseClient && deleted && deleted.id) {
-      supabaseClient.from('sessions').delete().eq('id', deleted.id).catch(console.warn);
+  async function adminDeleteModerator(modName){
+    if (currentRole !== 'admin') {
+      alert('صلاحية حذف المشرفين قاصرة على المدير العام فقط.');
+      return;
     }
-    showToast('تم حذف الحصة من الجدول بنجاح.');
-    renderPage(currentRole, currentPage);
+    if (!confirm(`⚠️ هل أنت متأكد من حذف المشرف (${modName})؟`)) {
+      return;
+    }
+    const mObj = DB.moderators.find(m => m.name === modName || m.name.includes(modName) || modName.includes(m.name));
+    const uObj = DB.users.find(u => u.name === modName || u.name.includes(modName) || modName.includes(u.name) || (mObj && u.username === mObj.username));
+    const uname = mObj?.username || uObj?.username || '';
+    const fullName = mObj?.name || modName;
+
+    if (!DB.deleted_records) DB.deleted_records = { students: [], teachers: [], moderators: [], users: [] };
+    if (!DB.deleted_records.moderators) DB.deleted_records.moderators = [];
+    if (!DB.deleted_records.users) DB.deleted_records.users = [];
+
+    const toAddM = [modName, fullName, uname, 'أ. هبة السيد', 'أ. هبة السيد (المشرفة)'].filter(Boolean);
+    toAddM.forEach(item => {
+      if (!DB.deleted_records.moderators.includes(item)) DB.deleted_records.moderators.push(item);
+      if (!DB.deleted_records.users.includes(item)) DB.deleted_records.users.push(item);
+    });
+
+    DB.moderators = DB.moderators.filter(m => m.name !== modName && m.name !== fullName && (!uname || m.username !== uname));
+    DB.users = DB.users.filter(u => u.name !== modName && u.name !== fullName && (!uname || u.username !== uname) && !(u.role === 'moderator' && (u.name.includes('هبة') || modName.includes('هبة'))));
+
+    saveDB();
+
+    showToast(`تم حذف المشرف (${modName}) بنجاح.`);
+    if (currentRole && currentPage) renderPage(currentRole, currentPage);
   }
-}
+
+  async function adminDeleteUser(username){
+    if (username === 'admin' || (currentUser && username === currentUser.username)) {
+      alert('لا يمكن حذف حساب المدير العام المسجل به حالياً!');
+      return;
+    }
+    const u = DB.users.find(x => x.username === username);
+    if (!u) return;
+
+    if (u.role === 'student') {
+      await adminDeleteStudent(u.name);
+      return;
+    } else if (u.role === 'teacher') {
+      await adminDeleteTeacher(u.name);
+      return;
+    } else if (u.role === 'moderator') {
+      await adminDeleteModerator(u.name);
+      return;
+    }
+
+    if (confirm(`هل أنت متأكد من حذف الحساب "${username}"؟`)) {
+      if (!DB.deleted_records) DB.deleted_records = { students: [], teachers: [], moderators: [], users: [] };
+      if (!DB.deleted_records.users) DB.deleted_records.users = [];
+      if (!DB.deleted_records.users.includes(username)) DB.deleted_records.users.push(username);
+      if (u.name && !DB.deleted_records.users.includes(u.name)) DB.deleted_records.users.push(u.name);
+
+      DB.users = DB.users.filter(x => x.username !== username && x.name !== u.name);
+      saveDB();
+
+      showToast(`تم حذف المستخدم ${username} بنجاح.`);
+      if (currentRole && currentPage) renderPage(currentRole, currentPage);
+    }
+  }
+
+  function adminDeleteSession(sessionIdx){
+    if (confirm('هل ترغب في حذف هذه الحصة من الجدول نهائياً؟')) {
+      const deleted = DB.sessions.splice(sessionIdx, 1)[0];
+      saveDB();
+      if (supabaseClient && deleted && deleted.id) {
+        safeCloudOp(supabaseClient.from('sessions').delete().eq('id', deleted.id));
+      }
+      showToast('تم حذف الحصة من الجدول بنجاح.');
+      renderPage(currentRole, currentPage);
+    }
+  }
 
 function filterAdminStudents(){
   const search = (document.getElementById('studentSearchInput')?.value || '').toLowerCase().trim();
@@ -4084,10 +4042,6 @@ document.getElementById('alertTeacherConfirm').addEventListener('click', ()=>{
   });
   saveDB();
 
-  if (supabaseClient) {
-    supabaseClient.from('teacher_alerts').insert([{ student_name: myName, teacher_name: teacher, reported_at: new Date().toISOString(), notes: note }]).catch(console.warn);
-  }
-
   document.getElementById('alertTeacherModal').classList.remove('active');
   alert('تم إرسال التنبيه للإدارة والمشرفين بنجاح. جاري التواصل مع المعلم لحضور الحصة فوراً.');
 });
@@ -4116,7 +4070,7 @@ document.getElementById('sessionSave').addEventListener('click', ()=>{
   saveDB();
 
   if (supabaseClient) {
-    supabaseClient.from('sessions').insert([{ student_name: student, teacher_name: teacher, date_text: date, time_text: time, platform, link, status: 'upcoming', attendance: '' }]).catch(console.warn);
+    safeCloudOp(supabaseClient.from('sessions').insert([{ student_name: student, teacher_name: teacher, date_text: date, time_text: time, platform, link, status: 'upcoming', attendance: '' }]));
   }
 
   document.getElementById('sessionModal').classList.remove('active');
