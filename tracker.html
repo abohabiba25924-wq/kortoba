@@ -80,9 +80,10 @@
     font-family:'Amiri',serif;text-align:center;font-size:24px;color:var(--green-deep);margin:0 0 6px;
   }
   .login-card .sub{text-align:center;color:var(--ink-soft);font-size:14px;margin-bottom:28px;}
-  .field{display:flex;flex-direction:column;gap:7px;margin-bottom:16px;}
+  .field{display:flex;flex-direction:column;gap:7px;margin-bottom:16px;min-width:0;box-sizing:border-box;}
   .field label{font-size:13px;font-weight:700;color:var(--green-deep);}
   .field input,.field select,.field textarea{
+    width:100%;max-width:100%;min-width:0;box-sizing:border-box;
     border:1.5px solid var(--line);border-radius:11px;padding:12px 14px;font-size:14.5px;
     background:var(--bg);color:var(--ink);outline:none;transition:border-color .2s ease, box-shadow .2s ease;
   }
@@ -276,38 +277,59 @@
     z-index:100;padding:20px;backdrop-filter:blur(2px);
   }
   .modal-overlay.active{display:flex;}
-  .modal{background:#fff;border-radius:20px;padding:30px;width:100%;max-width:480px;max-height:92vh;overflow-y:auto;box-shadow:var(--shadow);}
+  .modal{
+    background:#fff;border-radius:20px;padding:26px 22px;width:100%;max-width:480px;
+    max-height:92vh;overflow-y:auto;overflow-x:hidden;box-shadow:var(--shadow);box-sizing:border-box;
+  }
   .modal.modal-wide{max-width:860px !important;}
   .modal h3{font-family:'Amiri',serif;color:var(--green-deep);margin:0 0 16px;font-size:20px;}
-  .modal-actions{display:flex;gap:10px;margin-top:22px;}
+  .modal-actions{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap;align-items:center;}
 
   /* Triple Evaluation Modal Styling */
   .eval-card{
-    background:#FAFAF7;border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px;
+    background:#FAFAF7;border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:16px;
+    box-sizing:border-box;width:100%;max-width:100%;overflow:hidden;
   }
   .eval-card-header{
-    display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;
+    display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;
   }
   .eval-card-title{
     font-weight:700;font-size:15px;color:var(--green-deep);display:flex;align-items:center;gap:8px;
   }
   .coverage-pill{
-    background:rgba(185,131,42,0.12);color:var(--gold);padding:3px 10px;border-radius:100px;font-size:12px;font-weight:700;
+    background:rgba(185,131,42,0.12);color:var(--gold);padding:3px 10px;border-radius:100px;font-size:12px;font-weight:700;white-space:nowrap;
   }
   .quran-grid{
-    display:grid;grid-template-columns:1.5fr 1fr 1.5fr 1fr;gap:10px;margin-bottom:12px;
+    display:grid;grid-template-columns:minmax(0, 1.8fr) minmax(0, 0.9fr) minmax(0, 1.8fr) minmax(0, 0.9fr);gap:10px;margin-bottom:12px;width:100%;box-sizing:border-box;
+  }
+  .quran-grid .field{
+    margin:0 !important;min-width:0 !important;width:100% !important;box-sizing:border-box;
+  }
+  .quran-grid select{
+    width:100% !important;max-width:100% !important;min-width:0 !important;box-sizing:border-box !important;
+    text-overflow:ellipsis;white-space:nowrap;overflow:hidden;padding:10px 10px;font-size:13.5px;
+  }
+  .quran-grid input[type=number]{
+    width:100% !important;max-width:100% !important;min-width:0 !important;box-sizing:border-box !important;
+    text-align:center;padding:10px 8px;font-size:13.5px;
   }
   .score-slider-row{
     display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 14px;margin-top:10px;
+    width:100%;box-sizing:border-box;min-width:0;
   }
-  .score-slider-row input[type=range]{flex:1;accent-color:var(--green);cursor:pointer;}
+  .score-slider-row input[type=range]{flex:1;min-width:0;accent-color:var(--green);cursor:pointer;}
   .score-slider-row .val{font-weight:800;font-size:15px;color:var(--green-deep);min-width:48px;text-align:center;}
   
   .note-repeater-row{
-    display:grid;grid-template-columns:90px 1fr 34px;gap:8px;margin-bottom:8px;align-items:center;
+    display:grid;grid-template-columns:85px minmax(0, 1fr) 34px;gap:8px;margin-bottom:8px;align-items:center;
+    width:100%;box-sizing:border-box;min-width:0;
+  }
+  .note-repeater-row *{box-sizing:border-box;}
+  .note-repeater-row input{
+    min-width:0 !important;width:100% !important;box-sizing:border-box !important;
   }
   .del-btn{
-    width:34px;height:34px;border-radius:8px;border:1px solid var(--line);background:#fff;
+    width:34px;height:34px;flex-shrink:0;border-radius:8px;border:1px solid var(--line);background:#fff;
     color:var(--danger);cursor:pointer;display:flex;align-items:center;justify-content:center;
   }
   .del-btn:hover{background:var(--danger-bg);border-color:var(--danger);}
@@ -315,10 +337,12 @@
   .overall-box{
     background:linear-gradient(135deg,var(--green-deep),var(--green));color:#fff;border-radius:14px;
     padding:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;
+    width:100%;box-sizing:border-box;min-width:0;
   }
   .overall-box .score{
     font-family:'Amiri',serif;font-size:32px;font-weight:700;color:var(--gold-bright);line-height:1;
   }
+  .overall-box > div{min-width:0;}
 
   /* Monthly Summary View */
   .monthly-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(175px, 1fr));gap:12px;margin-bottom:24px;}
@@ -610,7 +634,7 @@
     .stat-grid{grid-template-columns:repeat(2,1fr);gap:12px;}
     .cols-2{grid-template-columns:1fr;gap:16px;}
     .content{padding:18px;}
-    .quran-grid{grid-template-columns:1fr 1fr;}
+    .quran-grid{grid-template-columns:minmax(0, 2fr) minmax(0, 1fr);}
     .monthly-grid{grid-template-columns:1fr 1fr;}
   }
 
@@ -665,6 +689,13 @@
       border-radius:18px;
       max-width:100% !important;
       width:100% !important;
+    }
+    .eval-card{
+      padding:14px 12px;
+    }
+    .quran-grid{
+      grid-template-columns:minmax(0, 2fr) minmax(0, 1fr) !important;
+      gap:8px;
     }
     .modal-actions{
       flex-direction:column-reverse;
@@ -1522,9 +1553,9 @@
   <div class="modal modal-wide">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
       <h3 style="margin:0;" id="evalModalTitle">تسجيل وتقييم تفصيلي للحصة 📖</h3>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <label style="font-size:13px;font-weight:700;color:var(--green-deep);">الطالب المستهدف:</label>
-        <select id="evalStudentSelect" onchange="onEvalStudentSelectChange(this.value)" style="padding:6px 14px;border-radius:10px;border:1.5px solid var(--green);font-weight:700;color:var(--green-deep);background:#fff;font-size:13px;"></select>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        <label style="font-size:13px;font-weight:700;color:var(--green-deep);white-space:nowrap;">الطالب المستهدف:</label>
+        <select id="evalStudentSelect" onchange="onEvalStudentSelectChange(this.value)" style="padding:6px 14px;border-radius:10px;border:1.5px solid var(--green);font-weight:700;color:var(--green-deep);background:#fff;font-size:13px;max-width:240px;min-width:0;"></select>
       </div>
     </div>
 
@@ -1638,8 +1669,8 @@
           <span class="badge" id="overallRatingBadge" style="background:#fff;color:var(--green-deep);">ممتاز ⭐</span>
         </div>
       </div>
-      <div style="flex:1;max-width:380px;">
-        <input type="text" id="generalTeacherNotes" placeholder="كلمة تشجيعية للطالب من المعلم..." style="width:100%;border-radius:10px;padding:9px 12px;border:none;outline:none;font-size:13px;background:rgba(255,255,255,0.95);">
+      <div style="flex:1;min-width:240px;max-width:100%;">
+        <input type="text" id="generalTeacherNotes" placeholder="كلمة تشجيعية للطالب من المعلم..." style="width:100%;box-sizing:border-box;border-radius:10px;padding:9px 12px;border:none;outline:none;font-size:13px;background:rgba(255,255,255,0.95);">
       </div>
     </div>
 
@@ -2582,13 +2613,11 @@ function calculateQuranCoverage(sFromId, aFrom, sToId, aTo) {
     totalAyahs += endA;
   }
 
-  const p1 = QURAN_SURAHS[startS - 1].page;
-  const p2 = QURAN_SURAHS[endS - 1].page;
-  let pagesCount = Math.max(0.5, (p2 - p1) + 1);
-  if (startS === endS) {
-    const sObj = QURAN_SURAHS[startS - 1];
-    if (sObj.ayahs <= 8) pagesCount = 0.5;
-    else pagesCount = Math.max(0.5, Math.round((totalAyahs / 15) * 10) / 10);
+  let pagesCount = 0.5;
+  if (totalAyahs <= 8) {
+    pagesCount = 0.5;
+  } else {
+    pagesCount = Math.max(0.5, Math.round((totalAyahs / 15) * 10) / 10);
   }
 
   return {
@@ -5314,8 +5343,8 @@ function addNewNoteRow(defaultAyah = '', defaultText = ''){
   const div = document.createElement('div');
   div.className = 'note-repeater-row';
   div.innerHTML = `
-    <input type="number" placeholder="رقم الآية" value="${escapeHtmlAttr(defaultAyah)}" style="border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:12.5px;" class="new-n-ayah">
-    <input type="text" placeholder="الكلمة أو الآية المحتاجة تركيز..." value="${escapeHtmlAttr(defaultText)}" style="border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12.5px;" class="new-n-text">
+    <input type="number" placeholder="رقم الآية" value="${escapeHtmlAttr(defaultAyah)}" style="border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:12.5px;min-width:0;width:100%;box-sizing:border-box;" class="new-n-ayah">
+    <input type="text" placeholder="الكلمة أو الآية المحتاجة تركيز..." value="${escapeHtmlAttr(defaultText)}" style="border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12.5px;min-width:0;width:100%;box-sizing:border-box;" class="new-n-text">
     <button type="button" class="del-btn" onclick="this.parentElement.remove()" title="حذف هذا السطر">✕</button>
   `;
   c.appendChild(div);
@@ -5327,8 +5356,8 @@ function addRevNoteRow(defaultAyah = '', defaultText = ''){
   const div = document.createElement('div');
   div.className = 'note-repeater-row';
   div.innerHTML = `
-    <input type="number" placeholder="رقم الآية" value="${escapeHtmlAttr(defaultAyah)}" style="border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:12.5px;" class="rev-n-ayah">
-    <input type="text" placeholder="موضع أو ملاحظة المراجعة..." value="${escapeHtmlAttr(defaultText)}" style="border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12.5px;" class="rev-n-text">
+    <input type="number" placeholder="رقم الآية" value="${escapeHtmlAttr(defaultAyah)}" style="border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:12.5px;min-width:0;width:100%;box-sizing:border-box;" class="rev-n-ayah">
+    <input type="text" placeholder="موضع أو ملاحظة المراجعة..." value="${escapeHtmlAttr(defaultText)}" style="border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12.5px;min-width:0;width:100%;box-sizing:border-box;" class="rev-n-text">
     <button type="button" class="del-btn" onclick="this.parentElement.remove()" title="حذف هذا السطر">✕</button>
   `;
   c.appendChild(div);
@@ -5340,10 +5369,10 @@ function addTajweedNoteRow(defaultAyah = '', defaultRule = '', defaultText = '')
   const div = document.createElement('div');
   div.className = 'note-repeater-row';
   div.innerHTML = `
-    <input type="number" placeholder="الآية" value="${escapeHtmlAttr(defaultAyah)}" style="border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:12.5px;" class="taj-n-ayah">
-    <div style="display:flex;gap:6px;">
-      <input type="text" placeholder="القاعدة (إخفاء، إدغام...)" value="${escapeHtmlAttr(defaultRule)}" style="flex:1;border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12.5px;" class="taj-n-rule">
-      <input type="text" placeholder="ملاحظة التوجيه..." value="${escapeHtmlAttr(defaultText)}" style="flex:1.2;border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12.5px;" class="taj-n-note">
+    <input type="number" placeholder="الآية" value="${escapeHtmlAttr(defaultAyah)}" style="border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:12.5px;min-width:0;width:100%;box-sizing:border-box;" class="taj-n-ayah">
+    <div style="display:flex;gap:6px;min-width:0;width:100%;box-sizing:border-box;">
+      <input type="text" placeholder="القاعدة (إخفاء، إدغام...)" value="${escapeHtmlAttr(defaultRule)}" style="flex:1;min-width:0;width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12.5px;" class="taj-n-rule">
+      <input type="text" placeholder="ملاحظة التوجيه..." value="${escapeHtmlAttr(defaultText)}" style="flex:1.2;min-width:0;width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12.5px;" class="taj-n-note">
     </div>
     <button type="button" class="del-btn" onclick="this.parentElement.remove()" title="حذف هذا السطر">✕</button>
   `;
